@@ -1,0 +1,58 @@
+.login-page {
+  .ivu-input {
+    width: 347px;
+    height: 60px;
+    border-radius: 31px;
+    background-color: rgba(157, 177, 188, 0.1);
+    color: #C1CFD9;
+    border: 0;
+    font-size: 16px;
+    padding-left: 70px;
+    font-family: @font-family;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 55px;
+    }
+    @media (max-width:1500px) {
+      height: 50px;
+    }
+  }
+  .ivu-icon {
+    width: 78px;
+    height: 62px;
+    background-repeat: no-repeat;
+    background-position: center;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 55px;
+    }
+    @media (max-width:1500px) {
+      height: 50px;
+    }
+  }
+  .ivu-input-suffix {
+    width: 145px;
+    .code-span {
+      line-height: 62px;
+      @media (max-width:1700px) and (min-width: 1501px) {
+        line-height: 55px;
+      }
+      @media (max-width:1500px) {
+        line-height: 50px;
+      }
+      .ivu-icon {
+        position: relative;
+        width: 30px;
+        font-size: 36px;
+        height: 27px;
+        vertical-align: middle;
+        &:before {
+          position: absolute;
+          top: -10px;
+          left: 0;
+        }
+      }
+    }
+  }
+}
+.login-btn {
+  font-family: @font-family;
+}

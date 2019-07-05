@@ -1,0 +1,122 @@
+/*tree*/
+.ivu-tree {
+  .ivu-btn {
+    border: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background-color: transparent;
+    font-size: 16px;
+  }
+  .ivu-tree-arrow {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #9DB1BC;
+    i {
+      display: none;
+      &:before {
+        content: '';
+      }
+    }
+  }
+  .ivu-tree-arrow-open {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: transparent;
+    border: 2px solid #C1CFD9;
+  }
+  .ivu-tree-title-selected {
+    &:after {
+      position: absolute;
+      bottom: 3px;
+      right: 10px;
+      content: '+';
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  }
+  li {
+    position: relative;
+    ul {
+      position: relative;
+      &:before {
+        position: absolute;
+        left: 4px;
+        top: -12px;
+        bottom: 4px;
+        content: '.';
+        color: #C1CFD9;
+        background: #C1CFD9;
+        width: 2px;
+      }
+      &:last-child {
+        &:after {
+          content: '.';
+          position: absolute;
+          left: 0;
+          bottom: -4px;
+          background-color: transparent;
+          border: 2px solid #C1CFD9;
+          width: 10px;
+          height: 10px;
+          border-radius: 5px;
+          color: #F7FBFC;
+        }
+      }
+    }
+  }
+}
+.tree-check-list {
+  padding: 10px 0;
+  height: 310px;
+  overflow: auto;
+  li {
+    list-style: none;
+    padding-left: 0;
+  }
+  .ivu-icon {
+    font-size: 26px;
+  }
+}
+@treeBlue: rgba(40, 181, 242, 1);
+@treeColor: rgba(40, 181, 242, 0.3);
+.tree-blue {
+  color: @treeBlue;
+}
+.tree-purple {
+  color: #756ED5;
+}
+.tree-pink {
+  color: #E10098;
+}
+.ivu-tree-blue.ivu-tree {
+  .ivu-tree-title {
+    color: rgba(40, 181, 242, 1);
+    border: 1px solid @treeColor;
+    border-radius: 13px;
+  }
+  .ivu-tree-arrow {
+    background-color: @treeColor;
+  }
+  .ivu-tree-arrow-open {
+    border: 2px solid @treeColor;
+  }
+  li {
+    ul {
+      &:before {
+        color: @treeColor;
+        background: @treeColor;
+      }
+      &:last-child {
+        &:after {
+          border-color: @treeColor;
+          color: @treeColor;
+        }
+      }
+    }
+  }
+}

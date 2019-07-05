@@ -1,0 +1,360 @@
+.pop-mod {
+  max-width: 1800px;
+  .modal-close {
+     position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 25px;
+    color: #9DB1BC;
+    cursor: pointer;
+  }
+}
+.bg-modal {
+  background: transparent;
+  .ivu-modal {
+    top: 30px;
+  }
+  .ivu-modal-mask {
+    background: rgba(0, 0, 0, .8);
+  }
+  .modal-close {
+    top: 0;
+  }
+  .ivu-modal-header {
+    display: none;
+  }
+  .ivu-modal-content {
+    background: transparent;
+    box-shadow: none;
+  }
+  .ivu-modal-footer {
+    border-top: 0;
+    padding-top: 0;
+    padding-bottom: 40px;
+    .ivu-btn {
+      border: 0;
+    }
+  }
+}
+.ivu-modal-fullscreen {
+  background: rgba(0, 0, 0, .6);
+  .ivu-modal-content {
+    background: transparent;
+  }
+}
+.full-header {
+  position: absolute;
+  right: 20px;
+  top: 0;
+  font-size: 30px;
+  cursor: pointer;
+}
+.ivu-modal-wrap {
+  padding: auto 60px;
+  width: auto;
+  .ivu-card {
+    margin: 20px 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    @media (max-width:1500px) and (min-width: 1401px) {
+      margin: 16px 12px;
+    }
+    @media (max-width:1400px) {
+      margin: 15px 10px;
+    }
+  }
+}
+.ivu-modal-body {
+  padding: 30px 40px;
+  @media (max-width:1500px) {
+    padding: 20px 40px;
+  }
+  li {
+    // padding-left: 50px;
+    list-style: none;
+    label {
+      display: block;
+      padding: 5px 0;
+    }
+    .sel-input {
+      margin-left: 10px;
+      width: 130px;
+      .ivu-input {
+        width: 100%;
+      }
+      .ivu-input-prefix i {
+        font-size: 20px;
+        line-height: 42px;
+      }
+    }
+  }
+}
+.ivu-modal-header {
+  background-color: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.ivu-modal-content {
+  background-color: #F7FBFC;
+  .ivu-card-head {
+    p {
+      font-size: 20px;
+    }
+  }
+  .ivu-card-head {
+    .ivu-icon {
+      width: 24px;
+      height: 24px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100%;
+      margin-right: 10px;
+      @media (max-width:1500px) {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .ivu-card-extra .ivu-btn-primary {
+    width: 165px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      width: 148px;
+    }
+    @media (max-width: 1500px) {
+      width: 120px;
+    }
+  }
+}
+.ivu-modal-header-inner {
+  font-size: 26px;
+  height: 3em;
+  line-height: 3em;
+  @media (max-width:1700px) and (min-width: 1501px) {
+    font-size: 24px;
+  }
+  @media (max-width:1500px) {
+    height: 2em;
+    line-height: 2em;
+    font-size: 20px;
+  }
+}
+.ivu-modal-close {
+  .ivu-icon-ios-close {
+    color: #666;
+    font-size: 40px;
+  }
+  .ivu-icon-md-close {
+    font-size: 25px;
+    color: #C1CFD9;
+  }
+}
+.ivu-modal-footer {
+  padding: 20px 60px;
+  .ivu-btn {
+    padding: 0 20px;
+  }
+  .btn-cancel {
+    background: #76819E;
+    border-radius: 27px;
+    height: 54px;
+    width: 128px;
+    color: #fff;
+    font-size: 18px;
+  }
+  .btn-stop {
+    background: #ABA7EC;
+    border-radius: 27px;
+    height: 54px;
+    width: 128px;
+    color: #fff;
+    font-size: 18px;
+  }
+  .btn-submit {
+    background: #1ABCB0;
+    border-radius: 27px;
+    height: 54px;
+    width: 276px;
+    color: #fff;
+    font-size: 18px;
+    margin-left: 30px;
+  }
+  @media (max-width:1700px) and (min-width: 1501px) {
+    .ivu-btn {
+      height: 50px;
+      font-size: 16px;
+    }
+    .btn-cancel,
+    .btn-stop {
+      width: 120px;
+    }
+    .btn-submit {
+      width: 240px;
+    }
+  }
+  @media (max-width: 1500px) {
+    .ivu-btn {
+      height: 42px;
+      font-size: 14px;
+    }
+    .btn-cancel,
+    .btn-stop {
+      width: 110px;
+    }
+    .btn-submit {
+      width: 200px;
+    }
+  }
+}
+.list-line {
+  padding-bottom: 10px;
+  font-size: 16px;
+}
+.ml-form {
+  margin-left: 20px;
+}
+/*card*/
+.card-tree-date {
+  .ivu-card-body {
+    height: 400px;
+  }
+  .ivu-tree {
+    height: 350px;
+    overflow: auto;
+  }
+}
+.room-set-card {
+  .ivu-card-body {
+    height: 500px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 450px;
+    }
+    @media (max-width: 1500px) {
+      height: 400px;
+    }
+  }
+  .ivu-tree {
+    height: 440px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 390px;
+    }
+    @media (max-width: 1500px) {
+      height: 340px;
+    }
+  }
+  .room-set-tree-check-list {
+    height: 440px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 390px;
+    }
+    @media (max-width: 1500px) {
+      height: 340px;
+    }
+  }
+}
+.wrapper-row {
+  margin: 0 -15px;
+}
+.modal-img-box {
+  margin-top: 30px;
+  text-align: center;
+  span {
+    color: #9DB1BC;
+    font-size: 18px;
+    line-height: 1.5;
+    text-decoration: underline;
+    @media (max-width: 1500px) {
+      font-size: 16px;
+    }
+  }
+}
+.modal-pic-box {
+  border: 1px solid #C1CFD9;
+  border-radius: 4px;
+  max-width: 50%;
+  max-height: 365px;
+  width: 287px;
+}
+.card-role {
+  h3,
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #9DB1BC;
+    line-height: 2;
+  }
+  li {
+    padding-right: 50px;
+  }
+  .ivu-modal-footer {
+    border-top: 0;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+  }
+  .ivu-card-body {
+    height: 650px;
+    overflow: auto;
+  }
+}
+.card-role-list {
+  .ivu-card-body {
+    height: 650px;
+    overflow: auto;
+  }
+  .role-list {
+    li {
+      padding: 10px;
+    }
+  }
+  .ivu-card-body {
+    padding: 20px;
+  }
+}
+.role-list {
+  li {
+    position: relative;
+    background: #E5EDF0;
+    border-radius: 12px;
+    border: 1px solid #E5EDF0;
+    margin-bottom: 15px;
+    &:hover {
+      border-color: #1ABCB0;
+      .ivu-icon-md-create {
+        color: #1ABCB0;
+      }
+    }
+    p {
+      font-size: 18px;
+      @media (max-width: 1500px) {
+        font-size: 14px;
+      }
+    }
+    div {
+      font-size: 16px;
+      color: #9DB1BC;
+      @media (max-width: 1500px) {
+        font-size: 12px;
+      }
+      em {
+        color: #1ABCB0;
+      }
+    }
+    em,
+    i,
+    span {
+      font-style: normal;
+      font-weight: bold;
+      margin-right: 3px;
+    }
+    .ivu-icon {
+      position: absolute;
+      top: 8px;
+      right: 5px;
+      color: #9DB1BC;
+      &.ivu-icon-md-create {
+        right: 20px;
+      }
+    }
+  }
+}

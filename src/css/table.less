@@ -1,0 +1,134 @@
+/*table*/
+.ivu-table-wrapper {
+  border: 0;
+}
+.ivu-table {
+  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.05);
+  color: #3B4563;
+  font-size: 18px;
+  @media (max-width:1700px) and (min-width: 1501px) {
+    font-size: 15px;
+  }
+  @media (max-width:1500px) {
+    font-size: 12px;
+  }
+  th {
+    background-color: #F7FBFC;
+    border-bottom: 0;
+  }
+  td,
+  th {
+    height: 70px;
+    @media (max-width:1500px) {
+      height: 50px;
+    }
+  }
+  &:after,
+  &:before {
+    display: none;
+  }
+  .ivu-icon {
+    width: 25px;
+    height: 25px;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+    margin-left: 2px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      width: 22px;
+      height: 22px;
+    }
+    @media (max-width:1500px) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  strong {
+    .ivu-icon {
+      width: 26px;
+      height: 26px;
+      @media (max-width:1700px) and (min-width: 1501px) {
+        width: 24px;
+        height: 24px;
+      }
+      @media (max-width:1500px) {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+.ivu-table-cell {
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  .icon-edit {
+    margin-left: 2px;
+  }
+}
+tr.table-warning td {
+  background-color: rgba(223, 136, 217, 0.15);
+}
+.ivu-table-header {
+  padding: 0 20px;
+  background-color: #F7FBFC;
+}
+.ivu-table-body {
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  padding: 0 20px 30px;
+  table {}
+}
+.nesting-table {
+  td,
+  th {
+    height: 50px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      height: 45px;
+    }
+    @media (max-width:1500px) {
+      height: 40px;
+    }
+  }
+  td {
+    border-bottom: 0;
+    &.ivu-table-expanded-cell {
+      background: #fff;
+      padding: 0 61px;
+      border-bottom: 1px solid #e8eaec;
+      color: #9DB1BC;
+      .ivu-col {
+        display: inline-block;
+        border-top: 1px solid #e8eaec;
+        padding: 10px 0;
+      }
+    }
+  }
+  .ivu-table-cell-expand {
+    .ivu-icon-ios-arrow-forward:before {
+      content: '';
+    }
+  }
+}
+.table-bottom .btn-table-bot {
+  border-color: #ABA7EC;
+  border-width: 3px;
+  border-radius: 30px;
+  color: #ABA7EC;
+  width: 470px;
+  height: 68px;
+  background: transparent;
+  font-size: 18px;
+  @media (max-width:1700px) and (min-width: 1501px) {
+    height: 52px;
+    width: 360px;
+    border-width: 2px;
+  }
+  @media (max-width:1500px) {
+    border-width: 2px;
+    width: 280px;
+    height: 42px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,106 @@
+.ivu-layout-sider {
+  text-align: left;
+}
+.ivu-menu-dark {
+  font-size: 20px;
+  margin: 0 20px;
+  @media (max-width:1700px) and (min-width: 1501px) {
+    font-size: 18px;
+  }
+  @media (max-width: 1500px) {
+    font-size: 16px;
+  }
+}
+.ivu-menu-dark.ivu-menu-vertical {
+  background: transparent;
+  .ivu-menu-item,
+  .ivu-menu-submenu-title {
+    padding: 10px 70px;
+    font-size: 20px;
+    position: relative;
+    border-radius: 5px;
+    @media (max-width:1700px) and (min-width: 1501px) {
+      font-size: 18px;
+    }
+    @media (max-width: 1500px) {
+      font-size: 16px;
+    }
+    i:first-child {
+      position: absolute;
+      left: 30px;
+      top: 13px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .ivu-menu-submenu {
+    padding: 5px 0;
+    .ivu-menu {
+      margin-left: 70px;
+      margin-right: 10px;
+      padding: 0;
+    }
+    .ivu-menu-item {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      text-align: left;
+      padding-left: 25px!important;
+      padding-right: 10px!important;
+      @media (max-width: 1500px) {
+        padding-left: 20px!important;
+      }
+    }
+    .ivu-menu-item-active,
+    .ivu-menu-item-active:hover {
+      border-radius: 5px;
+    }
+  }
+  .ivu-menu-opened {
+    background: transparent;
+    .ivu-menu-submenu-title {
+      background: transparent;
+      .ivu-menu-submenu-title-icon {
+        transform: translateY(-50%);
+      }
+    }
+    .icon-left-user {
+      background: url("../images/left-user-a.png") no-repeat;
+    }
+    .icon-left-info {
+      background: url("../images/left-info-a.png") no-repeat;
+    }
+    .icon-left-audit {
+      background: url("../images/left-audit-a.png") no-repeat;
+    }
+    .icon-left-setting {
+      background: url("../images/left-setting-a.png") no-repeat;
+    }
+  }
+  .ivu-menu-submenu-title-icon {
+    transform: translateY(-50%) rotate(-90deg);
+  }
+  & > li:first-child {
+    .ivu-menu-submenu-title-icon {
+      display: none;
+    }
+    &.ivu-menu-opened {
+      .ivu-menu-submenu-title {
+        color: #fff;
+        background: #1ABCB0 !important;
+        border-radius: 5px;
+      }
+    }
+  }
+}
+.icon-left-user {
+  background: url("../images/left-user.png") no-repeat;
+}
+.icon-left-info {
+  background: url("../images/left-info.png") no-repeat;
+}
+.icon-left-audit {
+  background: url("../images/left-audit.png") no-repeat;
+}
+.icon-left-setting {
+  background: url("../images/left-setting.png") no-repeat;
+}
