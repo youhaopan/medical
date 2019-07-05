@@ -68,7 +68,16 @@ export default {
   data() {
     return {
       dataTree,
-      dataDesk:[],formdata:[],
+      dataDesk:[{
+            UP: null,
+            children: [],
+            disable: true,
+            expand: true,
+            id: 0,
+            title: '全院',
+      }],
+      userData: [],
+      formdata:[],
       treecheckedList:[],
       treecheckedList1:[],
       rname:'',uname:'',cname:'',Remark:'',
@@ -102,15 +111,50 @@ export default {
         }
       else {
           let that=this;
-           $.ajax({ //加载 人员 树
-               type:'post',
-               url:urlPath.getIndexTable+'/api/RoleManager/QueryUserList',
-               data:  {"":this.uname},
-               success:function(ret)
-               {
-                 that.dataDesk=ret.D.childrens;
-               }
-          })
+          let user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM': -1};
+            $.ajax({ //加载 人员 树
+                type: 'post',
+                url: urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+                data: user,
+                success: function(ret){
+                        let userData = [];
+                        ret.D.listUser.forEach(function(item) {
+                            let obj = {
+                                UP: null,
+                                children: [],
+                                disable: true,
+                                expand: true,
+                                id: 0,
+                                title: item.DEPARTMENTNAME,
+                            }
+                            if(item.DEPARTMENTNAME === obj.title){
+                                let user = {
+                                    UP: null,
+                                    children: null,
+                                    disable: false,
+                                    expand: true,
+                                    id: item.ID,
+                                    title: item.NAME,
+                                }
+                                obj.children.push(user)
+                            }
+                            
+                            userData.push(obj)
+                            // that.dataDesk[0].children.push(obj)
+                        })
+                        that.dataDesk[0].children = userData;
+                        // that.dataDesk=ret.D.childrens;
+                    }
+                })
+        //    $.ajax({ //加载 人员 树
+        //        type:'post',
+        //        url:urlPath.getIndexTable+'/api/RoleManager/QueryUserList',
+        //        data:  {"":this.uname},
+        //        success:function(ret)
+        //        {
+        //          that.dataDesk=ret.D.childrens;
+        //        }
+        //   })
     }
     },
     getTreeCheckedList(data){ //人员信息 树形数据结构
@@ -175,15 +219,47 @@ export default {
                    },
      getDeskList(){
             let that=this;
+            // 已修改人员数据结构
+            let user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM': -1};
             $.ajax({ //加载 人员 树
-                type:'post',
-                url:urlPath.getIndexTable+'/api/RoleManager/QueryUserList',
-                data:{'Name':this.uname},
-                success:function(ret)
-                 {
-                   that.dataDesk=ret.D.childrens;
-                 }
+                type: 'post',
+                url: urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+                data: user,
+                success: function(ret){
+                        ret.D.listUser.forEach(function(item) {
+                            let obj = {
+                                UP: null,
+                                children: [],
+                                disable: true,
+                                expand: true,
+                                id: 0,
+                                title: item.DEPARTMENTNAME,
+                            }
+                            if(item.DEPARTMENTNAME === obj.title){
+                                let user = {
+                                    UP: null,
+                                    children: null,
+                                    disable: false,
+                                    expand: true,
+                                    id: item.ID,
+                                    title: item.NAME,
+                                }
+                                obj.children.push(user)
+                            }
+                            that.dataDesk[0].children.push(obj)
+                        })
+                        // that.dataDesk=ret.D.childrens;
+                    }
                 })
+        //     $.ajax({ //加载 人员 树
+        //        type:'post',
+        //        url:urlPath.getIndexTable+'/api/RoleManager/QueryUserList',
+        //        data:  {"":this.uname},
+        //        success:function(ret)
+        //        {
+        //         //  that.dataDesk=ret.D.childrens;
+        //        }
+        //   })
                },
     cancel() {
       // this.$Message.info('Clicked cancel');
