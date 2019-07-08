@@ -13,7 +13,7 @@
          <Scroll :on-reach-bottom="handleReachBottom">
               <Table id="user"   :columns="userColumns"   :data="userData">
                 <template slot-scope="{ row, index }" slot="ID">
-                  <strong id="1">{{ index+1 }} </strong>
+                  <strong :id="index + 1">{{ index+1 }} </strong>
                 </template>
                 <template slot-scope="{ row }"  slot="SEXCODE">
                   <span v-if="row.SEXCODE==='MAN'">男</span>
@@ -36,7 +36,7 @@
                 <Button  type="default" class="btn-table-bot">加载更多</Button>
               </div>
               <div class="search-box">
-                转到第 <Input search enter-button="GO" /> 条
+                转到第 <Input search v-model='value' @on-blur='positioning' enter-button="GO" /> 条
               </div>
             </div>
         </Card>
@@ -66,6 +66,7 @@ import urlPath from '../actions/api.js';
       showPop: false,
       userColumns,
       userData,
+      value: '',
       sName:'',myval:0,
        auto:false,num:1,
       pois:{id: 1,title: 'My'},  ifupd:'true'  }
@@ -91,6 +92,9 @@ import urlPath from '../actions/api.js';
   }
 },
   methods: {
+    positioning(){
+            window.location.hash = "#" + this.value;
+        },
     handleReachBottom () {
                 return new Promise(resolve => {
                     setTimeout(() => {

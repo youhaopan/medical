@@ -93,11 +93,11 @@
       科室规则
     </p>
     <Table :columns="roomColumns" :data="roomData">
-      <template slot-scope="{ row }" slot="degree">
+      <!-- <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
-      </template>
+      </template> -->
       <template slot="edit">
         <span @click="openEditRoom(1,'科室规则')">编辑
           <Icon custom="icon-edit" /></span>
@@ -188,7 +188,7 @@ export default {
         key: 'name'
       }, {
         title: '违规等级',
-        slot: 'degree'
+        key: 'degree'
       }, {
         title: '费别',
         key: 'price'
@@ -196,13 +196,7 @@ export default {
         title: '操作',
         slot: 'edit'
       }],
-      roomData: [{
-        number: '系统',
-        name: 'alice',
-        degree: '1',
-        price: '',
-        edit: '编辑'
-      }],
+      roomData: [],
       degreeColumns: [{
         title: '来源',
         key: 'number'
@@ -305,8 +299,17 @@ export default {
     cancelNest() {
       this.openEditData = false
     },
-    saveNest() {
-      this.openEditData = false
+    saveNest(val1,val2,val3) {
+      this.openEditData = false;
+      console.log(val1,val2,val3);
+      let roomData = {
+        number: '系统',
+        name: val3[0].title,
+        degree: val2.label,
+        price: val1.label,
+        edit: '编辑'
+      }
+      this.roomData.push(roomData);
     }
   }
 }

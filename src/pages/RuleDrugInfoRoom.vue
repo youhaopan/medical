@@ -17,13 +17,13 @@
           <p slot="title">
             <Icon type="icon-date"></Icon>正在编辑 - {{roconstypeTitle}}
           </p>
-          <RoleContentRoom :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===1" />
+          <RoleContentRoom :price-list='priceList' :degree-list='degreeList' @selectPriceId='Price = arguments[0]' @selectDegreeId='degree = arguments[0]' @checkedList='checkedList = arguments[0]' v-show="roconstypeData===1" />
           <RoleContentLevel :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===2" />
           <RoleContentSex :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===3" />
           <RoleContentAge :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===4" />
           <div class="ivu-modal-footer">
             <Button size="large" class="btn-cancel" @click="$emit('cancel')">取消</Button>
-            <Button size="large" type="default" class="btn-submit" @click="$emit('save')">保存编辑</Button>
+            <Button size="large" type="default" class="btn-submit" @click="$emit('save',Price,degree,checkedList)">保存编辑</Button>
           </div>
         </Card>
       </i-col>
@@ -35,9 +35,7 @@
 </Modal>
 </template>
 <script>
-import {
-  dataTreeRole
-} from '../data/data-tree.js';
+// import { dataTreeRole } from '../data/data-tree.js';
 import RoleAdded from '../components/RoleAdded';
 import RoleContentRoom from '../components/RoleContentRoom';
 import RoleContentLevel from '../components/RoleContentLevel';
@@ -60,19 +58,16 @@ export default {
   },
   data() {
     return {
-      dataTreeRole,
+      dataTreeRole: [],
       tipEdit: '',
       tipTitle: '',
+      Price: '',
+      degree: '',
+      checkedList: [],
       roconstypeData: this.roleType,
       roconstypeTitle: this.roleTitle,
-      priceList: [{
-        label: '北京',
-        value: 'bj'
-      }],
-      degreeList: [{
-        label: '一般',
-        value: '0'
-      }],
+      priceList: [],
+      degreeList: [],
       roomList: [{
         name: '张晓静',
         degree: "审核员",
@@ -100,7 +95,99 @@ export default {
         this.roconstypeData = this.tipEdit;
         this.roconstypeTitle = this.tipTitle;
       }
-    }
+    },
+    getPriceList(){
+        let _this = this;
+        let DAT={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '费别'};
+        $.ajax({ // 加载费别
+            type: 'post',
+            url: urlPath.getIndexTable+'/API/BaseDataManager/QueryDict',
+            data: DAT,
+            success: function(dataRets){
+                _this.priceList = dataRets.D.ListDict;
+            }
+        })
+    },
+    getDegreeList(){
+        let _this = this;
+        let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),'DICTTYPE': '违规等级'};
+        $.ajax({ // 加载违规等级
+            type: 'post',
+            url: urlPath.getIndexTable+'/api/BaseDataManager/QueryDict',
+            data: desk,
+            success: function(dataRets){
+                _this.degreeList = dataRets.D.ListDict;
+            }
+        })
+    },
+    getDataTreeRole(){
+        let _this = this;
+        let desk = {'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'RULECATALOG': [{ID: '-1'}]};
+        $.ajax({ // 加载违规等级
+            type: 'post',
+            url: urlPath.getIndexTable+'/api/RuleCatalogManager/QueryRuleCatalog',
+            data: desk,
+            success: function(dataRets){
+                let arr = [];
+                let children = [];
+                dataRets.D.RULECATALOG.forEach(function(item) {
+                    if(item.UP === 'YP'){
+                        let obj = {
+                            UP: item.UP,
+                            children: [],
+                            disable: false,
+                            expand: true,
+                            id: item.ID,
+                            nodeKey: 0,
+                            title: item.NAME
+                         }
+                         arr.push(obj)
+                    }
+                });
+                for(let i = 0; i<dataRets.D.RULECATALOG.length;i++){
+                    for(let j =0; j<arr.length;j++){
+                        if(dataRets.D.RULECATALOG[i].UP === arr[j].id){
+                            let erji = {
+                                UP: dataRets.D.RULECATALOG[i].UP,
+                                children: [],
+                                disable: false,
+                                expand: true,
+                                id: dataRets.D.RULECATALOG[i].ID,
+                                nodeKey: 1,
+                                title: dataRets.D.RULECATALOG[i].NAME
+                            }
+                            arr[j].children.push(erji)
+                        }
+                    }
+                }
+                for(let k = 0; k<arr.length;k++){
+                    // console.log(arr[k].children.length)
+                    for(let f = 0; f<arr[k].children.length; f++){
+                        for(let t = 0; t<dataRets.D.RULECATALOG.length;t++){
+                            if(dataRets.D.RULECATALOG[t].UP === arr[k].children[f].id){
+                                let sanji = {
+                                    UP: dataRets.D.RULECATALOG[t].UP,
+                                    children: [],
+                                    disable: false,
+                                    expand: true,
+                                    id: dataRets.D.RULECATALOG[t].ID,
+                                    nodeKey: 2,
+                                    title: dataRets.D.RULECATALOG[t].NAME
+                                }
+                                if(dataRets.D.RULECATALOG[t].NAME ==='科室规则') sanji.edit = 1
+                                if(dataRets.D.RULECATALOG[t].NAME ==='医院等级规则') sanji.edit = 2
+                                if(dataRets.D.RULECATALOG[t].NAME ==='性别规则') sanji.edit = 3
+                                if(dataRets.D.RULECATALOG[t].NAME ==='年龄规则') sanji.edit = 4
+                                arr[k].children[f].children.push(sanji)
+                            }
+                        }
+                    }
+                }
+                // console.log(arr)
+                _this.dataTreeRole = arr
+            }
+        })
+    },
   },
   watch: {
     roleType() {
@@ -108,7 +195,18 @@ export default {
     },
     roleTitle() {
       this.roconstypeTitle = this.roleTitle
+    },
+    Price(){
+        console.log(this.Price)
+    },
+    degree(){
+        console.log(this.degree)
     }
+  },
+  created(){
+      this.getPriceList();
+      this.getDegreeList();
+      this.getDataTreeRole();
   }
 }
 </script>

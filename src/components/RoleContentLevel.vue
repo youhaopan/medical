@@ -3,7 +3,7 @@
       <li>
         <label>费别</label>
         <Select v-model="price" style="width:200px">
-          <Option v-for="item in priceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
@@ -15,7 +15,7 @@
       <li>
         <label>违规等级</label>
         <Select v-model="degree" style="width:200px">
-          <Option v-for="item in degreeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
     </ul>

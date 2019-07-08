@@ -2,14 +2,14 @@
     <ul>
       <li>
         <label>费别</label>
-        <Select v-model="price" style="width:200px">
-            <Option v-for="item in priceList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="priceId" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
+            <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>违规等级</label>
-        <Select v-model="degree" style="width:200px">
-            <Option v-for="item in degreeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="degreeId" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
+            <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li style="margin-top:10px">
@@ -33,8 +33,10 @@ export default {
     return {
       dataTree,
       dataTreeRole,
-      price: 'bj',
-      degree: '0',checkedList:[]
+      priceId: '',
+      degreeId: '',
+      checkedList:[],
+      feibie: ''
     }
   },
   created(){
@@ -44,17 +46,27 @@ export default {
     TreeComponent,
   },
   methods:{
+    selectPriceId(val){
+        console.log(val)
+        this.$emit('selectPriceId', val)
+    //   console.log(this.priceId)
+    },
+    selectDegreeId(val){
+        console.log(val)
+        this.$emit('selectDegreeId', val)
+    //   console.log(this.degreeId)
+    },
     getDeskList(){ //查询树的 数据
-      let that=this;
-      // $.ajax({ // 加载科室 树
-      //   type:'post',
-      //   url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
-      //   data:{'':this.dname},
-      //     success:function(dataRet){
-      //   that.dataTree=dataRet.D.childrens;
-      //         }
-      //     })
-      // 已改数据结构
+        let that=this;
+        // $.ajax({ // 加载科室 树
+        //   type:'post',
+        //   url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
+        //   data:{'':this.dname},
+        //     success:function(dataRet){
+        //   that.dataTree=dataRet.D.childrens;
+        //         }
+        //     })
+        // 已改数据结构
         let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
          $.ajax({ // 加载科室 树
            type:'post',
@@ -100,9 +112,11 @@ export default {
                  }
              })
         },
-          getTreeData(data){
-              this.checkedList=data;
-              },
+        getTreeData(data){
+            this.checkedList=data;
+            console.log(this.checkedList)
+            this.$emit('checkedList', this.checkedList);
+        },
   }
 }
 </script>
