@@ -1,3 +1,3 @@
 export default function(){
-  return 'http://192.168.1.118:82'
+  return 'http://39.96.167.35:8001'
 }

@@ -6,16 +6,16 @@
             <p slot="title">药品规则<span id="count">共40条记录</span></p>
             <p slot="extra">
               <Input prefix="ios-search" v-model="pname" @on-blur="sel" placeholder="查询通用名/商品名/厂家..." style="width: auto" />
-              <BtnColor btn-title="新建规则" btn-icon="icon-add-rule" @open="openPop"  />
+              <BtnColor btn-title="新建规则" btn-icon="icon-add-rule" @open="openPop('add')"  />
             </p>
             <div class="">
           <Scroll :on-reach-bottom="handleReachBottom">
-              <Table :columns="userColumns" :data="userData">
+              <Table :columns="userColumns" :data="userData" highlight-row @on-current-change='selectYp'>
                 <template slot-scope="{ row, index }" slot="ID">
                   <strong  >{{ index+1 }} </strong>
                 </template>
                 <template slot="edit">
-                    <span @click="openPop">编辑<Icon custom="icon-edit"/></span>
+                    <span @click="openPop('edit')">编辑<Icon custom="icon-edit"/></span>
                 </template>
               </Table>
            </Scroll>
@@ -33,7 +33,7 @@
             </div>
         </Card>
       </Row>
-      <RuleDrugInfo v-show="showPop" @cancel="cancel" @save="save" />
+      <RuleDrugInfo ref="mychild" v-show="showPop" @cancel="cancel" @save="save" />
     </div>
 </template>
 
@@ -58,7 +58,10 @@ export default {
     return {
       showPop: false,
       userColumns,
-      userData,pname:'',num:1
+      userData,
+      pname:'',
+      num:1,
+      currentRow: {}
     }
   },
   created(){
@@ -125,14 +128,26 @@ export default {
                }
             })
     },
-    openPop() {
-      this.showPop = true
+    openPop(type) {
+        if(type === 'add'){
+            console.log(this.currentRow)
+            if(Object.keys(this.currentRow) == 0){
+                // this.$Message.warning('请选择药品');
+                return
+            }
+        }
+        this.showPop = true
+        this.$refs.mychild.parentHandleclick(this.currentRow);
     },
     cancel() {
       this.showPop = false
     },
     save() {
       this.showPop = false
+    },
+    selectYp(currentRow){
+        this.currentRow = currentRow;
+        console.log(this.currentRow)
     }
   }
 }

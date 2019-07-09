@@ -18,12 +18,12 @@
             <Icon type="icon-date"></Icon>正在编辑 - {{roconstypeTitle}}
           </p>
           <RoleContentRoom :price-list='priceList' :degree-list='degreeList' @selectPriceId='Price = arguments[0]' @selectDegreeId='degree = arguments[0]' @checkedList='checkedList = arguments[0]' v-show="roconstypeData===1" />
-          <RoleContentLevel :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===2" />
-          <RoleContentSex :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===3" />
+          <RoleContentLevel :price-list='priceList' :degree-list='degreeList' :level-list='levelList' @selectPriceId='yyPrice = arguments[0]' @selectDegreeId='yyDegree = arguments[0]' @selectLevel='yyLevel = arguments[0]' v-show="roconstypeData===2" />
+          <RoleContentSex :price-list='priceList' :degree-list='degreeList' @selectPriceId='sexPrice = arguments[0]' @sexDegreeId='setDegree = arguments[0]' @selectSex='sex = arguments[0]' v-show="roconstypeData===3" />
           <RoleContentAge :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===4" />
           <div class="ivu-modal-footer">
             <Button size="large" class="btn-cancel" @click="$emit('cancel')">取消</Button>
-            <Button size="large" type="default" class="btn-submit" @click="$emit('save',Price,degree,checkedList)">保存编辑</Button>
+            <Button size="large" type="default" class="btn-submit" @click="save">保存编辑</Button>
           </div>
         </Card>
       </i-col>
@@ -59,14 +59,47 @@ export default {
   data() {
     return {
       dataTreeRole: [],
+      tipId: '',
       tipEdit: '',
       tipTitle: '',
-      Price: '',
-      degree: '',
+      // 科室
+      Price: {
+          label: '',
+          value: ''
+      },
+      degree: {
+          label: '',
+          value: ''
+      },
       checkedList: [],
+      formData:{},
+      // 医院
+      yyPrice: {
+          label: '',
+          value: ''
+      },
+      yyDegree: {
+          label: '',
+          value: ''
+      },
+      yyLevel: {
+          label: '',
+          value: ''
+      },
+      // 性别
+      sexPrice: {
+          label: '',
+          value: ''
+      },
+      sexDegree: {
+          label: '',
+          value: ''
+      },
+      sex : '',
       roconstypeData: this.roleType,
       roconstypeTitle: this.roleTitle,
       priceList: [],
+      levelList: [],
       degreeList: [],
       roomList: [{
         name: '张晓静',
@@ -87,11 +120,67 @@ export default {
     }
   },
   methods: {
+    save(){
+        if(this.roconstypeData ===1){
+            // 科室规则的保存
+            if(this.Price.value !== '' && this.degree.value !== '' && this.checkedList.length > 0){
+                let arrName = [];
+                let arrId = [];
+                this.checkedList.forEach(function(item){
+                    arrName.push(item.title)
+                    arrId.push(item.id)
+                })
+                let roomData = {
+                    number: '系统',
+                    roconstypeId: this.roconstypeId,
+                    name: arrName.join(','),
+                    nameId: arrId.join(','),
+                    degree: this.degree.label,
+                    degreeCode: this.degree.value,
+                    price: this.Price.label,
+                    priceCode: this.Price.value,
+                    edit: '编辑'
+                }
+                for (var key in roomData) { 
+                    if (this.formData[key] !== roomData[key]) { 
+                        console.log(this.formData[key], roomData[key])
+                        this.formData = roomData;
+                        // this.$emit('save', this.formData);
+                        console.log('赋值',this.formData);
+                        return
+                    }
+                    console.log(this.formData[key], roomData[key]);
+                    this.$Message.warning('这是一条普通的提醒');
+                }
+            }else{
+                this.$Message.warning('请选择要添加的科室规则');
+            }
+        }else if(this.roconstypeData ===2){
+            if(this.yyPrice.value !== '' && this.yyDegree.value !== '' && this.yyLevel.value !== ''){
+
+            }else{
+                this.$Message.warning('请选择要添加的医院等级规则');
+            }
+            // 医院等级规则的保存
+        }else if(this.roconstypeData ===3){
+            // 性别规则的保存
+            if(this.sexPrice.value !== '' && this.sexDegree.value !== '' && this.sex !== ''){
+
+            }else{
+                this.$Message.warning('请选择要添加的医院等级规则');
+            }
+        }else if(this.roconstypeData ===4){
+            // 年龄规则的保存
+        }
+    },
     selectdata(data) {
+        console.log(data)
       if (data.length > 0) {
         this.tipEdit = data[0].edit;
         this.tipTitle = data[0].title;
+        this.tipId = data[0].id;
       } else {
+        this.roconstypeId = this.tipId;
         this.roconstypeData = this.tipEdit;
         this.roconstypeTitle = this.tipTitle;
       }
@@ -105,6 +194,15 @@ export default {
             data: DAT,
             success: function(dataRets){
                 _this.priceList = dataRets.D.ListDict;
+            }
+        });
+        let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '医院等级类型'};
+        $.ajax({ // 加载费别
+            type: 'post',
+            url: urlPath.getIndexTable+'/API/BaseDataManager/QueryDict',
+            data: DATA,
+            success: function(dataRets){
+                _this.levelList = dataRets.D.ListDict;
             }
         })
     },
@@ -174,7 +272,10 @@ export default {
                                     nodeKey: 2,
                                     title: dataRets.D.RULECATALOG[t].NAME
                                 }
-                                if(dataRets.D.RULECATALOG[t].NAME ==='科室规则') sanji.edit = 1
+                                if(dataRets.D.RULECATALOG[t].NAME ==='科室规则') {
+                                    sanji.edit = 1;
+                                    _this.roconstypeId = dataRets.D.RULECATALOG[t].ID
+                                } 
                                 if(dataRets.D.RULECATALOG[t].NAME ==='医院等级规则') sanji.edit = 2
                                 if(dataRets.D.RULECATALOG[t].NAME ==='性别规则') sanji.edit = 3
                                 if(dataRets.D.RULECATALOG[t].NAME ==='年龄规则') sanji.edit = 4

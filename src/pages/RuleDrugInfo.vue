@@ -24,34 +24,40 @@
     <div class="">
       <Row>
         <i-col span="12">
-          <ul class="pop-list">
-            <li>
-              <label>药品通用名</label>
-              <Input  v-model="yname" />
-            </li>
-            <li>
-              <label >药品商品名</label>
-              <Input  v-model="pname" />
-            </li>
-            <li>
-              <label >国药准字</label>
-              <Input v-model="zname" />
-            </li>
-            <li>
-              <label >药品厂家</label>
-              <Input  v-model="cname" />
-            </li>
-            <li>
-              <label >药品编号</label>
-              <Input v-model="yid" />
-            </li>
-            <li>
-              <label>类型</label>
-              <Select v-model="type" style="width:200px">
-                <Option v-for="item in ageList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-              </Select>
-            </li>
-          </ul>
+            <i-form :model="formData" inline>
+                <ul class="pop-list">
+                    <li>
+                    <label>药品通用名</label>
+                    <Input  v-model="formData.NAME" />
+                    </li>
+                    <li>
+                    <label >药品商品名</label>
+                    <Input  v-model="formData.NAME" />
+                    </li>
+                    <li>
+                    <label >国药准字</label>
+                    <Input v-model="formData.SPELLCODE" />
+                    </li>
+                    <li>
+                    <label >药品厂家</label>
+                    <Input  v-model="formData.MANUFACTURES" />
+                    </li>
+                    <li>
+                    <label >药品编号</label>
+                    <Input v-model="formData.ID" />
+                    </li>
+                    <li>
+                    <label >药品类型</label>
+                    <Input v-model="formData.TYPENAME" />
+                    </li>
+                    <!-- <li>
+                    <label>类型</label>
+                    <Select v-model="type" style="width:200px">
+                        <Option v-for="item in ageList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                    </li> -->
+                </ul>
+            </i-form>
         </i-col>
         <i-col span="12">
           <div class="modal-img-box">
@@ -65,15 +71,15 @@
           <ul class="pop-list">
             <li>
               <label >规格</label>
-              <Input v-model="spec" />
+              <Input v-model="formData.PACKAGING" />
             </li>
             <li>
               <label >单位</label>
-              <Input v-model="units"/>
+              <Input v-model="formData.UNITS"/>
             </li>
              <li>
                 <label >单价</label>
-                <Input v-model="price"/>
+                <Input v-model="formData.PRICE"/>
               </li>
             <li>
               <label>最小剂量</label>
@@ -154,7 +160,7 @@
   </Card>
   <div slot="footer">
     <Button size="large" class="btn-cancel" @click="$emit('cancel')">放弃</Button>
-    <Button size="large" type="default" class="btn-submit" @click="$emit('save')">保存修改</Button>
+    <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button>
   </div>
   <RuleDrugInfoRoom :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" @save="saveNest" />
 </Modal>
@@ -172,6 +178,8 @@ export default {
   },
   data() {
     return {
+        formData: {},
+        ypId: '',
       openEditData: false,
       roleType: 1,
       roleTitle: '',
@@ -292,24 +300,48 @@ export default {
   },
   methods: {
     openEditRoom(type, title) {
-      this.openEditData = true
-      this.roleType = type;
-      this.roleTitle = title;
+        this.openEditData = true
+        this.roleType = type;
+        this.roleTitle = title;
     },
     cancelNest() {
-      this.openEditData = false
+        this.openEditData = false
     },
-    saveNest(val1,val2,val3) {
-      this.openEditData = false;
-      console.log(val1,val2,val3);
-      let roomData = {
-        number: '系统',
-        name: val3[0].title,
-        degree: val2.label,
-        price: val1.label,
-        edit: '编辑'
-      }
-      this.roomData.push(roomData);
+    saveNest(obj) {
+        this.openEditData = false;
+        this.roomData.push(obj);
+    },
+    parentHandleclick(row){
+        this.ypId = row.ID
+        let _this = this;
+        let desk = {'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),DRUG: row.ID,};
+        $.ajax({ // 查询药品
+            type:'post',
+            url: urlPath.getIndexTable+'/api/DrugRuleDeploy/QueryDrugRule',
+            data: desk,
+            success:function(dataRets){
+                _this.formData = dataRets.D.DRUG[0];
+            }
+        })
+    },
+    save(){
+        let _this = this;
+        let form = this.roomData[0]
+        let desk = {
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            RULE: form.roconstypeId, // 规则编码
+            DRUG: this.ypId, // 药品id
+
+        };
+        $.ajax({ // 查询药品
+            type:'post',
+            url: urlPath.getIndexTable+'/api/DrugRuleDeploy/QueryDrugRule',
+            data: desk,
+            success:function(dataRets){
+                _this.formData = dataRets.D.DRUG[0];
+            }
+        })
     }
   }
 }
