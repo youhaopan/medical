@@ -3,11 +3,11 @@
       <li>
         <label>适用年龄段</label>
         <div class="inline-line">
-          <i-input v-model="age" type="number" :number="true" style="width: 90px">
+          <i-input v-model="DATASTART" type="number" :number="true" style="width: 90px">
             <span slot="append">岁</span>
           </i-input>
           <span>&nbsp;&nbsp; 到 &nbsp;&nbsp;</span>
-          <i-input type="number" :number="true" style="width: 90px">
+          <i-input v-model='DATAEND' type="number" :number="true" style="width: 90px">
             <span slot="append">岁</span>
           </i-input>
         </div>
@@ -36,9 +36,19 @@ export default {
   },
   data() {
     return {
-      price: 'bj',
-      degree: '0',
-      age: ''
+      price: '',
+      degree: '',
+      age: '',
+      DATASTART: '',
+      DATAEND: ''
+    }
+  },
+  watch: {
+    DATASTART(){
+      this.$emit('dataStart', this.DATASTART)
+    },
+    DATAEND(){
+      this.$emit('dataEnd', this.DATAEND)
     }
   },
   methods: {
@@ -54,6 +64,12 @@ export default {
         this.$emit('selectDegreeId', val)
     //   console.log(this.degreeId)
     },
+    reset(){
+        this.price = '';
+        this.degree = '';
+        this.DATASTART = '';
+        this.DATAEND = '';
+    }
   }
 }
 </script>

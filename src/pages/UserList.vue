@@ -33,7 +33,7 @@
                 自动加载<i-switch v-model="auto" size="large" />
               </div>
               <div class="">
-                <Button  type="default" class="btn-table-bot">加载更多</Button>
+                <Button  type="default" class="btn-table-bot" @click='load'>加载更多</Button>
               </div>
               <div class="search-box">
                 转到第 <Input search v-model='value' @on-blur='positioning' enter-button="GO" /> 条
@@ -160,8 +160,50 @@ import urlPath from '../actions/api.js';
     save(data) {
      this.showPop = false;
      // console.log(data);
-    }
-    , getData(){
+    },
+      load(){
+        this.num = this.num + 2;
+         var user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM':this.num};
+       if (this.sName!=null || this.sName!="") {
+        user={NUM:this.num,NAME:this.sName}
+       }
+         let that=this;
+          $.ajax({ //
+               type:'post',
+               url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+               data:user,
+               success:function(dataRet){
+                 if (dataRet.Y==100) {
+              if (dataRet.D.listUser==null) {
+                  return ;
+              }
+               let ls=[];
+               ls=that.userData;
+             if(ls!=undefined)
+              {
+                if (  dataRet.D.listUser.length>0) {
+                      for( let i = 0; i < dataRet.D.listUser.length; i++ ){
+                          let flag = true;
+                          for( let j = 0; j <  ls.length;j++){
+                          if(ls[j].USERID== dataRet.D.listUser[i].USERID)
+                          {
+                          flag =false;
+                          }
+                      }
+                        if(flag){
+                          that.userData.push(dataRet.D.listUser[i]);
+                        }
+                      }}
+              }
+              else {
+                that.userData=dataRet.D.listUser;
+                }
+                        //  that.num++;
+                document.getElementById("count").innerHTML ="共"+that.userData.length+"条数据";
+              }   }
+             })
+      },
+    getData(){
         var user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM':this.num};
        if (this.sName!=null || this.sName!="") {
         user={NUM:this.num,NAME:this.sName}
@@ -202,7 +244,7 @@ import urlPath from '../actions/api.js';
               }   }
              })
          }
-  }
+  },
 }
 </script>
 

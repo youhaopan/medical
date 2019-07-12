@@ -28,27 +28,27 @@
                 <ul class="pop-list">
                     <li>
                     <label>药品通用名</label>
-                    <Input  v-model="formData.NAME" />
+                    <Input  v-model="formData.NAME" disabled />
                     </li>
                     <li>
                     <label >药品商品名</label>
-                    <Input  v-model="formData.NAME" />
+                    <Input  v-model="formData.NAME" disabled />
                     </li>
                     <li>
                     <label >国药准字</label>
-                    <Input v-model="formData.SPELLCODE" />
+                    <Input v-model="formData.SPELLCODE" disabled />
                     </li>
                     <li>
                     <label >药品厂家</label>
-                    <Input  v-model="formData.MANUFACTURES" />
+                    <Input  v-model="formData.MANUFACTURES" disabled />
                     </li>
                     <li>
                     <label >药品编号</label>
-                    <Input v-model="formData.ID" />
+                    <Input v-model="formData.ID" disabled />
                     </li>
                     <li>
                     <label >药品类型</label>
-                    <Input v-model="formData.TYPENAME" />
+                    <Input v-model="formData.TYPENAME" disabled />
                     </li>
                     <!-- <li>
                     <label>类型</label>
@@ -71,15 +71,15 @@
           <ul class="pop-list">
             <li>
               <label >规格</label>
-              <Input v-model="formData.PACKAGING" />
+              <Input v-model="formData.PACKAGING" disabled />
             </li>
             <li>
               <label >单位</label>
-              <Input v-model="formData.UNITS"/>
+              <Input v-model="formData.UNITS" disabled />
             </li>
              <li>
                 <label >单价</label>
-                <Input v-model="formData.PRICE"/>
+                <Input v-model="formData.PRICE" disabled />
               </li>
             <li>
               <label>最小剂量</label>
@@ -162,7 +162,8 @@
     <Button size="large" class="btn-cancel" @click="$emit('cancel')">放弃</Button>
     <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button>
   </div>
-  <RuleDrugInfoRoom :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" @save="saveNest" />
+  <RuleDrugInfoRoom :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" 
+  @ksSave="saveNest1" @setYyData="setYyData" @setSexData="setSexData" @setAgeData="setAgeData"/>
 </Modal>
 </template>
 
@@ -179,6 +180,7 @@ export default {
   data() {
     return {
         formData: {},
+        rulenature: [],
         ypId: '',
       openEditData: false,
       roleType: 1,
@@ -188,6 +190,11 @@ export default {
         value: '0',
         label: '保密'
       }],
+      roconstypeId: '',
+      yyroconstypeId: '',
+      sexroconstypeId: '',
+      ageroconstypeId: '',
+      // 科室//////////////////////////////
       roomColumns: [{
         title: '来源',
         key: 'number'
@@ -205,6 +212,7 @@ export default {
         slot: 'edit'
       }],
       roomData: [],
+      // 医院等级规则//////////////////////////////
       degreeColumns: [{
         title: '来源',
         key: 'number'
@@ -215,87 +223,99 @@ export default {
         title: '违规等级',
         slot: 'degree'
       }, {
+        title: '费别',
+        key: 'price'
+      },{
         title: '操作',
         slot: 'edit'
       }],
-      degreeData: [{
-        number: '系统',
-        name: 'alice',
-        degree: '2',
-        edit: '编辑'
-      }],
+      degreeData: [],
+      // 性别规则///////////////////////
       sexColumns: [{
         title: '来源',
         key: 'number'
-      }, {
-        title: '诊断1',
-        key: 'con1'
-      }, {
-        title: '诊断2',
-        key: 'con2'
-      }, {
+      },
+    //    {
+    //     title: '诊断1',
+    //     key: 'con1'
+    //   }, {
+    //     title: '诊断2',
+    //     key: 'con2'
+    //   }, 
+      {
         title: '性别规则',
-        key: 'sex'
+        key: 'data'
       }, {
         title: '违规等级',
         slot: 'degree'
       }, {
+        title: '费别',
+        key: 'price'
+      },{
         title: '操作',
         slot: 'edit'
       }],
-      sexData: [{
-        number: '系统',
-        name: 'alice',
-        con1: '',
-        con2: '',
-        sex: '仅限男',
-        degree: '2',
-        edit: '编辑'
-      }],
+      sexData: [],
+      // sexData: [{
+      //   number: '系统',
+      //   name: 'alice',
+      //   con1: '',
+      //   con2: '',
+      //   sex: '仅限男',
+      //   degree: '2',
+      //   edit: '编辑'
+      // }],
+      ////////////// 年龄规则//////////////
       ageColumns: [{
         title: '来源',
         key: 'number'
-      }, {
-        title: '诊断1',
-        key: 'con1'
-      }, {
-        title: '诊断2',
-        key: 'con2'
-      }, {
+      },
+    //    {
+    //     title: '诊断1',
+    //     key: 'con1'
+    //   }, {
+    //     title: '诊断2',
+    //     key: 'con2'
+    //   },
+       {
         title: '年龄规则',
         key: 'age'
       }, {
         title: '违规等级',
         slot: 'degree'
       }, {
+        title: '费别',
+        key: 'price'
+      },{
         title: '操作',
         slot: 'edit'
       }],
-      ageData: [{
-        number: '系统',
-        name: 'alice',
-        con1: '',
-        con2: '',
-        age: '5 - 7 岁',
-        degree: '2',
-        edit: '编辑'
-      }, {
-        number: '系统',
-        name: 'alice',
-        con1: '',
-        con2: '',
-        age: '> 大于15岁',
-        degree: '2',
-        edit: '编辑'
-      }, {
-        number: '系统',
-        name: 'alice',
-        con1: '',
-        con2: '',
-        age: '< 小于3岁',
-        degree: '2',
-        edit: '编辑'
-      }],
+      ageData: []
+    //   ageData: [{
+    //     number: '系统',
+    //     name: 'alice',
+    //     con1: '',
+    //     con2: '',
+    //     age: '5 - 7 岁',
+    //     degree: '2',
+    //     edit: '编辑'
+    //   }, {
+    //     number: '系统',
+    //     name: 'alice',
+    //     con1: '',
+    //     con2: '',
+    //     age: '> 大于15岁',
+    //     degree: '2',
+    //     edit: '编辑'
+    //   }, {
+    //     number: '系统',
+    //     name: 'alice',
+    //     con1: '',
+    //     con2: '',
+    //     age: '< 小于3岁',
+    //     degree: '2',
+    //     edit: '编辑'
+    //   }],
     }
   },
   methods: {
@@ -307,12 +327,30 @@ export default {
     cancelNest() {
         this.openEditData = false
     },
-    saveNest(obj) {
-        this.openEditData = false;
+    // 保存科室信息
+    saveNest1(obj,rocoId) {
         this.roomData.push(obj);
+        console.log(this.roomData)
+    },
+    // 保存医院等级规则
+    setYyData(obj,rocoId){
+        this.degreeData.push(obj)
+        console.log(this.degreeData)
+    },
+    // 保存性别规则
+    setSexData(obj,rocoId){
+        this.sexData.push(obj)
+        console.log(this.sexData)
+    },
+    // 保存年龄规则
+    setAgeData(obj,rocoId){
+        this.ageData.push(obj)
+        console.log(this.ageData)
     },
     parentHandleclick(row){
+      console.log(row)
         this.ypId = row.ID
+        console.log(this.ypId)
         let _this = this;
         let desk = {'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),DRUG: row.ID,};
         $.ajax({ // 查询药品
@@ -321,25 +359,132 @@ export default {
             data: desk,
             success:function(dataRets){
                 _this.formData = dataRets.D.DRUG[0];
+                _this.rulenature = dataRets.D.RULENATURE[3];
+                _this.zhangshi(dataRets.D.RULECATALOG, dataRets.D.NATURECONTENT)
             }
         })
     },
+    zhangshi(ksList, dataList){
+        console.log(ksList, dataList);
+        let ksDataList = []
+        let yyDataList = []
+        let sexDataList = []
+        let ageDataList = []
+        let data = []
+        let name = []
+
+
+        
+            // data = dataList[j].DATA.split(',')
+            // name = dataList[j].NAME.split(',')
+
+        for(let i = 0; i < ksList.length;i++){
+            for(let j = 0; j < dataList.length;j++){
+                // console.log(data, name)
+                if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '科室规则'){
+                    ksDataList.push(dataList[j])
+                } else if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '医院等级规则'){
+                    yyDataList.push(dataList[j])
+                } else if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '性别规则'){
+                    sexDataList.push(dataList[j])
+                }else if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '年龄规则'){
+                    ageDataList.push(dataList[j])
+                }
+            }
+        }
+        
+        for(let i = 0; i < ksDataList.length; i++){
+            ksDataList[i].DATA = ksDataList[i].DATA.split(',')
+            ksDataList[i].NAME = ksDataList[i].NAME.split(',')
+        }
+
+        for(let i = 0; i < ksDataList.length; i++) {
+            let obj = {
+                    number: '系统',
+                    RULE: '',
+                    name: [],
+                    nameId: [],
+                    DESKS: '',  // 科室
+                    apply : '', // 医院等级
+                    sex: '', // 性别
+                    sex: '', // 性别
+                    DATASTART: '', // 开始年龄
+                    DATAEND: '', // 结束年龄
+                    FeiBie: '',
+                    WEIGUI: '',
+                    degree: '',
+                    degreeCode: '',
+                    price: '',
+                    priceCode: '',
+                    edit: '编辑'
+                }
+            for(let j = 0; j < ksDataList[i].NAME.length; j++) {
+                if(ksDataList[i].NAME[j] === "限制的科室" ){
+                    obj.name.push(ksDataList[i].NAME[j])
+                    obj.nameId.push(ksDataList[i].DATA[j])
+                }
+                if(ksDataList[i].NAME[j] === "费别" ){
+                    obj.FeiBie = ksDataList[i].DATA[j]
+                }
+                if(ksDataList[i].NAME[j] === "违规等级" ){
+                    obj.WEIGUI = ksDataList[i].DATA[j]
+                }
+            }
+            obj.name = obj.name.join(',')
+            console.log(obj)
+            this.roomData.push(obj)
+        }
+
+
+        console.log(ksDataList)
+        // console.log(yyDataList)
+        // console.log(sexDataList)
+        // console.log(ageDataList)
+        // ksDataList.forEach(function(item){
+
+        // })
+
+    },
     save(){
         let _this = this;
-        let form = this.roomData[0]
+        let dataArr = [];
+        let idArr = [];
+        this.roomData.forEach(function(item){
+            item.DRUG = _this.ypId;
+            idArr = item.nameId.split(',')
+                dataArr.push(item);
+        })
+        console.log(this.roomData)
+        console.log(this.degreeData)
+        console.log(this.sexData)
+        console.log(this.ageData)
+        this.degreeData.forEach(function(item){
+            item.DRUG = _this.ypId;
+            dataArr.push(item)
+        })
+        this.sexData.forEach(function(item){
+            item.DRUG = _this.ypId;
+            dataArr.push(item)
+        })
+        this.ageData.forEach(function(item){
+            item.DRUG = _this.ypId;
+            dataArr.push(item)
+        })
+        console.log(dataArr)
         let desk = {
             'ID':localStorage.getItem('UID'),
             'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
-            RULE: form.roconstypeId, // 规则编码
-            DRUG: this.ypId, // 药品id
-
+            DRUGRULE: dataArr
         };
         $.ajax({ // 查询药品
             type:'post',
-            url: urlPath.getIndexTable+'/api/DrugRuleDeploy/QueryDrugRule',
+            url: urlPath.getIndexTable+'/api/DrugRuleDeploy/AddDrugRule',
             data: desk,
             success:function(dataRets){
-                _this.formData = dataRets.D.DRUG[0];
+                if(dataRets.Y === 100){
+                    _this.$Message.success(dataRets.M);
+                    _this.$emit('save')
+                }
             }
         })
     }

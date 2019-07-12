@@ -17,12 +17,12 @@
           <p slot="title">
             <Icon type="icon-date"></Icon>正在编辑 - {{roconstypeTitle}}
           </p>
-          <RoleContentRoom :price-list='priceList' :degree-list='degreeList' @selectPriceId='Price = arguments[0]' @selectDegreeId='degree = arguments[0]' @checkedList='checkedList = arguments[0]' v-show="roconstypeData===1" />
-          <RoleContentLevel :price-list='priceList' :degree-list='degreeList' :level-list='levelList' @selectPriceId='yyPrice = arguments[0]' @selectDegreeId='yyDegree = arguments[0]' @selectLevel='yyLevel = arguments[0]' v-show="roconstypeData===2" />
-          <RoleContentSex :price-list='priceList' :degree-list='degreeList' @selectPriceId='sexPrice = arguments[0]' @sexDegreeId='setDegree = arguments[0]' @selectSex='sex = arguments[0]' v-show="roconstypeData===3" />
-          <RoleContentAge :price-list='priceList' :degree-list='degreeList' v-show="roconstypeData===4" />
+          <RoleContentRoom ref="ksChild" :price-list='priceList' :degree-list='degreeList' @selectPriceId='Price = arguments[0]' @selectDegreeId='degree = arguments[0]' @checkedList='checkedList = arguments[0]' v-show="roconstypeData===1" />
+          <RoleContentLevel ref="yyChild" :price-list='priceList' :degree-list='degreeList' :level-list='levelList' @selectPriceId='yyPrice = arguments[0]' @selectDegreeId='yyDegree = arguments[0]' @selectLevel='yyLevel = arguments[0]' v-show="roconstypeData===2" />
+          <RoleContentSex ref="sexChild" :price-list='priceList' :degree-list='degreeList' @selectPriceId='sexPrice = arguments[0]' @selectDegreeId='sexDegree = arguments[0]' @selectSex='sex = arguments[0]' v-show="roconstypeData===3" />
+          <RoleContentAge  ref="ageChild" :price-list='priceList' :degree-list='degreeList' @selectPriceId='agePrice = arguments[0]' @selectDegreeId='ageDegree = arguments[0]' @dataStart='dataStart = arguments[0]' @dataEnd='dataEnd = arguments[0]' v-show="roconstypeData===4" />
           <div class="ivu-modal-footer">
-            <Button size="large" class="btn-cancel" @click="$emit('cancel')">取消</Button>
+            <Button size="large" class="btn-cancel" @click="$emit('cancel')">返回</Button>
             <Button size="large" type="default" class="btn-submit" @click="save">保存编辑</Button>
           </div>
         </Card>
@@ -96,6 +96,18 @@ export default {
           value: ''
       },
       sex : '',
+      // 年龄
+      agePrice: {
+          label: '',
+          value: ''
+      },
+      ageDegree: {
+          label: '',
+          value: ''
+      },
+      dataStart: '',
+      dataEnd: '',
+// //////////////////////////////
       roconstypeData: this.roleType,
       roconstypeTitle: this.roleTitle,
       priceList: [],
@@ -132,45 +144,119 @@ export default {
                 })
                 let roomData = {
                     number: '系统',
-                    roconstypeId: this.roconstypeId,
+                    RULE: this.roconstypeId,
                     name: arrName.join(','),
                     nameId: arrId.join(','),
+                    DESKS: arrId,
+                    attr: ['3', '1', '11'],
+                    FeiBie: this.Price.value,
+                    WEIGUI: this.degree.value,
                     degree: this.degree.label,
                     degreeCode: this.degree.value,
                     price: this.Price.label,
                     priceCode: this.Price.value,
                     edit: '编辑'
                 }
-                for (var key in roomData) { 
-                    if (this.formData[key] !== roomData[key]) { 
-                        console.log(this.formData[key], roomData[key])
-                        this.formData = roomData;
-                        // this.$emit('save', this.formData);
-                        console.log('赋值',this.formData);
-                        return
-                    }
-                    console.log(this.formData[key], roomData[key]);
-                    this.$Message.warning('这是一条普通的提醒');
-                }
+                // console.log(roomData)
+                this.$emit('ksSave', roomData, this.roconstypeId);
+                this.$Message.success('添加成功');
+                this.$refs.ksChild.reset();
+                // for (var key in roomData) { 
+                //     if (this.formData[key] !== roomData[key]) { 
+                //         console.log(this.formData[key], roomData[key])
+                //         this.formData = roomData;
+                //         this.$emit('ksSave', this.formData);
+                //         console.log('赋值',this.formData);
+                //         return
+                //     }
+                //     console.log(this.formData[key], roomData[key]);
+                //     this.$Message.warning('这是一条普通的提醒');
+                // }
             }else{
                 this.$Message.warning('请选择要添加的科室规则');
             }
         }else if(this.roconstypeData ===2){
+            // 医院等级规则的保存
             if(this.yyPrice.value !== '' && this.yyDegree.value !== '' && this.yyLevel.value !== ''){
-
+                let yyData = {
+                    number: '系统',
+                    RULE: this.roconstypeId,
+                    name: this.yyLevel.label,
+                    nameId: this.yyLevel.value,
+                    data: this.yyLevel.value,
+                    attr: ['1', '11', '7'],
+                    apply : this.yyLevel.value,
+                    FeiBie: this.yyPrice.value, 
+                    WEIGUI: this.yyDegree.value,
+                    degree: this.yyDegree.label,
+                    degreeCode: this.yyDegree.value,
+                    price: this.yyPrice.label,
+                    priceCode: this.yyPrice.value,
+                    edit: '编辑'
+                }
+                // console.log(yyData)
+                this.$emit('setYyData', yyData, this.roconstypeId);
+                this.$Message.success('添加成功');
+                this.$refs.yyChild.reset();
             }else{
                 this.$Message.warning('请选择要添加的医院等级规则');
             }
-            // 医院等级规则的保存
         }else if(this.roconstypeData ===3){
             // 性别规则的保存
             if(this.sexPrice.value !== '' && this.sexDegree.value !== '' && this.sex !== ''){
-
+                let sexData = {
+                    number: '系统',
+                    RULE: this.roconstypeId,
+                    // name: this.yyLevel.label,
+                    // nameId: this.yyLevel.value,
+                    data: '仅限' + this.sex,
+                    attr: ['1', '11', '4'],
+                    FeiBie: this.sexPrice.value,
+                    WEIGUI: this.sexDegree.value,
+                    sex: this.sex,
+                    degree: this.sexDegree.label,
+                    degreeCode: this.sexDegree.value,
+                    price: this.sexPrice.label,
+                    priceCode: this.sexPrice.value,
+                    edit: '编辑'
+                }
+                // console.log(sexData)
+                this.$emit('setSexData', sexData, this.roconstypeId);
+                this.$Message.success('添加成功');
+                this.$refs.sexChild.reset();
             }else{
                 this.$Message.warning('请选择要添加的医院等级规则');
             }
         }else if(this.roconstypeData ===4){
             // 年龄规则的保存
+            if(this.agePrice.value !== '' && this.ageDegree.value !== '' && this.dataStart !== '' && this.dataEnd !== ''){
+                let ageData = {
+                    number: '系统',
+                    RULE: this.roconstypeId,
+                    // name: this.yyLevel.label,
+                    // nameId: this.yyLevel.value,
+                    age: this.dataStart + ' - ' + this.dataEnd + ' 岁',
+                    dataStart: this.dataStart,
+                    dataEnd: this.dataEnd,
+                    data: '',
+                    attr: ['1', '11', '5'],
+                    DATASTART: this.dataStart,
+                    DATAEND: this.dataEnd,
+                    FeiBie: this.agePrice.value,
+                    WEIGUI: this.ageDegree.value,
+                    degree: this.ageDegree.label,
+                    degreeCode: this.ageDegree.value,
+                    price: this.agePrice.label,
+                    priceCode: this.agePrice.value,
+                    edit: '编辑'
+                }
+                // console.log(ageData)
+                this.$emit('setAgeData', ageData, this.roconstypeId);
+                this.$Message.success('添加成功');
+                this.$refs.ageChild.reset();
+            }else{
+                this.$Message.warning('请选择要添加的年龄规则');
+            }
         }
     },
     selectdata(data) {
@@ -183,6 +269,7 @@ export default {
         this.roconstypeId = this.tipId;
         this.roconstypeData = this.tipEdit;
         this.roconstypeTitle = this.tipTitle;
+        console.log(this.roconstypeId)
       }
     },
     getPriceList(){
@@ -194,6 +281,7 @@ export default {
             data: DAT,
             success: function(dataRets){
                 _this.priceList = dataRets.D.ListDict;
+                localStorage.setItem('fb', JSON.stringify(_this.priceList));
             }
         });
         let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '医院等级类型'};
@@ -203,6 +291,7 @@ export default {
             data: DATA,
             success: function(dataRets){
                 _this.levelList = dataRets.D.ListDict;
+                localStorage.setItem('yy', JSON.stringify(_this.levelList));
             }
         })
     },
@@ -215,6 +304,7 @@ export default {
             data: desk,
             success: function(dataRets){
                 _this.degreeList = dataRets.D.ListDict;
+                localStorage.setItem('wg', JSON.stringify(_this.degreeList));
             }
         })
     },

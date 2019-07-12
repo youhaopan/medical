@@ -32,9 +32,9 @@ export default {
   },
   data() {
     return {
-      price: 'bj',
-      degree: '0',
-      sexChoose: '北京'
+      price: '',
+      degree: '',
+      sexChoose: ''
     }
   },
   methods:{
@@ -54,6 +54,11 @@ export default {
         console.log(val)
         this.$emit('selectDegreeId', val)
     //   console.log(this.degreeId)
+    },
+    reset(){
+        this.price = '';
+        this.degree = '';
+        this.sexChoose = '';
     },
   }
 }

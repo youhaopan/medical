@@ -26,7 +26,7 @@
                 自动加载<i-switch size="large" />
               </div>
               <div class="">
-                <Button type="default" class="btn-table-bot">加载更多</Button>
+                <Button type="default" class="btn-table-bot" @click='load'>加载更多</Button>
               </div>
               <div class="search-box">
                 转到第 <Input search v-model='value' @on-blur='positioning' enter-button="GO"/> 条
@@ -118,6 +118,45 @@ export default {
   },
     save() { //保存信息
       this.showPop = false;
+    },
+    load(){
+      this.num = this.num + 2;
+      let that=this;
+      let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM:this.num,};
+      $.ajax({
+        type:'post',
+        url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+        data:desk,
+          success:function(dataRet){
+            console.log(dataRet.D.listDesk);
+            if (dataRet.Y==100) {
+              if (dataRet.D.listDesk==null) {
+                  return ;
+              }
+              let ls=[];
+              ls=that.userData;
+            if(ls!=undefined)
+             {
+               if (dataRet.D.listDesk.length>0) {
+                     for( let i = 0; i < dataRet.D.listDesk.length; i++ ){  //循环json数组对象的内容
+                       let flag = true;  //建立标记，判断数据是否重复，true为不重复
+                       for( let j = 0; j <  ls.length  ;j++){  //循环新数组的内容
+                         if(ls[j].DESKID== dataRet.D.listDesk[i].DESKID){ //让json数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                           flag = false;
+                         }
+                       }
+                       if(flag){ //判断是否重复
+                         that.userData.push(dataRet.D.listDesk[i]); //不重复的放入新数组。  新数组的内容会继续进行上边的循环。
+                       }
+                     }}
+             }
+             else {
+               that.userData=dataRet.D.listDesk;
+              }
+              // that.num++;
+        document.getElementById("count").innerHTML ="共"+ that.userData.length+"条数据";
+            }  }
+          })
     },
     getData(){
       let that=this;

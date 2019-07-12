@@ -4,11 +4,11 @@
       <i-switch size="large" slot="extra" v-model="switch1" @on-change="change" />
       <div v-show="switch1" class="index-chart-box">
         <div class="">
-          <v-chart :options="pie" :autoresize="true"/>
+          <v-chart :options="setpie" :autoresize="true"/>
         </div>
         <div class="">
           <div class="">
-            <v-chart :options="line" :autoresize="true"/>
+            <v-chart :options="setline" :autoresize="true"/>
           </div>
         </div>
         <div class="">
@@ -21,7 +21,7 @@
                     <DropdownItem v-for="(item,index) in roomProblemList" :key="index">{{item.label}}</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
-            <v-chart :options="bar" :autoresize="true"/>
+            <v-chart :options="setbar" :autoresize="true"/>
           </div>
         </div>
       </div>
@@ -44,64 +44,120 @@ export default {
   data() {
     return {
       switch1: true,
-      pie,
-      line,
+      setpie: pie(),
+      setbar: bar(),
+      setline: line(),
       bar,
       roomProblemList: [{
         label: '科室'
       }]
     }
-  },  created() {
+  },  
+    created() {
       //进入页面以后获取table数据
       // this.fetchData('0')
-       this.getData(); //加载页面 数据
-      this.getData2(); //加载页面 数据
+        // this.getData(); //加载页面 数据
+        // this.getData2(); //加载页面 数据
+        this.getDataArr();
      },
-  methods: {
-    change(status) {
-      this.switch1 = status
-    }, getData(){
-
-
-            let that=this;
-              $.ajax({ //加载
-                  type:'post',
-                  url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditB',
-                  data:{},
-                  success:function(dataRet){
-
-                    //console.log(dataRet.D.data);
+    methods: {
+        change(status) {
+        this.switch1 = status
+    },
+    getDataArr(){
+        let _this = this;
+        let desk={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            // 'desks': null,
+            'StartTime': null,
+            'EndTime': null,
+            'State': null,
+        };
+        $.ajax({ //加载
+                type:'post',
+                url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditChart',
+                data: desk,
+                success:function(dataRet){
                     if (dataRet.Y==100) {
-                       that.pie.series[0].data=dataRet.D.data;
-                     }
+                        // _this.pie.series[0].data=dataRet.D.data;
+                        _this.setbar = bar(dataRet.D.AUDITBILL3);
+                        _this.setpie = pie(dataRet.D.AUDITBILL1);
+                        _this.setline = line(dataRet.D.AUDITBILL2);
+                        }
                     else {
-                      that.$Message.error('获取数据失败！');
+                        _this.$Message.error('获取数据失败！');
                     }
-                    //  that.userData.push(dataRet.D.listUser);
-                   // console.log(dataRet.D.listUser.length)
-                  }
-                })
-        },
-        getData2(){
-          let that=this;
-           $.ajax({ //加载
-                 type:'post',
-                url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditLine',
+                }
+            })
+    },
+    Charts(ks, date, stateChoose){
+        console.log(ks, date, stateChoose)
+        let _this = this;
+        let desk={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            'desks': ks,
+            'StartTime': date[0],
+            'EndTime': date[1],
+            'State': stateChoose,
+        };
+        $.ajax({ //加载
+                type:'post',
+                url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditChart',
+                data: desk,
+                success:function(dataRet){
+                    if (dataRet.Y==100) {
+                        // _this.pie.series[0].data=dataRet.D.data;
+                        _this.setpie = pie(dataRet.D.AUDITBILL1);
+                        _this.setline = line(dataRet.D.AUDITBILL2);
+                        _this.setbar = bar(dataRet.D.AUDITBILL3);
+                        }
+                    else {
+                        _this.$Message.error('获取数据失败！');
+                    }
+                }
+            })
+    },
+    getData(){
+        let that=this;
+            $.ajax({ //加载
+                type:'post',
+                url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditB',
                 data:{},
                 success:function(dataRet){
-                  if (dataRet.Y==100) {
-                  //  console.log(dataRet.D.ser);
-                    that.line.series=dataRet.D.ser;
-                   }
-                  else {
-                    that.$Message.error('获取数据失败！')
-                  }
-                  //  that.userData.push(dataRet.D.listUser);
-                 // console.log(dataRet.D.listUser.length)
+                //console.log(dataRet.D.data);
+                if (dataRet.Y==100) {
+                    that.pie.series[0].data=dataRet.D.data;
+                    }
+                else {
+                    that.$Message.error('获取数据失败！');
                 }
-              })
+                //  that.userData.push(dataRet.D.listUser);
+                // console.log(dataRet.D.listUser.length)
+                }
+            })
+        },
+    getData2(){
+        let that=this;
+        $.ajax({ //加载
+                type:'post',
+            url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditLine',
+            data:{},
+            success:function(dataRet){
+                if (dataRet.Y==100) {
+                //  console.log(dataRet.D.ser);
+                that.line.series=dataRet.D.ser;
+                }
+                else {
+                that.$Message.error('获取数据失败！')
+                }
+                //  that.userData.push(dataRet.D.listUser);
+                // console.log(dataRet.D.listUser.length)
+            }
+            })
 
-        }
+    }
   }
 }
 </script>

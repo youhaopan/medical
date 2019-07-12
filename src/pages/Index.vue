@@ -9,14 +9,14 @@
       </Header>
       <Content>
         <div class="box">
-          <IndexCharts />
+          <IndexCharts ref="myCharts" />
         </div>
         <div class="box">
           <Card :bordered="false">
               <p slot="title">就诊信息<span id="count">共400条记录，筛选条件：全部</span></p>
               <p slot="extra" class="index-box-head">
                 <Input prefix="ios-search"  v-model="yname" @on-blur="seldata"  placeholder="查询医生名..." />
-                <FilterPop />
+                <FilterPop @dataForm='dataForm' />
                 <Icon class="a-icon-loading"  @click="change" type="icon-loading" />
               </p>
               <div class="">
@@ -29,7 +29,7 @@
                     <strong v-else>{{ index+1 }} <Icon type="icon-ok" /></strong>
                   </template>
                   <template slot-scope="{ row }" slot="edit">
-                      <span class="click-view" @click="showInfo(row.number)">详情<Icon type="icon-info"/></span>
+                      <span class="click-view" @click="showInfo(row.ID)">详情<Icon type="icon-info"/></span>
                   </template>
                 </Table>
                 </Scroll>
@@ -39,7 +39,7 @@
                   自动加载<i-switch size="large" />
                 </div>
                 <div class="">
-                  <Button type="default" class="btn-table-bot">加载更多</Button>
+                  <Button type="default" class="btn-table-bot" @click='load'>加载更多</Button>
                 </div>
                 <div class="search-box">
                   转到第 <Input search enter-button="GO" /> 条
@@ -48,7 +48,7 @@
           </Card>
         </div>
         <BackTop></BackTop>
-        <IndexInfo v-show="infoShow" />
+        <IndexInfo ref='indexInfo' v-show="infoShow" />
       </Content>
     </Layout>
   </Layout>
@@ -99,6 +99,10 @@ export default {
     this.getData(); //加载页面 数据
    },
   methods: {
+    dataForm(ks, date, stateChoose){
+      // console.log(ks, date, stateChoose);
+      this.$refs.myCharts.Charts(ks, date, stateChoose);
+    },
     handleReachBottom () {
            return new Promise(resolve => {
                   setTimeout(() => {
@@ -109,26 +113,26 @@ export default {
               },
     change(){
         this.getData();  //重新加载数据
-  },seldata(){
-    var auditBills={'ID': localStorage.getItem('UID'),'RANDOMCODE': localStorage.getItem('RANDOMCODE'),'DOCTORNAME':this.yname};
-      let that=this;
-       $.ajax({ //
-             type:'post',
-            url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBill',
-            data:auditBills,
-            success:function(dataRet){
-              if (dataRet.Y==100) {
-                that.indexData=dataRet.D.AUDITBILL;
-                document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
-              }
-              else {
-                that.$Message.error('获取数据失败！')
-              }
-              // console.log(dataRet.D.listUser.length)
+    },
+    seldata(){
+        let auditBills={'ID': localStorage.getItem('UID'),'RANDOMCODE': localStorage.getItem('RANDOMCODE'),'DOCTORNAME':this.yname};
+        let that=this;
+        $.ajax({ //
+            type:'post',
+            url: urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBill',
+            data: auditBills,
+            success: function(dataRet) {
+                if (dataRet.Y==100) {
+                    that.indexData=dataRet.D.AUDITBILL;
+                    document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                }
+                else {
+                    that.$Message.error('获取数据失败！')
+                }
+            // console.log(dataRet.D.listUser.length)
             }
-          })
-
-  },
+        })
+    },
     rowClassName(rows) {
       if (rows.degree === '2') {
         return 'table-warning';
@@ -136,47 +140,89 @@ export default {
       return '';
     },
     showInfo(id) {
-      this.$store.commit('showIndexInfo', {
-        'id': id
-      })
+        this.$refs.indexInfo.getData(id);
+        this.$store.commit('showIndexInfo')
     },
     getData(){
-      var auditBills={'ID': localStorage.getItem('UID'),'RANDOMCODE': localStorage.getItem('RANDOMCODE'), NUM:this.num};
-        let that=this;
+        let auditBills={
+            'ID': localStorage.getItem('UID'),
+            'RANDOMCODE': localStorage.getItem('RANDOMCODE'), 
+            'NUM':this.num
+        };
+        let that = this;
          $.ajax({ //
-               type:'post',
-              url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBill',
-              data:auditBills,
-              success:function(dataRet){
+            type:'post',
+            url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBill',
+            data:auditBills,
+            success:function(dataRet) {
                 if (dataRet.Y==100) {
-                         let ls=[];
-                          ls=that.indexData;
-                      if(ls!=undefined)
-                      {
-                    if (dataRet.D.AUDITBILL.length>0) {
-                          for( let i = 0; i < dataRet.D.AUDITBILL.length; i++ ){  //循环json数组对象的内容
-                           let flag = true;  //建立标记，判断数据是否重复，true为不重复
-                           for( let j = 0; j <  ls.length  ;j++){  //循环新数组的内容
-                             if(ls[j].ID== dataRet.D.AUDITBILL[i].ID){ //让json数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
-                               flag = false;
-                             }
-                           }
-                           if(flag){ //判断是否重复
-                             that.indexData.push(dataRet.D.AUDITBILL[i]); //不重复的放入新数组。  新数组的内容会继续进行上边的循环。
-                           }
-                          }}
-                       }else {
-                         that.indexData=dataRet.D.AUDITBILL;
-                       }
-                           that.num++;
-                  document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                    let ls=[];
+                    ls=that.indexData;
+                    if(ls!=undefined){
+                        if (dataRet.D.AUDITBILL.length>0) {
+                            for( let i = 0; i < dataRet.D.AUDITBILL.length; i++ ){  //循环json数组对象的内容
+                                let flag = true;  //建立标记，判断数据是否重复，true为不重复
+                                for( let j = 0; j <  ls.length  ;j++){  //循环新数组的内容
+                                    if(ls[j].ID== dataRet.D.AUDITBILL[i].ID){ //让json数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                                        flag = false;
+                                    }
+                                }
+                                if(flag){ //判断是否重复
+                                    that.indexData.push(dataRet.D.AUDITBILL[i]); //不重复的放入新数组。  新数组的内容会继续进行上边的循环。
+                                }
+                            }
+                        }
+                    } else {
+                        that.indexData=dataRet.D.AUDITBILL;
+                    }
+                    that.num++;
+                    document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                } else {
+                    that.$Message.error('获取数据失败！')
                 }
-                else {
-                  that.$Message.error('获取数据失败！')
+            }
+        })
+    },
+    load(){
+        this.num = this.num + 2;
+        let auditBills={
+            'ID': localStorage.getItem('UID'),
+            'RANDOMCODE': localStorage.getItem('RANDOMCODE'), 
+            'NUM':this.num
+        };
+        let that = this;
+         $.ajax({ //
+            type:'post',
+            url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBill',
+            data:auditBills,
+            success:function(dataRet) {
+                if (dataRet.Y==100) {
+                    let ls=[];
+                    ls=that.indexData;
+                    if(ls!=undefined){
+                        if (dataRet.D.AUDITBILL.length>0) {
+                            for( let i = 0; i < dataRet.D.AUDITBILL.length; i++ ){  //循环json数组对象的内容
+                                let flag = true;  //建立标记，判断数据是否重复，true为不重复
+                                for( let j = 0; j <  ls.length  ;j++){  //循环新数组的内容
+                                    if(ls[j].ID== dataRet.D.AUDITBILL[i].ID){ //让json数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                                        flag = false;
+                                    }
+                                }
+                                if(flag){ //判断是否重复
+                                    that.indexData.push(dataRet.D.AUDITBILL[i]); //不重复的放入新数组。  新数组的内容会继续进行上边的循环。
+                                }
+                            }
+                        }
+                    } else {
+                        that.indexData=dataRet.D.AUDITBILL;
+                    }
+                    // that.num++;
+                    document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                } else {
+                    that.$Message.error('获取数据失败！')
                 }
-               }
-            })
-
+            }
+        })
     },
     goPage() {
       this.$router.push('page/user')

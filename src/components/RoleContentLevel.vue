@@ -58,6 +58,11 @@ export default {
       console.log(val)
         this.$emit('selectLevel', val)
     },
+    reset(){
+        this.price = '';
+        this.degree = '';
+        this.level = '';
+    },
     cancel() {
 
     },

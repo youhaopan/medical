@@ -14,8 +14,8 @@
                 <template slot-scope="{ row, index }" slot="ID">
                   <strong  >{{ index+1 }} </strong>
                 </template>
-                <template slot="edit">
-                    <span @click="openPop('edit')">编辑<Icon custom="icon-edit"/></span>
+                <template slot="edit" slot-scope="{ row, index }">
+                    <span @click="openPop('edit', row)">编辑<Icon custom="icon-edit"/></span>
                 </template>
               </Table>
            </Scroll>
@@ -25,7 +25,7 @@
                 自动加载<i-switch size="large" />
               </div>
               <div class="">
-                <Button type="default" class="btn-table-bot">加载更多</Button>
+                <Button type="default" class="btn-table-bot" @click='load'>加载更多</Button>
               </div>
               <div class="search-box">
                 转到第 <Input search enter-button="GO" /> 条
@@ -114,6 +114,42 @@ export default {
                 })
           }
   },
+  load(){
+    this.num = this.num + 2;
+          let  drug={'NAME':this.pname};
+            let that=this;
+            $.ajax({ // 加载角色信息
+              type:'post',
+              url:urlPath.getIndexTable+'/api/DrugManager/QueryDrug',
+              data:{'ID':localStorage.getItem("UID"),'RANDOMCODE':localStorage.getItem("RANDOMCODE"),"drug":drug, NUM:this.num},
+              success:function(dataRet){
+                if (dataRet.Y==100) {
+                  let ls=[];
+                  ls=that.userData;
+                if(ls!=undefined)
+                 {
+                   if (  dataRet.D.DRUG.length>0) {
+                         for( let i = 0; i < dataRet.D.DRUG.length; i++ ){  //循环json数组对象的内容
+                           let flag = true;  //建立标记，判断数据是否重复，true为不重复
+                           for( let j = 0; j <  ls.length  ;j++){  //循环新数组的内容
+                             if(ls[j].USERID== dataRet.D.DRUG[i].USERID){ //让json数组对象的内容与新数组的内容作比较，相同的话，改变标记为false
+                               flag = false;
+                             }
+                           }
+                           if(flag){ //判断是否重复
+                             that.userData.push(dataRet.D.DRUG[i]); //不重复的放入新数组。  新数组的内容会继续进行上边的循环。
+                           }
+                         }}
+                 }
+                 else {
+                   that.userData=dataRet.D.DRUG;
+                  }
+                  document.getElementById("count").innerHTML = "共"+that.userData.length+"条记录";
+                    }
+                }
+                })
+          
+  },
     getData(){
       let that=this;
       $.ajax({ // 加载角色信息
@@ -128,16 +164,21 @@ export default {
                }
             })
     },
-    openPop(type) {
+    openPop(type, row) {
         if(type === 'add'){
             console.log(this.currentRow)
             if(Object.keys(this.currentRow) == 0){
                 // this.$Message.warning('请选择药品');
                 return
             }
+        } else{
+          this.currentRow = row
         }
-        this.showPop = true
-        this.$refs.mychild.parentHandleclick(this.currentRow);
+
+          this.showPop = true
+          console.log(this.currentRow)
+          this.$refs.mychild.parentHandleclick(this.currentRow);
+        
     },
     cancel() {
       this.showPop = false

@@ -235,6 +235,23 @@ export default {
     })
   },
   methods: {
+    getData(id){
+      console.log(id)
+      let data = {
+            'ID': localStorage.getItem('UID'),
+            'RANDOMCODE': localStorage.getItem('RANDOMCODE'), 
+            'auditBills ':id
+        };
+        let _this = this;
+        $.ajax({ //
+            type:'post',
+            url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditBillDetails',
+            data: data,
+            success:function(dataRet) {
+                console.log(dataRet)
+            }
+        })
+    },
     ok() {
       // this.$Message.info('Clicked ok');
       this.$store.commit('closeIndexInfo')

@@ -99,7 +99,7 @@ export default {
      let that=this;
              $.ajax({
               type:'post',
-              url:'http://localhost:59746/api/UserManager/UpdateSystemUserPwd',
+              url:urlPath.getIndexTable+'/api/UserManager/UpdateSystemUserPwd',
               data:user,
               success:function(reult){
                 if (reult.M=="您的该项操作已经成功执行") {
