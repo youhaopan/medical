@@ -2,7 +2,7 @@
     <ul>
       <li>
         <label>性别选择</label>
-        <RadioGroup type="button" v-model="sexChoose" @on-change="selectSex" class="state-choose">
+        <RadioGroup type="button" v-model="form.sex" @on-change="selectSex" class="state-choose">
           <!-- class="error" -->
         <Radio label="男" value="男"/>
         <Radio label="女" value="女" />
@@ -10,13 +10,13 @@
       </li>
       <li>
         <label>费别</label>
-        <Select v-model="price" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
+        <Select v-model="form.FeiBie" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
           <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>违规等级</label>
-        <Select v-model="degree" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
+        <Select v-model="form.WEIGUI" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
           <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
@@ -34,10 +34,20 @@ export default {
     return {
       price: '',
       degree: '',
-      sexChoose: ''
+      sexChoose: '',
+      form: {
+        FeiBie: '',
+        WEIGUI: '',
+        apply:'',
+      }
     }
   },
   methods:{
+    edit(){
+         this.form = JSON.parse(localStorage.getItem('row'));
+        //  this.$set(this.form, 'price' , form.FeiBie)
+         console.log(this.form)
+      },
       // 选择性别
     selectSex(val){
         console.log(val)
@@ -56,9 +66,9 @@ export default {
     //   console.log(this.degreeId)
     },
     reset(){
-        this.price = '';
-        this.degree = '';
-        this.sexChoose = '';
+        this.form.FeiBie = '';
+        this.form.WEIGUI = '';
+        this.form.sex = '';
     },
   }
 }

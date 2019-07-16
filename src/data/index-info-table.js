@@ -1,16 +1,16 @@
 const infoTableColumns = [{
   title: '序号',
-  key: 'no',
+  slot: 'number',
   width: 60
 },{
   title: '药品诊疗名称',
-  key: 'name'
+  key: 'PNAME'
 },{
   title: '规格',
-  key:'specify'
+  key:'DSPEC'
 },{
   title: '违规状态',
-  slot:'state'
+  key:'CLASS'
 }]
 const infoTableData = [{
   no:1,

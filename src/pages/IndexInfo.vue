@@ -11,9 +11,9 @@
         <div class="">
           <Table :columns="indexColumns" :data="indexData">
             <template slot-scope="{ row, index }" slot="number">
-              <strong v-if="row.degree==='1'">{{ index }} <Icon type="icon-warning" /></strong>
-              <strong v-else-if="row.degree==='2'">{{ index }} <Icon type="icon-error" /></strong>
-              <strong v-else>{{ index }} <Icon type="icon-ok" /></strong>
+              <!-- <strong v-if="row.degree==='1'">{{ index }} <Icon type="icon-warning" /></strong> -->
+              <!-- <strong v-else-if="row.degree==='2'">{{ index }} <Icon type="icon-error" /></strong> -->
+              <strong>{{ index + 1 }} <Icon type="icon-ok" /></strong>
             </template>
             <template slot-scope="{ row }" slot="degree">
               <span v-if="row.degree==='1'">警告</span>
@@ -35,37 +35,37 @@
                 <i-col span="15">
                   <div class="info-line">
                     <span>就诊卡号</span>
-                    <em>10000023294032859364</em>
+                    <em>{{information.CARD}}</em>
                   </div>
                   <Row class="">
                     <i-col span="12">
                       <div class="info-line">
                         <span>姓名</span>
-                        <em>名字</em>
+                        <em>{{information.PNAME}}</em>
                       </div>
                       <div class="info-line">
                         <span>性别</span>
-                        <em>男</em>
+                        <em>{{information.PSEC}}</em>
                       </div>
                       <div class="info-line">
                         <span>年龄</span>
-                        <em>30</em>
+                        <em>{{information.PAGE}}</em>
                       </div>
                     </i-col>
                     <i-col span="12">
                       <div class="info-line">
                         <span>身高</span>
-                        <em>180cm</em>
+                        <em>{{information.HEIGHT + 'cm'}}</em>
                       </div>
                       <div class="info-line">
                         <span>体重</span>
-                        <em>180cm</em>
+                        <em>{{information.WEIGHT + 'kg'}}</em>
                       </div>
                     </i-col>
                   </Row>
                   <div class="info-line">
                     <span>身份证号</span>
-                    <em>10000023294032859364</em>
+                    <em>{{information.PAID}}</em>
                   </div>
                 </i-col>
               </Row>
@@ -87,21 +87,21 @@
                       <i-col span="12">
                         <div class="info-line">
                           <span>姓名</span>
-                          <em>名字</em>
+                          <em>{{information.UNAME}}</em>
                         </div>
                         <div class="info-line">
                           <span>性别</span>
-                          <em>男</em>
+                          <em>{{information.USEX}}</em>
                         </div>
                         <div class="info-line">
                           <span>年龄</span>
-                          <em>30</em>
+                          <em>{{information.UAGE}}</em>
                         </div>
                       </i-col>
                       <i-col span="12">
                         <div class="info-line">
                           <span>所在科室</span>
-                          <em>内科</em>
+                          <em>{{information.DNAME}}</em>
                         </div>
                       </i-col>
                     </Row>
@@ -109,13 +109,13 @@
                       <i-col span="12">
                         <div class="info-line">
                           <span>个人电话</span>
-                          <em>18513364xx9</em>
+                          <em>{{information.UPHONE}}</em>
                         </div>
                       </i-col>
                       <i-col span="12">
                         <div class="info-line">
                           <span>科室电话</span>
-                          <em>021-22334xx5</em>
+                          <em>{{information.DPHONE}}</em>
                         </div>
                       </i-col>
                     </Row>
@@ -127,20 +127,26 @@
       </Card>
       <Card :bordered="false">
         <p slot="title">
-          处方信息<span>共2条记录</span>
+          处方信息<span>{{ '共' + indexData2.length + '条记录'}}</span>
         </p>
         <Table :columns="indexColumns2" :data="indexData2">
+            <template slot-scope="{ row, index }" slot="number">
+                <strong>{{ index + 1 }}</strong>
+            </template>
         </Table>
       </Card>
       <Card :bordered="false">
         <p slot="title">
-          处方显示信息<span>共8条记录</span>
+          处方显示信息<span>{{'共' + infoTableData.length +'条记录'}}</span>
         </p>
         <Table class="nesting-table" :columns="infoTableColumns" :data="infoTableData">
-          <template slot-scope="{ row }" slot="state">
-            <span v-if="row.state==='1'">严重</span>
-            <span v-else>一般</span>
-          </template>
+            <template slot-scope="{ row, index }" slot="number">
+                <strong>{{ index + 1 }}</strong>
+            </template>
+            <!-- <template slot-scope="{ row }" slot="state">
+                <span v-if="row.state==='1'">严重</span>
+                <span v-else>一般</span>
+            </template> -->
         </Table>
       </Card>
       <Card :bordered="false">
@@ -176,13 +182,13 @@ import {
 } from 'vuex';
 import {
   indexColumns,
-  indexData,
+  // indexData,
   indexColumns2,
   indexData2,
 } from '../data/indexInfo-table';
 import {
   infoTableColumns,
-  infoTableData
+//   infoTableData
 } from '../data/index-info-table';
 import IndexInfoTable from '../components/IndexInfoTable';
 import urlPath from '../actions/api.js'; 
@@ -191,7 +197,8 @@ export default {
   data() {
     return {
       indexColumns,
-      indexData,
+      indexData: [],
+      information: {},
       indexColumns2,
       indexData2,
       infoTableColumns: [{
@@ -205,28 +212,29 @@ export default {
           })
         }
       }, ...infoTableColumns],
-      infoTableData,
+      infoTableData :[],
       chooseModel: '',
       textModel: '',
       modelList: [{
         value: '模版1',
         label: '模版1'
       }],
-      modelTextList: [{
-        name: '张晓静',
-        type: '审核员',
-        date: '2019-04-27 18:57:29',
-        content: '医生认为该病人处于急诊状态，需要立刻注射xxx药物，以确保及时抢救。'
-      }, {
-        name: '张晓静',
-        type: '审核员',
-        date: '2019-04-27 15:57:29',
-        content: '医生反馈由于病人皮肤疾病导致无法注射，故只能口服xxx药物。'
-      }, {
-        name: '系统创建',
-        date: '2019-04-27 12:57:29',
-        content: '自动生成工单。'
-      }]
+    //   modelTextList: [{
+    //     name: '张晓静',
+    //     type: '审核员',
+    //     date: '2019-04-27 18:57:29',
+    //     content: '医生认为该病人处于急诊状态，需要立刻注射xxx药物，以确保及时抢救。'
+    //   }, {
+    //     name: '张晓静',
+    //     type: '审核员',
+    //     date: '2019-04-27 15:57:29',
+    //     content: '医生反馈由于病人皮肤疾病导致无法注射，故只能口服xxx药物。'
+    //   }, {
+    //     name: '系统创建',
+    //     date: '2019-04-27 12:57:29',
+    //     content: '自动生成工单。'
+    //   }]
+    modelTextList:[]
     }
   },
   computed: {
@@ -236,11 +244,11 @@ export default {
   },
   methods: {
     getData(id){
-      console.log(id)
+    //   console.log(id)
       let data = {
             'ID': localStorage.getItem('UID'),
             'RANDOMCODE': localStorage.getItem('RANDOMCODE'), 
-            'auditBills ':id
+            'auditBillId': id
         };
         let _this = this;
         $.ajax({ //
@@ -249,8 +257,35 @@ export default {
             data: data,
             success:function(dataRet) {
                 console.log(dataRet)
+                _this.indexData = dataRet.D.AUDITBILL // 1
+                _this.information = dataRet.D.patientAndDoctors[0] // 患者医生信息
+                _this.indexData2 = dataRet.D.recipes // 处方信息
+                _this.infoTableData = dataRet.D.drugsDetails // 处方显示信息
+                _this.getList();
             }
         })
+    },
+    getList(){
+        let arr = []
+        let list = []
+        list = this.indexData[0].DEALMANAGERCONTENT.split('/')
+        // console.log(list)
+        for(let i = 0; i < list.length; i=i+2){
+            // console.log(i)
+            let obj = {
+                name: '张晓静',
+                type: '审核员',
+                date: list[i + 1],
+                content: list[i]
+            }
+            arr.push(obj)
+        }
+        for(let i = 0; i < this.infoTableData.length; i++){
+            this.infoTableData[i].info = this.infoTableData[i].DDCONENT;
+            this.infoTableData[i]._expanded = true;
+        }
+        this.modelTextList = arr;
+        // console.log(this.infoTableData)
     },
     ok() {
       // this.$Message.info('Clicked ok');

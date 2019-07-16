@@ -3,24 +3,24 @@
       <li>
         <label>适用年龄段</label>
         <div class="inline-line">
-          <i-input v-model="DATASTART" type="number" :number="true" style="width: 90px">
+          <i-input v-model="form.DATASTART" type="number" :number="true" style="width: 90px">
             <span slot="append">岁</span>
           </i-input>
           <span>&nbsp;&nbsp; 到 &nbsp;&nbsp;</span>
-          <i-input v-model='DATAEND' type="number" :number="true" style="width: 90px">
+          <i-input v-model='form.DATAEND' type="number" :number="true" style="width: 90px">
             <span slot="append">岁</span>
           </i-input>
         </div>
       </li>
       <li>
         <label>费别</label>
-        <Select v-model="price" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
+        <Select v-model="form.FeiBie" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
           <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>违规等级</label>
-        <Select v-model="degree" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
+        <Select v-model="form.WEIGUI" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
           <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
@@ -40,7 +40,13 @@ export default {
       degree: '',
       age: '',
       DATASTART: '',
-      DATAEND: ''
+      DATAEND: '',
+      form: {
+        FeiBie: '',
+        WEIGUI: '',
+        DATASTART:'',
+        DATAEND:'',
+      }
     }
   },
   watch: {
@@ -52,6 +58,11 @@ export default {
     }
   },
   methods: {
+    edit(){
+         this.form = JSON.parse(localStorage.getItem('row'));
+        //  this.$set(this.form, 'price' , form.FeiBie)
+         console.log(this.form)
+      },
     // 选择费别
     selectPriceId(val){
         console.log(val)
@@ -65,10 +76,10 @@ export default {
     //   console.log(this.degreeId)
     },
     reset(){
-        this.price = '';
-        this.degree = '';
-        this.DATASTART = '';
-        this.DATAEND = '';
+         this.form.FeiBie = '';
+        this.form.WEIGUI = '';
+        this.form.DATASTART = '';
+        this.form.DATAEND = '';
     }
   }
 }

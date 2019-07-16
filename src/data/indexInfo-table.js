@@ -4,37 +4,37 @@ const indexColumns = [
         slot: 'number'
     }, {
         title: '科室',
-        key: 'department'
+        key: 'CUREDESKNAME'
     }, {
         title: '医生',
-        key: 'doctor'
+        key: 'DOCTORNAME'
     }, {
         title: '患者',
-        key: 'patient'
+        key: 'PATIENTNAME'
     }, {
         title: '处方/单据号',
-        key: 'docNo'
+        key: 'TYPENAME'
     }, {
         title: '类型',
         key: 'drugType'
     }, {
         title: '急慢性病',
-        key: 'chronic'
+        key: 'BILLSTYPENAME'
     }, {
         title: '就诊日期',
-        key: 'date',
+        key: 'CREATEDATE',
         sortable: true,
         width:170
     }, {
         title: '就诊科室',
-        key: 'room'
+        key: 'CUREDESKNAME'
     }, {
         title: '等级',
         slot: 'degree',
         sortable: true
     }, {
         title: '处理进度',
-        key: 'progerss'
+        key: 'DEALDOCTOR'
     }
 ]
 const indexData = [
@@ -55,29 +55,31 @@ const indexData = [
 const indexColumns2 = [
     {
         title: '序号',
-        key: 'number'
+        // key: 'number'
+        slot: 'number',
+        width: '60px'
     }, {
         title: '患者ID',
-        key: 'patientId'
+        key: 'PATIENT'
     }, {
         title: '处方号',
-        key: 'docNo'
+        key: 'CODE'
     }, {
         title: '诊断',
-        key: 'diagnosis'
+        key: 'TYPENAME'
     }, {
         title: '就诊科室',
-        key: 'room'
+        key: 'CUREDESKNAME'
     }, {
         title: '执行科室',
-        key: 'realRoom'
+        key: 'DESKNAME'
     }, {
         title: '医生',
-        key: 'doctor'
+        key: 'DOCTORNAME',
     }, {
         title: '就诊日期',
-        key: 'date',
-        width:170
+        key: 'CREATEDATE',
+        width:200
     }
 ]
 const indexData2 = [

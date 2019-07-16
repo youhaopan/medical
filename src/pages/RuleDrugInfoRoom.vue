@@ -113,25 +113,63 @@ export default {
       priceList: [],
       levelList: [],
       degreeList: [],
-      roomList: [{
-        name: '张晓静',
-        degree: "审核员",
-        time: '2019-04-27 18:57:29',
-        info: '适用性别，系统，-，-，仅限男，严重。'
-      }, {
-        name: '张晓静',
-        degree: "审核员",
-        time: '2019-04-27 18:57:29',
-        info: '医院等级规则，系统，适用于三级甲等以上，严重。'
-      }, {
-        name: '张晓静',
-        degree: "审核员",
-        time: '2019-04-27 18:57:29',
-        info: '适用性别，系统，-，-，仅限男，严重。'
-      }]
+    //   roomList: [{
+    //     name: '张晓静',
+    //     degree: "审核员",
+    //     time: '2019-04-27 18:57:29',
+    //     info: '适用性别，系统，-，-，仅限男，严重。'
+    //   }, {
+    //     name: '张晓静',
+    //     degree: "审核员",
+    //     time: '2019-04-27 18:57:29',
+    //     info: '医院等级规则，系统，适用于三级甲等以上，严重。'
+    //   }, {
+    //     name: '张晓静',
+    //     degree: "审核员",
+    //     time: '2019-04-27 18:57:29',
+    //     info: '适用性别，系统，-，-，仅限男，严重。'
+    //   }]
+    roomList: []
     }
   },
   methods: {
+      edit(type){
+          console.log(type)
+          if(type === 1){
+            this.$refs.ksChild.edit();
+          } 
+          if(type === 2){
+            this.$refs.yyChild.edit();
+          } 
+          if(type === 3){
+            this.$refs.sexChild.edit();
+          } 
+          if(type === 4){
+            this.$refs.ageChild.edit();
+          } 
+      },
+      getRoomList(ks,yy,sex,age){
+          let arr = []
+          ks.forEach(function(item){
+              item.info = '适用' + item.name + '，' + item.number + '，' + item.degree + '。'    
+              arr.push(item)
+          })
+          yy.forEach(function(item){
+              item.info = '医院等级规则' +  '，' + item.number + '，' + '适用于'+ item.applyName + '以上，' + item.degree + '。'
+              arr.push(item)
+          })
+          sex.forEach(function(item){
+               //     info: '适用性别，系统，-，-，仅限男，严重。'
+              item.info = '适用性别，' + item.number + '，' + '仅限'+ item.sex + '，' + item.degree + '。'
+              arr.push(item)
+          })
+          age.forEach(function(item){
+              item.info = '适用年龄，' + item.number + '，' + item.DATASTART + '>' + item.DATAEND + '岁，' + item.degree + '。'
+              arr.push(item)
+          })
+          this.roomList = arr;
+          console.log(this.roomList)
+      },
     save(){
         if(this.roconstypeData ===1){
             // 科室规则的保存
@@ -186,6 +224,7 @@ export default {
                     data: this.yyLevel.value,
                     attr: ['1', '11', '7'],
                     apply : this.yyLevel.value,
+                    applyName: this.yyLevel.label,
                     FeiBie: this.yyPrice.value, 
                     WEIGUI: this.yyDegree.value,
                     degree: this.yyDegree.label,

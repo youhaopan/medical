@@ -5,7 +5,7 @@
     <img src="../images/logo2.png" width="250" alt="">
   </i-col>
   <i-col span="12" class="user-info">
-    <span class="user-name">用户名 <i>000237</i></span>
+    <span class="user-name">用户名 <i>{{Name}}</i></span>
     <div class="demo-avatar">
         <img src="../images/pic_user.png" />
     </div>
@@ -24,7 +24,12 @@
 
 <script>
 export default {
-  name: 'indexheader'
+  name: 'indexheader',
+  data(){
+    return {
+      Name: localStorage.getItem('UNAME')
+    }
+  }
 }
 </script>
 

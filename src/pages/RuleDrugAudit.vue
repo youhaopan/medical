@@ -49,16 +49,33 @@ import {
 import urlPath from '../actions/api.js';
 
 export default {
-  name: 'user',
-  components: {
-    Position
-  },
-  data() {
-    return {
-      auditColumns,
-      auditData
+    name: 'user',
+    components: {
+        Position
+    },
+    data() {
+        return {
+        auditColumns,
+        auditData
+        }
+    },
+    methods:{
+        getData(){
+            let _this = this;
+            let DAT = {'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE')};
+            $.ajax({ // 加载费别
+                type: 'post',
+                url: urlPath.getIndexTable+'/API/DrugRuleDeploy/QueryRuleProperties',
+                data: DAT,
+                success: function(dataRets){
+
+                }
+            });
+        }
+    },
+    created(){
+        this.getData()
     }
-  }
 }
 </script>
 

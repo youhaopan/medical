@@ -3,9 +3,9 @@
     <Icon type="md-create" />
     <Icon type="ios-close" />
     <div>
-      <em>{{roleRoom.name}}</em>
-      <span>{{roleRoom.degree}}</span>
-      <i>{{roleRoom.time}}</i>
+      <em>{{roleRoom.CREATEUSERNAME}}</em>
+      <span>审核人</span>
+      <i>{{roleRoom.CREATEDATE}}</i>
     </div>
     <p>
       {{roleRoom.info}}

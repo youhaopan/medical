@@ -36,7 +36,7 @@
               </div>
               <div class="table-bottom">
                 <div class="">
-                  自动加载<i-switch size="large" />
+                  自动加载<i-switch size="large" v-model="switch1" @on-change="change" />
                 </div>
                 <div class="">
                   <Button type="default" class="btn-table-bot" @click='load'>加载更多</Button>
@@ -78,6 +78,7 @@ export default {
   },
   data() {
     return {
+        switch1: false,
       isCollapsed: true,
       filterShow: false,
       indexColumns,
@@ -99,6 +100,9 @@ export default {
     this.getData(); //加载页面 数据
    },
   methods: {
+      change (status) {
+                this.$Message.info('开关状态：' + status);
+            },
     dataForm(ks, date, stateChoose){
       // console.log(ks, date, stateChoose);
       this.$refs.myCharts.Charts(ks, date, stateChoose);

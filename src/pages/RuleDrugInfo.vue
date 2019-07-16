@@ -98,14 +98,14 @@
     <p slot="title">
       科室规则
     </p>
-    <Table :columns="roomColumns" :data="roomData">
+    <Table :columns="roomColumns" :data="zsKs">
       <!-- <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
       </template> -->
-      <template slot="edit">
-        <span @click="openEditRoom(1,'科室规则')">编辑
+      <template slot="edit" slot-scope="{ row }">
+        <span @click="openEditRoom(1,'科室规则', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -114,14 +114,14 @@
     <p slot="title">
       医院等级规则
     </p>
-    <Table :columns="degreeColumns" :data="degreeData">
+    <Table :columns="degreeColumns" :data="zsYy">
       <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
       </template>
-      <template slot="edit">
-        <span @click="openEditRoom(2,'医院等级规则')">编辑
+      <template slot="edit" slot-scope="{ row }">
+        <span @click="openEditRoom(2,'医院等级规则', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -130,14 +130,14 @@
     <p slot="title">
       适用性别
     </p>
-    <Table :columns="sexColumns" :data="sexData">
+    <Table :columns="sexColumns" :data="zsSex">
       <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
       </template>
-      <template slot="edit">
-        <span @click="openEditRoom(3,'性别规则')">编辑
+      <template slot="edit" slot-scope="{ row }">
+        <span @click="openEditRoom(3,'性别规则', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -146,14 +146,14 @@
     <p slot="title">
       适用年龄
     </p>
-    <Table :columns="ageColumns" :data="ageData">
+    <Table :columns="ageColumns" :data="zsAge">
       <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span class="error" v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
       </template>
-      <template slot="edit">
-        <span @click="openEditRoom(4,'年龄规则')">编辑
+      <template slot="edit" slot-scope="{ row }">
+        <span @click="openEditRoom(4,'年龄规则', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -162,7 +162,7 @@
     <Button size="large" class="btn-cancel" @click="$emit('cancel')">放弃</Button>
     <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button>
   </div>
-  <RuleDrugInfoRoom :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" 
+  <RuleDrugInfoRoom ref="myAdd" :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" 
   @ksSave="saveNest1" @setYyData="setYyData" @setSexData="setSexData" @setAgeData="setAgeData"/>
 </Modal>
 </template>
@@ -194,6 +194,14 @@ export default {
       yyroconstypeId: '',
       sexroconstypeId: '',
       ageroconstypeId: '',
+      ks: [],
+      fb: [],
+      wg: [],
+      yy: [],
+      zsKs: [],
+      zsYy: [],
+      zsSex: [],
+      zsAge: [],
       // 科室//////////////////////////////
       roomColumns: [{
         title: '来源',
@@ -218,7 +226,7 @@ export default {
         key: 'number'
       }, {
         title: '医院等级规则',
-        key: 'name'
+        key: 'applyName'
       }, {
         title: '违规等级',
         slot: 'degree'
@@ -319,10 +327,26 @@ export default {
     }
   },
   methods: {
-    openEditRoom(type, title) {
+    openEditRoom(type, title, row) {
         this.openEditData = true
         this.roleType = type;
         this.roleTitle = title;
+        if(row){
+            if(type === 1){
+               row.name = row.name.split(',')
+               let arr = []
+               for(let i = 0; i < row.name.length; i++){
+                   arr.push({
+                       title: row.name[i],
+                       id: row.nameId[i]
+                    })
+               }
+               localStorage.setItem('ksList', JSON.stringify(arr));
+            }
+            localStorage.setItem('row', JSON.stringify(row));
+            this.$refs.myAdd.edit(type);
+            console.log(row)
+        }
     },
     cancelNest() {
         this.openEditData = false
@@ -330,21 +354,25 @@ export default {
     // 保存科室信息
     saveNest1(obj,rocoId) {
         this.roomData.push(obj);
+        this.zsKs.push(obj);
         console.log(this.roomData)
     },
     // 保存医院等级规则
     setYyData(obj,rocoId){
         this.degreeData.push(obj)
+        this.zsYy.push(obj)
         console.log(this.degreeData)
     },
     // 保存性别规则
     setSexData(obj,rocoId){
         this.sexData.push(obj)
+        this.zsSex.push(obj)
         console.log(this.sexData)
     },
     // 保存年龄规则
     setAgeData(obj,rocoId){
         this.ageData.push(obj)
+        this.zsAge.push(obj)
         console.log(this.ageData)
     },
     parentHandleclick(row){
@@ -365,11 +393,23 @@ export default {
         })
     },
     zhangshi(ksList, dataList){
-        console.log(ksList, dataList);
+
+        this.ks = JSON.parse(localStorage.getItem('ks'));
+        this.fb = JSON.parse(localStorage.getItem('fb'));
+        this.wg = JSON.parse(localStorage.getItem('wg'));
+        this.yy = JSON.parse(localStorage.getItem('yy'));
+
+
+
+        console.log(this.ks);
         let ksDataList = []
+        let ks = []
         let yyDataList = []
+        let yy = []
         let sexDataList = []
+        let sex = []
         let ageDataList = []
+        let age = []
         let data = []
         let name = []
 
@@ -392,12 +432,13 @@ export default {
                 }
             }
         }
-        
+        ////  /////////////////////////////      科室列表处理
         for(let i = 0; i < ksDataList.length; i++){
             ksDataList[i].DATA = ksDataList[i].DATA.split(',')
             ksDataList[i].NAME = ksDataList[i].NAME.split(',')
+            ksDataList[i].CREATEUSERNAME = ksDataList[i].CREATEUSERNAME.split(',')
+            ksDataList[i].CREATEDATE = ksDataList[i].CREATEDATE.split(',')
         }
-
         for(let i = 0; i < ksDataList.length; i++) {
             let obj = {
                     number: '系统',
@@ -407,7 +448,6 @@ export default {
                     DESKS: '',  // 科室
                     apply : '', // 医院等级
                     sex: '', // 性别
-                    sex: '', // 性别
                     DATASTART: '', // 开始年龄
                     DATAEND: '', // 结束年龄
                     FeiBie: '',
@@ -416,7 +456,9 @@ export default {
                     degreeCode: '',
                     price: '',
                     priceCode: '',
-                    edit: '编辑'
+                    edit: '编辑',
+                    CREATEUSERNAME: ksDataList[i].CREATEUSERNAME[0],
+                    CREATEDATE: ksDataList[i].CREATEDATE[0]
                 }
             for(let j = 0; j < ksDataList[i].NAME.length; j++) {
                 if(ksDataList[i].NAME[j] === "限制的科室" ){
@@ -430,20 +472,229 @@ export default {
                     obj.WEIGUI = ksDataList[i].DATA[j]
                 }
             }
-            obj.name = obj.name.join(',')
+            // obj.name = obj.name.join(',')
             console.log(obj)
-            this.roomData.push(obj)
+            ks.push(obj)
         }
+        for(let i = 0; i < ks.length; i++){
+            // 循环获取科室名字
+            for(let j = 0; j < ks[i].nameId.length; j++){
+                for(let k = 0; k < this.ks.length; k++){
+                    if(ks[i].nameId[j] === this.ks[k].id){
+                        ks[i].name[j] = this.ks[k].title
+                    }
+                }
+            }
+            // 循环获取费别名字
+            for(let f = 0; f < this.fb.length; f++){
+                if(ks[i].FeiBie === this.fb[f].CODE){
+                    ks[i].price = this.fb[f].Type
+                }
+            }
+            // 循环获取违规等级名字
+            for(let w = 0; w < this.wg.length; w++){
+                if(ks[i].WEIGUI === this.wg[w].CODE){
+                    ks[i].degree = this.wg[w].Type
+                }
+            }
+        }
+        for(let i = 0; i < ks.length; i++){
+            ks[i].name = ks[i].name.join(',')
+        }
+        this.zsKs = ks;
+        // console.log(ks)
 
-
-        console.log(ksDataList)
+        /////////////////////////////////////////// 医院等级列表处理
+        for(let i = 0; i < yyDataList.length; i++){
+            yyDataList[i].DATA = yyDataList[i].DATA.split(',')
+            yyDataList[i].NAME = yyDataList[i].NAME.split(',')
+            yyDataList[i].CREATEUSERNAME = yyDataList[i].CREATEUSERNAME.split(',')
+            yyDataList[i].CREATEDATE = yyDataList[i].CREATEDATE.split(',')
+        }
+        for(let i = 0; i < yyDataList.length; i++) {
+            let obj = {
+                    number: '系统',
+                    RULE: '',
+                    name: [],
+                    nameId: [],
+                    DESKS: '',  // 科室
+                    apply : '', // 医院等级
+                    applyName : '', // 医院等级
+                    sex: '', // 性别
+                    DATASTART: '', // 开始年龄
+                    DATAEND: '', // 结束年龄
+                    FeiBie: '',
+                    WEIGUI: '',
+                    degree: '',
+                    degreeCode: '',
+                    price: '',
+                    priceCode: '',
+                    edit: '编辑',
+                    CREATEUSERNAME: yyDataList[i].CREATEUSERNAME[0],
+                    CREATEDATE: yyDataList[i].CREATEDATE[0]
+                }
+            for(let j = 0; j < yyDataList[i].NAME.length; j++) {
+                if(yyDataList[i].NAME[j] === "允许的医院等级" ){
+                    obj.apply = yyDataList[i].DATA[j]
+                }
+                if(yyDataList[i].NAME[j] === "费别" ){
+                    obj.FeiBie = yyDataList[i].DATA[j]
+                }
+                if(yyDataList[i].NAME[j] === "违规等级" ){
+                    obj.WEIGUI = yyDataList[i].DATA[j]
+                }
+            }
+            // obj.name = obj.name.join(',')
+            // console.log(obj)
+            yy.push(obj)
+        }
+        for(let i = 0; i < yy.length; i++){
+            // 循环获取科室名字
+            for(let d = 0; d < this.yy.length; d++){
+                if(yy[i].apply === this.yy[d].CODE){
+                    yy[i].applyName = this.yy[d].Type
+                }
+            }
+            // 循环获取费别名字
+            for(let f = 0; f < this.fb.length; f++){
+                if(yy[i].FeiBie === this.fb[f].CODE){
+                    yy[i].price = this.fb[f].Type
+                }
+            }
+            // 循环获取违规等级名字
+            for(let w = 0; w < this.wg.length; w++){
+                if(yy[i].WEIGUI === this.wg[w].CODE){
+                    yy[i].degree = this.wg[w].Type
+                }
+            }
+        }
         // console.log(yyDataList)
+        // console.log(yy)
+        this.zsYy = yy
+        /////////////////////////////// 性别列表处理
+        for(let i = 0; i < sexDataList.length; i++){
+            sexDataList[i].DATA = sexDataList[i].DATA.split(',')
+            sexDataList[i].NAME = sexDataList[i].NAME.split(',')
+            sexDataList[i].CREATEUSERNAME = sexDataList[i].CREATEUSERNAME.split(',')
+            sexDataList[i].CREATEDATE = sexDataList[i].CREATEDATE.split(',')
+        }
+        for(let i = 0; i < sexDataList.length; i++) {
+            let obj = {
+                    number: '系统',
+                    RULE: '',
+                    name: [],
+                    nameId: [],
+                    DESKS: '',  // 科室
+                    apply : '', // 医院等级
+                    applyName : '', // 医院等级
+                    sex: '', // 性别
+                    data: '',
+                    DATASTART: '', // 开始年龄
+                    DATAEND: '', // 结束年龄
+                    FeiBie: '',
+                    WEIGUI: '',
+                    degree: '',
+                    degreeCode: '',
+                    price: '',
+                    priceCode: '',
+                    edit: '编辑',
+                    CREATEUSERNAME: sexDataList[i].CREATEUSERNAME[0],
+                    CREATEDATE: sexDataList[i].CREATEDATE[0]
+                }
+            for(let j = 0; j < sexDataList[i].NAME.length; j++) {
+                if(sexDataList[i].NAME[j] === "允许性别" ){
+                    obj.sex = sexDataList[i].DATA[j]
+                    obj.data = '仅限' + sexDataList[i].DATA[j]
+                }
+                if(sexDataList[i].NAME[j] === "费别" ){
+                    obj.FeiBie = sexDataList[i].DATA[j]
+                }
+                if(sexDataList[i].NAME[j] === "违规等级" ){
+                    obj.WEIGUI = sexDataList[i].DATA[j]
+                }
+            }
+            // obj.name = obj.name.join(',')
+            // console.log(obj)
+            sex.push(obj)
+        }
+        for(let i = 0; i < sex.length; i++){
+            // 循环获取费别名字
+            for(let f = 0; f < this.fb.length; f++){
+                if(sex[i].FeiBie === this.fb[f].CODE){
+                    sex[i].price = this.fb[f].Type
+                }
+            }
+            // 循环获取违规等级名字
+            for(let w = 0; w < this.wg.length; w++){
+                if(sex[i].WEIGUI === this.wg[w].CODE){
+                    sex[i].degree = this.wg[w].Type
+                }
+            }
+        }
+        this.zsSex = sex
+        // console.log(sex)
         // console.log(sexDataList)
-        // console.log(ageDataList)
-        // ksDataList.forEach(function(item){
-
-        // })
-
+        //////////////////////////////// 年龄列表处理
+        for(let i = 0; i < ageDataList.length; i++){
+            ageDataList[i].DATA = ageDataList[i].DATA.split(',')
+            ageDataList[i].NAME = ageDataList[i].NAME.split(',')
+            ageDataList[i].DATAEND = ageDataList[i].DATAEND.split(',')[0]
+            ageDataList[i].DATASTART = ageDataList[i].DATASTART.split(',')[0]
+            ageDataList[i].CREATEUSERNAME = ageDataList[i].CREATEUSERNAME.split(',')[0]
+            ageDataList[i].CREATEDATE = ageDataList[i].CREATEDATE.split(',')[0]
+        }
+        for(let i = 0; i < ageDataList.length; i++) {
+            let obj = {
+                    number: '系统',
+                    RULE: '',
+                    name: [],
+                    nameId: [],
+                    DESKS: '',  // 科室
+                    apply : '', // 医院等级
+                    applyName : '', // 医院等级
+                    sex: '', // 性别
+                    DATASTART: ageDataList[i].DATASTART, // 开始年龄
+                    DATAEND: ageDataList[i].DATAEND, // 结束年龄
+                    age: ageDataList[i].DATASTART + ' > ' + ageDataList[i].DATAEND + '岁',
+                    FeiBie: '',
+                    WEIGUI: '',
+                    degree: '',
+                    degreeCode: '',
+                    price: '',
+                    priceCode: '',
+                    edit: '编辑',
+                    CREATEUSERNAME: ageDataList[i].CREATEUSERNAME,
+                    CREATEDATE: ageDataList[i].CREATEDATE
+                }
+            for(let j = 0; j < ageDataList[i].NAME.length; j++) {
+                if(ageDataList[i].NAME[j] === "费别" ){
+                    obj.FeiBie = ageDataList[i].DATA[j]
+                }
+                if(ageDataList[i].NAME[j] === "违规等级" ){
+                    obj.WEIGUI = ageDataList[i].DATA[j]
+                }
+            }
+            // obj.name = obj.name.join(',')
+            // console.log(obj)
+            age.push(obj)
+        }
+        for(let i = 0; i < age.length; i++){
+                // 循环获取费别名字
+                for(let f = 0; f < this.fb.length; f++){
+                    if(age[i].FeiBie === this.fb[f].CODE){
+                        age[i].price = this.fb[f].Type
+                    }
+                }
+                // 循环获取违规等级名字
+                for(let w = 0; w < this.wg.length; w++){
+                    if(age[i].WEIGUI === this.wg[w].CODE){
+                        age[i].degree = this.wg[w].Type
+                    }
+                }
+            }
+        this.zsAge = age;
+        // console.log(age)
+        this.$refs.myAdd.getRoomList(this.zsKs, this.zsYy,this.zsSex,this.zsAge);
     },
     save(){
         let _this = this;
@@ -452,7 +703,7 @@ export default {
         this.roomData.forEach(function(item){
             item.DRUG = _this.ypId;
             idArr = item.nameId.split(',')
-                dataArr.push(item);
+            dataArr.push(item);
         })
         console.log(this.roomData)
         console.log(this.degreeData)
@@ -482,6 +733,10 @@ export default {
             data: desk,
             success:function(dataRets){
                 if(dataRets.Y === 100){
+                    _this.roomData = []
+                    _this.degreeData = []
+                    _this.sexData = []
+                    _this.ageData = []
                     _this.$Message.success(dataRets.M);
                     _this.$emit('save')
                 }

@@ -2,19 +2,19 @@
     <ul>
       <li>
         <label>费别</label>
-        <Select v-model="price" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
+        <Select v-model="form.FeiBie" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
           <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>违规等级</label>
-        <Select v-model="degree" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
+        <Select v-model="form.WEIGUI" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
           <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>适用于</label>
-        <Select v-model="level" style="width:200px" @on-change='selectLevel' :label-in-value='true'>
+        <Select v-model="form.apply" style="width:200px" @on-change='selectLevel' :label-in-value='true'>
           <Option v-for="item in levelList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
@@ -34,6 +34,11 @@ export default {
       price: '',
       degree: '',
       level: '',
+      form: {
+        FeiBie: '',
+        WEIGUI: '',
+        apply:'',
+      }
       // levelList: [{
       //   label: '三级甲等',
       //   value: 'ca'
@@ -41,6 +46,11 @@ export default {
     }
   },
   methods: {
+    edit(){
+         this.form = JSON.parse(localStorage.getItem('row'));
+        //  this.$set(this.form, 'price' , form.FeiBie)
+         console.log(this.form)
+      },
     // 选择费别
     selectPriceId(val){
         console.log(val)
@@ -59,9 +69,9 @@ export default {
         this.$emit('selectLevel', val)
     },
     reset(){
-        this.price = '';
-        this.degree = '';
-        this.level = '';
+        this.form.FeiBie = '';
+        this.form.WEIGUI = '';
+        this.form.apply = '';
     },
     cancel() {
 

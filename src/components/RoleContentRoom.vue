@@ -2,13 +2,13 @@
     <ul>
       <li>
         <label>费别</label>
-        <Select v-model="price" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
+        <Select v-model="form.FeiBie" style="width:200px" @on-change='selectPriceId' :label-in-value='true'>
             <Option v-for="item in priceList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
       <li>
         <label>违规等级</label>
-        <Select v-model="degree" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
+        <Select v-model="form.WEIGUI" style="width:200px" @on-change='selectDegreeId' :label-in-value='true'>
             <Option v-for="item in degreeList" :value="item.CODE" :key="item.CODE">{{ item.Type }}</Option>
         </Select>
       </li>
@@ -33,10 +33,11 @@ export default {
     return {
       dataTree,
       dataTreeRole,
-      price: '',
-      degree: '',
-      checkedList:[],
-      feibie: ''
+      form: {
+        FeiBie: '',
+        WEIGUI: '',
+        checkedList:[],
+      }
     }
   },
   created(){
@@ -46,19 +47,25 @@ export default {
     TreeComponent,
   },
   methods:{
+      edit(){
+         this.form = JSON.parse(localStorage.getItem('row'));
+         this.$refs.treeKs.edit();
+        //  this.$set(this.form, 'price' , form.FeiBie)
+         console.log(this.form)
+      },
     selectPriceId(val){
-        console.log(val)
+        // console.log(val)
         this.$emit('selectPriceId', val)
     //   console.log(this.priceId)
     },
     selectDegreeId(val){
-        console.log(val)
+        // console.log(val)
         this.$emit('selectDegreeId', val)
     //   console.log(this.degreeId)
     },
     reset(){
-        this.price = '';
-        this.degree = '';
+        this.form.FeiBie = '';
+        this.form.WEIGUI = '';
         this.$refs.treeKs.delAllChecked();
     },
     getDeskList(){ //查询树的 数据

@@ -35,6 +35,9 @@ export default {
     this.$emit('getTreeCheckedList', this.checkTreeList)
   },
   methods: {
+    edit(){
+      this.checkTreeList = JSON.parse(localStorage.getItem('ksList'));
+    },
     delAllChecked() {
       this.checkTreeList = []
     },
