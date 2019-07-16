@@ -18,6 +18,9 @@ const auditColumns = [{
   title: '三级类目',
   key: 'level3'
 }, {
+  title: '四级类目',
+  key: 'level4'
+},{
   title: '启用状态',
   slot: 'state'
 }, {

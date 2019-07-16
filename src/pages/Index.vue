@@ -13,7 +13,7 @@
         </div>
         <div class="box">
           <Card :bordered="false">
-              <p slot="title">就诊信息<span id="count">共400条记录，筛选条件：全部</span></p>
+              <p slot="title">就诊信息<span id="count">共{{indexData.length}}条记录，筛选条件：全部</span></p>
               <p slot="extra" class="index-box-head">
                 <Input prefix="ios-search"  v-model="yname" @on-blur="seldata"  placeholder="查询医生名..." />
                 <FilterPop @dataForm='dataForm' />
@@ -36,7 +36,7 @@
               </div>
               <div class="table-bottom">
                 <div class="">
-                  自动加载<i-switch size="large" v-model="switch1" @on-change="change" />
+                  自动加载<i-switch size="large" v-model="switch1" />
                 </div>
                 <div class="">
                   <Button type="default" class="btn-table-bot" @click='load'>加载更多</Button>
@@ -64,7 +64,7 @@ import IndexInfo from './IndexInfo';
 import IndexCharts from '../components/IndexCharts';
 import {
   indexColumns,
-  indexData
+//   indexData
 } from '../data/index-table';
 import urlPath from '../actions/api.js';
 
@@ -78,11 +78,13 @@ export default {
   },
   data() {
     return {
+        timer: null,
         switch1: false,
       isCollapsed: true,
       filterShow: false,
       indexColumns,
-      indexData,  yname:'',num:1,
+      indexData : [],
+     yname:'',num:1,
       styles: {
         height: 'calc(100% - 55px)',
         overflow: 'auto',
@@ -99,22 +101,32 @@ export default {
   created() {
     this.getData(); //加载页面 数据
    },
+    watch:{
+        switch1(){
+            console.log(this.switch1)
+            let _this = this;
+            if(this.switch1){
+                this.timer = setInterval(function(){
+                    _this.getData()
+                }, 10000)
+            } else {
+                clearInterval(this.timer)
+            }
+        }
+    },
   methods: {
-      change (status) {
-                this.$Message.info('开关状态：' + status);
-            },
     dataForm(ks, date, stateChoose){
-      // console.log(ks, date, stateChoose);
-      this.$refs.myCharts.Charts(ks, date, stateChoose);
+    // console.log(ks, date, stateChoose);
+        this.$refs.myCharts.Charts(ks, date, stateChoose);
     },
     handleReachBottom () {
-           return new Promise(resolve => {
-                  setTimeout(() => {
+        return new Promise(resolve => {
+                setTimeout(() => {
                     this.getData();
-                       resolve();
-                  }, 100);
-              });
-              },
+                    resolve();
+                }, 100);
+            });
+            },
     change(){
         this.getData();  //重新加载数据
     },
@@ -128,7 +140,7 @@ export default {
             success: function(dataRet) {
                 if (dataRet.Y==100) {
                     that.indexData=dataRet.D.AUDITBILL;
-                    document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                    // document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
                 }
                 else {
                     that.$Message.error('获取数据失败！')
@@ -180,7 +192,7 @@ export default {
                         that.indexData=dataRet.D.AUDITBILL;
                     }
                     that.num++;
-                    document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
+                    // document.getElementById("count").innerHTML ="共"+dataRet.D.AUDITBILL.length+"条记录，筛选条件：全部";
                 } else {
                     that.$Message.error('获取数据失败！')
                 }
