@@ -1,8 +1,8 @@
 <template lang="html">
-  <Layout>
-    <Sider collapsible :collapsed-width="42" v-model="isCollapsed" @on-collapse="goPage">
-      <slot></slot>
-    </Sider>
+    <Layout>
+        <Sider collapsible :collapsed-width="42" v-model="isCollapsed" @on-collapse="goPage">
+        <slot></slot>
+        </Sider>
     <Layout>
       <Header>
         <IndexHeader />

@@ -23,7 +23,8 @@
           <RoleContentAge  ref="ageChild" :price-list='priceList' :degree-list='degreeList' @selectPriceId='agePrice = arguments[0]' @selectDegreeId='ageDegree = arguments[0]' @dataStart='dataStart = arguments[0]' @dataEnd='dataEnd = arguments[0]' v-show="roconstypeData===4" />
           <div class="ivu-modal-footer">
             <Button size="large" class="btn-cancel" @click="$emit('cancel')">返回</Button>
-            <Button size="large" type="default" class="btn-submit" @click="save">保存编辑</Button>
+            <Button size="large" v-if="show" type="default" class="btn-submit" @click="save">新增保存编辑</Button>
+            <Button size="large" v-if="!show" type="default" class="btn-submit" @click="editSave">编辑保存编辑</Button>
           </div>
         </Card>
       </i-col>
@@ -58,6 +59,7 @@ export default {
   },
   data() {
     return {
+        show: true,
       dataTreeRole: [],
       tipId: '',
       tipEdit: '',
@@ -133,20 +135,108 @@ export default {
     }
   },
   methods: {
-      edit(type){
+      edit(type, lei, row){
           console.log(type)
-          if(type === 1){
-            this.$refs.ksChild.edit();
-          } 
-          if(type === 2){
-            this.$refs.yyChild.edit();
-          } 
-          if(type === 3){
-            this.$refs.sexChild.edit();
-          } 
-          if(type === 4){
-            this.$refs.ageChild.edit();
-          } 
+          console.log(row)
+          console.log(lei)
+        if(lei === 'add'){
+            this.show = true
+        }
+        if(lei === 'edit'){
+            this.show = false;
+            this.editRow = row
+        }
+        //   if(type === 1){
+        //     this.$refs.ksChild.edit();
+        //   } 
+        //   if(type === 2){
+        //     this.$refs.yyChild.edit();
+        //   } 
+        //   if(type === 3){
+        //     this.$refs.sexChild.edit();
+        //   } 
+        //   if(type === 4){
+        //     this.$refs.ageChild.edit();
+        //   } 
+      },
+      editSave(){
+            console.log(this.editRow)
+            console.log(this.roconstypeId)
+          if(this.roconstypeData ===1){
+                if(this.Price.value !== '' && this.degree.value !== '' && this.checkedList.length > 0){
+                    let arrName = [];
+                    let arrId = [];
+                    this.checkedList.forEach(function(item){
+                        arrName.push(item.title)
+                        arrId.push(item.id)
+                    })
+                    this.editRow.RULE = this.roconstypeId;
+                    this.editRow.nameId = arrId;
+                    this.editRow.name = arrName.join(',');
+                    this.editRow.price = this.Price.label;
+                    this.editRow.FeiBie = this.Price.value;
+                    this.editRow.degree = this.degree.label;
+                    this.editRow.WEIGUI = this.degree.value;
+                    this.editRow.attr = ['3', '1', '11'];
+                    this.$emit('editKs', this.editRow);
+                    this.$Message.success('编辑成功');
+                    console.log(this.editRow)
+                    this.$refs.ksChild.reset();
+                }else{
+                    this.$Message.warning('请选择要添加的医院等级规则');
+                }
+          } else if(this.roconstypeData ===2){
+                if(this.yyPrice.value !== '' && this.yyDegree.value !== '' && this.yyLevel.value !== ''){
+                    this.editRow.RULE = this.roconstypeId;
+                    this.editRow.nameId = this.yyLevel.value;
+                    this.editRow.name = this.yyLevel.label;
+                    this.editRow.apply = this.yyLevel.value;
+                    this.editRow.applyName = this.yyLevel.label;
+                    this.editRow.price = this.yyPrice.label;
+                    this.editRow.FeiBie = this.yyPrice.value;
+                    this.editRow.degree = this.yyDegree.label;
+                    this.editRow.WEIGUI = this.yyDegree.value;
+                    this.editRow.attr = ['1', '11', '7'];
+                    this.$emit('editYy', this.editRow);
+                    this.$Message.success('编辑成功');
+                    this.$refs.yyChild.reset();
+            }else{
+                this.$Message.warning('请选择要添加的医院等级规则');
+            }
+          } else if(this.roconstypeData ===3){
+                if(this.sexPrice.value !== '' && this.sexDegree.value !== '' && this.sex !== ''){
+                    this.editRow.RULE = this.roconstypeId;
+                    this.editRow.data = '仅限' + this.sex;
+                    this.editRow.sex = this.sex;
+                    this.editRow.price = this.sexPrice.label;
+                    this.editRow.FeiBie = this.sexPrice.value;
+                    this.editRow.degree = this.sexDegree.label;
+                    this.editRow.WEIGUI = this.sexDegree.value;
+                    this.editRow.attr = ['1', '11', '4'];
+                    // console.log(sexData)
+                    this.$emit('editSex', this.editRow);
+                    this.$Message.success('编辑成功');
+                    this.$refs.sexChild.reset();
+                }else{
+                    this.$Message.warning('请选择要添加的医院等级规则');
+                }
+          } else if(this.roconstypeData ===4){
+                if(this.agePrice.value !== '' && this.ageDegree.value !== '' && this.dataStart !== '' && this.dataEnd !== ''){
+                    this.editRow.RULE = this.roconstypeId;
+                    this.editRow.age = this.dataStart + ' - ' + this.dataEnd + ' 岁';
+                    this.editRow.DATASTART = this.dataStart;
+                    this.editRow.DATAEND = this.dataEnd;
+                    this.editRow.price = this.agePrice.label;
+                    this.editRow.FeiBie = this.agePrice.value;
+                    this.editRow.degree = this.ageDegree.label;
+                    this.editRow.WEIGUI = this.ageDegree.value;
+                    this.editRow.attr = ['1', '11', '5'];
+                    // console.log(ageData)
+                    this.$emit('editAge', this.editRow);
+                    this.$Message.success('编辑成功');
+                    this.$refs.ageChild.reset();
+            }
+          }
       },
       getRoomList(ks,yy,sex,age){
           let arr = []
@@ -268,6 +358,8 @@ export default {
             }
         }else if(this.roconstypeData ===4){
             // 年龄规则的保存
+            console.log(this.dataStart)
+            console.log(this.dataEnd)
             if(this.agePrice.value !== '' && this.ageDegree.value !== '' && this.dataStart !== '' && this.dataEnd !== ''){
                 let ageData = {
                     number: '系统',

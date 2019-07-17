@@ -50,11 +50,11 @@ export default {
     }
   },
   watch: {
-    DATASTART(){
-      this.$emit('dataStart', this.DATASTART)
+    'form.DATASTART'(){
+      this.$emit('dataStart', this.form.DATASTART)
     },
-    DATAEND(){
-      this.$emit('dataEnd', this.DATAEND)
+    'form.DATAEND'(){
+      this.$emit('dataEnd', this.form.DATAEND)
     }
   },
   methods: {

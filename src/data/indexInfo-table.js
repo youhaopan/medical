@@ -13,10 +13,10 @@ const indexColumns = [
         key: 'PATIENTNAME'
     }, {
         title: '处方/单据号',
-        key: 'TYPENAME'
+        key: 'CODE'
     }, {
         title: '类型',
-        key: 'drugType'
+        key: 'TYPENAME'
     }, {
         title: '急慢性病',
         key: 'BILLSTYPENAME'

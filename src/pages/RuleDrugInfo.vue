@@ -19,7 +19,7 @@
     <p slot="extra">
       <span>启用规则</span>
       <i-switch :value="true" />
-      <BtnColor class="ivu-btn-title" btn-title="新建规则" btn-icon="icon-add-rule" @open="openEditRoom(1,'科室规则')" />
+      <BtnColor class="ivu-btn-title" btn-title="新建规则" btn-icon="icon-add-rule" @open="openEditRoom(1,'科室规则','add')" />
     </p>
     <div class="">
       <Row>
@@ -105,7 +105,7 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(1,'科室规则', row)">编辑
+        <span @click="openEditRoom(1,'科室规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -121,7 +121,7 @@
         <span v-else>正常</span>
       </template>
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(2,'医院等级规则', row)">编辑
+        <span @click="openEditRoom(2,'医院等级规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -137,7 +137,7 @@
         <span v-else>正常</span>
       </template>
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(3,'性别规则', row)">编辑
+        <span @click="openEditRoom(3,'性别规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -153,7 +153,7 @@
         <span v-else>正常</span>
       </template>
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(4,'年龄规则', row)">编辑
+        <span @click="openEditRoom(4,'年龄规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
       </template>
     </Table>
@@ -163,7 +163,8 @@
     <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button>
   </div>
   <RuleDrugInfoRoom ref="myAdd" :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" 
-  @ksSave="saveNest1" @setYyData="setYyData" @setSexData="setSexData" @setAgeData="setAgeData"/>
+  @ksSave="saveNest1" @setYyData="setYyData" @setSexData="setSexData" @setAgeData="setAgeData"
+  @editKs='editKs' @editYy='editYy' @editSex='editSex' @editAge='editAge'/>
 </Modal>
 </template>
 
@@ -327,26 +328,28 @@ export default {
     }
   },
   methods: {
-    openEditRoom(type, title, row) {
+    openEditRoom(type, title, lei, row) {
         this.openEditData = true
         this.roleType = type;
         this.roleTitle = title;
+        let nameList = []
         if(row){
             if(type === 1){
-               row.name = row.name.split(',')
+               nameList = row.name.split(',')
                let arr = []
-               for(let i = 0; i < row.name.length; i++){
+               for(let i = 0; i < nameList.length; i++){
                    arr.push({
-                       title: row.name[i],
+                       title: nameList[i],
                        id: row.nameId[i]
                     })
                }
                localStorage.setItem('ksList', JSON.stringify(arr));
             }
             localStorage.setItem('row', JSON.stringify(row));
-            this.$refs.myAdd.edit(type);
-            console.log(row)
+            console.log(lei)
+            // this.$refs.myAdd.edit(type, lei, row);
         }
+        this.$refs.myAdd.edit(type, lei, row);
     },
     cancelNest() {
         this.openEditData = false
@@ -357,10 +360,18 @@ export default {
         this.zsKs.push(obj);
         console.log(this.roomData)
     },
+    editKs(row){
+        console.log(row)
+        this.roomData.push(row);
+    },
     // 保存医院等级规则
     setYyData(obj,rocoId){
         this.degreeData.push(obj)
         this.zsYy.push(obj)
+        console.log(this.degreeData)
+    },
+    editYy(row){
+        this.degreeData.push(row)
         console.log(this.degreeData)
     },
     // 保存性别规则
@@ -369,18 +380,31 @@ export default {
         this.zsSex.push(obj)
         console.log(this.sexData)
     },
+    editSex(row){
+        this.sexData.push(row)
+    },
     // 保存年龄规则
     setAgeData(obj,rocoId){
         this.ageData.push(obj)
         this.zsAge.push(obj)
         console.log(this.ageData)
     },
+    editAge(row){
+        this.ageData.push(row)
+    },
     parentHandleclick(row){
       console.log(row)
         this.ypId = row.ID
         console.log(this.ypId)
         let _this = this;
-        let desk = {'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),DRUG: row.ID,};
+        let desk = {
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            DRUGRULE: [{
+                DRUG: row.ID
+            }]
+        };
+        console.log(desk)
         $.ajax({ // 查询药品
             type:'post',
             url: urlPath.getIndexTable+'/api/DrugRuleDeploy/QueryDrugRule',
@@ -489,7 +513,7 @@ export default {
             for(let f = 0; f < this.fb.length; f++){
                 if(ks[i].FeiBie === this.fb[f].CODE){
                     ks[i].price = this.fb[f].Type
-                }
+                }e
             }
             // 循环获取违规等级名字
             for(let w = 0; w < this.wg.length; w++){
@@ -702,7 +726,7 @@ export default {
         let idArr = [];
         this.roomData.forEach(function(item){
             item.DRUG = _this.ypId;
-            idArr = item.nameId.split(',')
+            // idArr = item.nameId.split(',')
             dataArr.push(item);
         })
         console.log(this.roomData)
