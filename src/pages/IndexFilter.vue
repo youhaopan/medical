@@ -12,7 +12,7 @@
             <p slot="title">
               <Icon type="icon-tree"></Icon>统计图表
             </p>
-            <Input slot="extra" prefix="ios-search" placeholder="查询科室" />
+            <Input slot="extra" v-model="dName" prefix="ios-search" @on-blur="selData" placeholder="查询科室" />
             <Tree :treeData="dataTree" tree-color="tree-blue" @getTreeCheckedList="getTreeData">科室</Tree>
           </Card>
         </i-col>
@@ -75,7 +75,8 @@ export default {
       stateChoose: '',
       dataTree: [],
       checkedList: [],
-      date:[]
+      date:[],
+      dName: ''
     }
   },
   components: {
@@ -161,6 +162,69 @@ export default {
                  }
              })
     },
+    selData(){ //查询树的 数据
+    let that=this;
+
+    // $.ajax({ // 加载科室 树
+    //      type:'get',
+    //      url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
+    //      data:{'':this.dname},
+    //       success:function(dataRet){
+    //         console.log(dataRet.D.childrens);
+    //         that.dataDesk1=dataRet.D.childrens;
+    //           }
+    //       })
+    // 已改数据结构
+        let desk={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            NUM: -1,
+            NAME: this.dName
+        };
+         $.ajax({ // 加载科室 树
+           type:'post',
+           url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+           data:desk,
+             success:function(dataRets){
+                 console.log(dataRets.D.listDesk);
+                 let arr = [];
+                 let children = [];
+                 dataRets.D.listDesk.forEach(function(item, index) {
+                     if(item.UP === '' || item.UP==='0'){
+                        let obj = {
+                            UP: item.UP,
+                            children: [],
+                            disable: false,
+                            expand: true,
+                            id: item.DESKID,
+                            nodeKey: 0,
+                            title: item.NAME
+                         }
+                         arr.push(obj)
+                     }else{
+                         children.push(item)
+                     }
+                 });
+                 for(let i = 0; i<children.length; i++){
+                     for(let j = 0; j<arr.length; j++){
+                         if(children[i].UP === arr[j].id){
+                             let objData = {
+                                UP: children[i].UP,
+                                children: null,
+                                disable: false,
+                                expand: true,
+                                id: children[i].DESKID,
+                                nodeKey: 1,
+                                title: children[i].NAME
+                             }
+                             arr[j].children.push(objData)
+                         }
+                    }
+                 }
+                    that.dataTree=arr;
+                 }
+             })
+      },
   }
 }
 </script>

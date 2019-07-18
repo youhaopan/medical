@@ -112,7 +112,12 @@ export default {
     //           }
     //       })
     // 已改数据结构
-        let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
+        let desk={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            NUM: -1,
+            NAME: this.dName
+        };
          $.ajax({ // 加载科室 树
            type:'post',
            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',

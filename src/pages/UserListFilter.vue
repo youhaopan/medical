@@ -94,17 +94,22 @@ export default {
            },
   methods: {
     seltitle(){
-      let that=this;
-      let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '职称'};
-      $.ajax({ // 加载职称 树
-         type:'post',
-         url:urlPath.getIndexTable+'/api/UserManager/QueryZTreeList',
-         data:{'':this.zname},
-         success:function(dataRet){
-           //console.log(dataRet.D.childrens)
-            that.dataTree=dataRet.D.childrens;
-           }
-         })
+        let that=this;
+        let DATA={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            'DICTTYPE': '职称类型',
+            TYPENAME: this.zname
+        };
+        $.ajax({ // 加载职称 树
+            type:'post',
+            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+            data:{'':this.zname},
+            success:function(dataRet){
+            //console.log(dataRet.D.childrens)
+                that.dataTree=dataRet.D.childrens;
+            }
+        })
     },
     seldesk(){
       let that=this;
@@ -118,7 +123,7 @@ export default {
       //       }
       //     })
       // 已改数据结构
-        let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
+        let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,NAME: this.dname};
          $.ajax({ // 加载科室 树
            type:'post',
            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
@@ -205,14 +210,27 @@ desk+=",'"+rarray[i].id+"'";
       this.treeCheckedList = data
     }  , //获取树的数据
     getList(){
-        let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '职称'};
+        let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '职称类型'};
         let that=this;
         $.ajax({ // 加载职称 树
             type:'post',
             url: urlPath.getIndexTable+'/API/BaseDataManager/QueryDict',
             data: DATA,
             success: function(dataRet){
-                that.dataTree=dataRet.D.childrens;
+                // that.dataTree=dataRet.D.ListDict;
+                let arr = [];
+                dataRet.D.ListDict.forEach(function(item){
+                    let obj = {
+                        children: [],
+                        disable: false,
+                        expand: true,
+                        id: item.CODE,
+                        nodeKey: 0,
+                        title: item.Type
+                    }
+                    arr.push(obj)
+                })
+                that.dataTree = arr
             }
         })
     },
