@@ -95,6 +95,7 @@ export default {
   methods: {
     seltitle(){
       let that=this;
+      let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '职称'};
       $.ajax({ // 加载职称 树
          type:'post',
          url:urlPath.getIndexTable+'/api/UserManager/QueryZTreeList',
@@ -126,10 +127,10 @@ export default {
                  console.log(dataRets.D.listDesk);
                  let arr = [];
                  let children = [];
-                 dataRets.D.listDesk.forEach(function(item, index) {
-                     if(item.UP === ''){
+                 dataRets.D.listDesk.forEach(function(item) {
+                     if(item.UP === '' || item.UP === '0'){
                         let obj = {
-                            UP: "",
+                            UP: item.UP,
                             children: [],
                             disable: false,
                             expand: true,
@@ -203,32 +204,30 @@ desk+=",'"+rarray[i].id+"'";
     getTreeCheckedList(data) {
       this.treeCheckedList = data
     }  , //获取树的数据
-      getList()
-      {
-         let that=this;
-         $.ajax({ // 加载职称 树
+    getList(){
+        let DATA={'ID':localStorage.getItem('UID'), 'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'DICTTYPE': '职称'};
+        let that=this;
+        $.ajax({ // 加载职称 树
             type:'post',
-            url:urlPath.getIndexTable+'/api/UserManager/QueryZTreeList',
-            data:{},
-            success:function(dataRet){
-              //console.log(dataRet.D.childrens)
-               that.dataTree=dataRet.D.childrens;
-              }
-            })
-          }
-           ,
-          getDeskList(){
-              let that=this;
-              // $.ajax({ // 加载科室 树
-              //   type:'post',
-              //   url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
-              //   data:{},
-              //     success:function(dataRet){
-              // //      console.log(dataRet.D.childrens)
-              //        that.dataTree1=dataRet.D.childrens;
-              //       }
-              //     })
-              // 已改数据结构
+            url: urlPath.getIndexTable+'/API/BaseDataManager/QueryDict',
+            data: DATA,
+            success: function(dataRet){
+                that.dataTree=dataRet.D.childrens;
+            }
+        })
+    },
+    getDeskList(){
+        let that=this;
+        // $.ajax({ // 加载科室 树
+        //   type:'post',
+        //   url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
+        //   data:{},
+        //     success:function(dataRet){
+        // //      console.log(dataRet.D.childrens)
+        //        that.dataTree1=dataRet.D.childrens;
+        //       }
+        //     })
+        // 已改数据结构
         let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
          $.ajax({ // 加载科室 树
            type:'post',
@@ -238,10 +237,10 @@ desk+=",'"+rarray[i].id+"'";
                  console.log(dataRets.D.listDesk);
                  let arr = [];
                  let children = [];
-                 dataRets.D.listDesk.forEach(function(item, index) {
-                     if(item.UP === ''){
+                 dataRets.D.listDesk.forEach(function(item) {
+                     if(item.UP === '' || item.UP === '0'){
                         let obj = {
-                            UP: "",
+                            UP: item.UP,
                             children: [],
                             disable: false,
                             expand: true,

@@ -56,20 +56,19 @@ export default {
                 localStorage.setItem('UNAME',this.username)//用户名
                let that = this;
           //     console.log(urlPath.getIndexTable);
-          $.ajax({
-          method:'post',
-          url:urlPath.getIndexTable+'/api/UserManager/SystemUserLogin',
-          data:lk,
-          success:function(dataRet){
-           that.$Message.info('登录成功！' );
-          if (dataRet.Y==100)
-               {
-                    localStorage.setItem('UID',dataRet.D.ID)//用户编码
-                    localStorage.setItem('RANDOMCODE',dataRet.D.RANDOMCODE) //随机码
-                    that.$router.push('home');//跳转页面
-               }
-          }
-          })
+            $.ajax({
+            method:'post',
+            url:urlPath.getIndexTable+'/api/UserManager/SystemUserLogin',
+            data:lk,
+            success:function(dataRet){
+                if(dataRet.Y==100) {
+                        that.$Message.info(dataRet.M);
+                        localStorage.setItem('UID',dataRet.D.ID)//用户编码
+                        localStorage.setItem('RANDOMCODE',dataRet.D.RANDOMCODE) //随机码
+                        that.$router.push('home');//跳转页面
+                    }
+                }
+            })
       } else {
         this.$Message.error('请输入用户名和密码！')
         this.$router.push('home');

@@ -126,9 +126,9 @@ export default {
                  let arr = [];
                  let children = [];
                  dataRets.D.listDesk.forEach(function(item, index) {
-                     if(item.UP === ''){
+                     if(item.UP === '' || item.UP === '0'){
                         let obj = {
-                            UP: "",
+                            UP: item.UP,
                             children: [],
                             disable: false,
                             expand: true,

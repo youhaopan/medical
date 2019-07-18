@@ -6,7 +6,7 @@
             <p slot="title">科室列表<span id="count">共40条记录</span></p>
             <p slot="extra">
               <Input prefix="ios-search"   @on-blur="seldata"  v-model="DName" placeholder="查询科室名..." style="width: auto" />
-              <FilterPop />
+              <!-- <FilterPop /> -->
               <BtnColor btn-title="新建科室" btn-icon="icon-add-room" @open="openPop"  />
             </p>
             <div class="">

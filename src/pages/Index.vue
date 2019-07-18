@@ -1,6 +1,6 @@
-<template lang="html">
+<template lang="html" class='sss'>
     <Layout>
-        <Sider collapsible :collapsed-width="42" v-model="isCollapsed" @on-collapse="goPage">
+        <Sider v-show='show' collapsible :collapsed-width="42" v-model="isCollapsed" @on-collapse="goPage">
         <slot></slot>
         </Sider>
     <Layout>
@@ -48,7 +48,7 @@
           </Card>
         </div>
         <BackTop></BackTop>
-        <IndexInfo ref='indexInfo' v-show="infoShow" />
+        <IndexInfo ref='indexInfo' v-show="infoShow"/>
       </Content>
     </Layout>
   </Layout>
@@ -99,6 +99,18 @@ export default {
     })
   },
   created() {
+      console.log(navigator.userAgent)
+      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|OperaMini/i.test(navigator.userAgent)) {
+            //当前设备为移动端（H5）
+            //do something
+            console.log(1)
+            this.show = false;
+        } else {
+            //当前设备为桌面显示器（PC）
+            //do something
+            console.log(2)
+            this.show = true;
+        }
     this.getData(); //加载页面 数据
    },
     watch:{
