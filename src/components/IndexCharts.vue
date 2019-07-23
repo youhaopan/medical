@@ -1,7 +1,8 @@
 <template lang="html">
   <Card :bordered="false">
       <p slot="title">统计图表</p>
-      <i-switch size="large" slot="extra" v-model="switch1" @on-change="change" />
+      <!-- <FilterPop @dataForm='dataForm' /> -->
+      <!-- <i-switch size="large" slot="extra" v-model="switch1" @on-change="change" /> -->
       <div v-show="switch1" class="index-chart-box">
         <div class="">
           <v-chart :options="setpie" :autoresize="true"/>
@@ -39,20 +40,24 @@ import pie from '../data/index-pie';
 import line from '../data/index-line';
 import bar from '../data/index-bar';
 import urlPath from '../actions/api.js';
+// import FilterPop from './IndexFilter';
 export default {
-  name: 'IndexCharts',
-  data() {
-    return {
-      switch1: true,
-      setpie: pie(),
-      setbar: bar(),
-      setline: line(),
-      bar,
-      roomProblemList: [{
-        label: '科室'
-      }]
-    }
-  },  
+    name: 'IndexCharts',
+    data() {
+        return {
+            switch1: true,
+            setpie: pie(),
+            setbar: bar(),
+            setline: line(),
+            bar,
+            roomProblemList: [{
+                label: '科室'
+            }]
+        }
+    },  
+    components:{
+        // FilterPop
+    },
     created() {
       //进入页面以后获取table数据
       // this.fetchData('0')
@@ -62,35 +67,39 @@ export default {
      },
     methods: {
         change(status) {
-        this.switch1 = status
-    },
-    getDataArr(){
-        let _this = this;
-        let desk={
-            'ID':localStorage.getItem('UID'),
-            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
-            // 'desks': null,
-            'StartTime': null,
-            'EndTime': null,
-            'State': null,
-        };
-        $.ajax({ //加载
-                type:'post',
-                url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditChart',
-                data: desk,
-                success:function(dataRet){
-                    if (dataRet.Y==100) {
-                        // _this.pie.series[0].data=dataRet.D.data;
-                        _this.setbar = bar(dataRet.D.AUDITBILL3);
-                        _this.setpie = pie(dataRet.D.AUDITBILL1);
-                        _this.setline = line(dataRet.D.AUDITBILL2);
+            this.switch1 = status
+        },
+        dataForm(ks, date, stateChoose){
+        // console.log(ks, date, stateChoose);
+            this.$refs.myCharts.Charts(ks, date, stateChoose);
+        },
+        getDataArr(){
+            let _this = this;
+            let desk={
+                'ID':localStorage.getItem('UID'),
+                'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+                // 'desks': null,
+                'StartTime': null,
+                'EndTime': null,
+                'State': null,
+            };
+            $.ajax({ //加载
+                    type:'post',
+                    url:urlPath.getIndexTable+'/api/AuditBillManager/QueryAuditChart',
+                    data: desk,
+                    success:function(dataRet){
+                        if (dataRet.Y==100) {
+                            // _this.pie.series[0].data=dataRet.D.data;
+                            _this.setbar = bar(dataRet.D.AUDITBILL3);
+                            _this.setpie = pie(dataRet.D.AUDITBILL1);
+                            _this.setline = line(dataRet.D.AUDITBILL2);
+                            }
+                        else {
+                            _this.$Message.error('获取数据失败！');
                         }
-                    else {
-                        _this.$Message.error('获取数据失败！');
                     }
-                }
-            })
-    },
+                })
+        },
     Charts(ks, date, stateChoose){
         console.log(ks, date, stateChoose)
         let _this = this;

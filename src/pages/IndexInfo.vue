@@ -11,14 +11,7 @@
         <div class="">
           <Table :columns="indexColumns" :data="indexData">
             <template slot-scope="{ row, index }" slot="number">
-              <!-- <strong v-if="row.degree==='1'">{{ index }} <Icon type="icon-warning" /></strong> -->
-              <!-- <strong v-else-if="row.degree==='2'">{{ index }} <Icon type="icon-error" /></strong> -->
               <strong>{{ index + 1 }} <Icon type="icon-ok" /></strong>
-            </template>
-            <template slot-scope="{ row }" slot="degree">
-              <span v-if="row.degree==='1'">警告</span>
-              <span v-else-if="row.degree==='2'">严重</span>
-              <span v-else>正常</span>
             </template>
           </Table>
         </div>
@@ -54,12 +47,12 @@
                     </i-col>
                     <i-col span="12">
                       <div class="info-line">
-                        <span>身高</span>
-                        <em>{{information.HEIGHT + 'cm'}}</em>
+                        <!-- <span>身高</span>
+                        <em>{{information.HEIGHT + 'cm'}}</em> -->
                       </div>
                       <div class="info-line">
-                        <span>体重</span>
-                        <em>{{information.WEIGHT + 'kg'}}</em>
+                        <!-- <span>体重</span>
+                        <em>{{information.WEIGHT + 'kg'}}</em> -->
                       </div>
                     </i-col>
                   </Row>
@@ -152,7 +145,7 @@
       <Card :bordered="false">
         <p slot="title">
           详情录入
-          <span>共3条记录</span>
+          <span>共{{modelList.length}}条记录</span>
         </p>
         <div class="model-box">
           <Select v-model="chooseModel" style="width:200px" placeholder="选择处理模版">
@@ -210,7 +203,7 @@ export default {
               info: params.row.info
             }
           })
-        }
+        },
       }, ...infoTableColumns],
       infoTableData :[],
       chooseModel: '',
@@ -219,6 +212,7 @@ export default {
         value: '模版1',
         label: '模版1'
       }],
+        
     //   modelTextList: [{
     //     name: '张晓静',
     //     type: '审核员',
@@ -273,7 +267,7 @@ export default {
         for(let i = 0; i < list.length; i=i+2){
             // console.log(i)
             let obj = {
-                name: '张晓静',
+                name: localStorage.getItem('UNAME'),
                 type: '审核员',
                 date: list[i + 1],
                 content: list[i]
@@ -297,7 +291,7 @@ export default {
     },
     saveModelText() {
       this.modelTextList.unshift({
-        name: '张晓静',
+        name: localStorage.getItem('UNAME'),
         type: '审核员',
         date: '2019-04-27 15:57:29',
         content: this.textModel

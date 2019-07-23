@@ -1,7 +1,7 @@
 const indexColumns = [
     {
         title: '序号',
-        slot: 'ID'
+        slot: 'ID',
     }, {
         title: '科室',
         key: 'DESKNAME'
@@ -13,7 +13,8 @@ const indexColumns = [
         key: 'PATIENTNAME'
     }, {
         title: '处方/单据号',
-        key: 'CODE'
+        key: 'CODE',
+        tooltip: true
     },  {
         title: '急慢性病',
         key: 'BILLSTYPENAME'

@@ -9,6 +9,33 @@ const infoTableColumns = [{
   title: '规格',
   key:'DSPEC'
 },{
+  title: '单位',
+  key:'DSPEC'
+},{
+  title: '数量',
+  key:'DSPEC'
+},{
+  title: '给药方式',
+  key:'DSPEC'
+},{
+  title: '频率',
+  key:'DSPEC'
+},{
+  title: '单次计量',
+  key:'DSPEC'
+},{
+  title: '单次计量单位',
+  key:'DSPEC'
+},{
+  title: '用药天数',
+  key:'DSPEC'
+},{
+  title: '违规内容',
+  key:'DSPEC'
+},{
+  title: '正确规则',
+  key:'DSPEC'
+},{
   title: '违规状态',
   key:'CLASS'
 }]

@@ -99,24 +99,24 @@ export default {
     text-align: left;
     position: absolute;
     top: 76px;
-    left: 130px;
+    left: 10%;
     @media (max-height:900px) and (min-height:701px) {
         top: 50px;
-        left: 120px;
+        left: 0px;
     }
     @media (max-height:700px) {
         top: 30px;
-        left: 110px;
+        left: 0px;
     }
     img {
         width: 535px;
         height: 106px;
         @media (max-height:900px) and (min-height: 701px) {
-            width: 390px;
+            width: 360px;
             height: 70px;
         }
         @media (max-height:700px) {
-            width: 290px;
+            width: 270px;
             height: 50px;
         }
     }
@@ -124,15 +124,18 @@ export default {
 .content-box {
     .content {
         position: absolute;
-        top: 20%;
-        left: 25%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         width: 50%;
         z-index: 1000;
         @media (max-height:900px) and (min-height: 701px) {
-            top: 17%;
+            // top: 17%;
+            width: 100%;
         }
         @media (max-height:700px) {
-            top: 15%;
+            // top: 15%;
+            width: 100%;
         }
         .content-logo {
             height: 250px;
@@ -148,7 +151,8 @@ export default {
         }
     }
     ul {
-        width: 350px;
+        max-width: 350px;
+        min-width: 200px;
         margin: 0 auto;
     }
     li {

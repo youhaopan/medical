@@ -6,14 +6,17 @@ const indexColumns = [
         title: '科室',
         key: 'CUREDESKNAME'
     }, {
+        title: '处方/单据号',
+        key: 'CODE',
+        sortable: true,
+        tooltip: true,
+        width:170
+    },{
         title: '医生',
         key: 'DOCTORNAME'
     }, {
         title: '患者',
         key: 'PATIENTNAME'
-    }, {
-        title: '处方/单据号',
-        key: 'CODE'
     }, {
         title: '类型',
         key: 'TYPENAME'
@@ -24,14 +27,16 @@ const indexColumns = [
         title: '就诊日期',
         key: 'CREATEDATE',
         sortable: true,
+        tooltip: true,
         width:170
     }, {
         title: '就诊科室',
         key: 'CUREDESKNAME'
     }, {
         title: '等级',
-        slot: 'degree',
-        sortable: true
+        // slot: 'degree',
+        // sortable: true
+        key: 'BILLSCLASSNAME'
     }, {
         title: '处理进度',
         key: 'DEALDOCTOR'
@@ -63,7 +68,9 @@ const indexColumns2 = [
         key: 'PATIENT'
     }, {
         title: '处方号',
-        key: 'CODE'
+        key: 'CODE',
+        sortable: true,
+        tooltip: true,
     }, {
         title: '诊断',
         key: 'TYPENAME'

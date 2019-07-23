@@ -115,11 +115,11 @@
       医院等级规则
     </p>
     <Table :columns="degreeColumns" :data="zsYy">
-      <template slot-scope="{ row }" slot="degree">
+      <!-- <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
-      </template>
+      </template> -->
       <template slot="edit" slot-scope="{ row }">
         <span @click="openEditRoom(2,'医院等级规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
@@ -131,11 +131,11 @@
       适用性别
     </p>
     <Table :columns="sexColumns" :data="zsSex">
-      <template slot-scope="{ row }" slot="degree">
+      <!-- <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
-      </template>
+      </template> -->
       <template slot="edit" slot-scope="{ row }">
         <span @click="openEditRoom(3,'性别规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
@@ -147,11 +147,11 @@
       适用年龄
     </p>
     <Table :columns="ageColumns" :data="zsAge">
-      <template slot-scope="{ row }" slot="degree">
+      <!-- <template slot-scope="{ row }" slot="degree">
         <span v-if="row.degree==='1'">警告</span>
         <span class="error" v-else-if="row.degree==='2'">严重</span>
         <span v-else>正常</span>
-      </template>
+      </template> -->
       <template slot="edit" slot-scope="{ row }">
         <span @click="openEditRoom(4,'年龄规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span>
@@ -230,7 +230,7 @@ export default {
         key: 'applyName'
       }, {
         title: '违规等级',
-        slot: 'degree'
+        key: 'degree'
       }, {
         title: '费别',
         key: 'price'
@@ -256,7 +256,7 @@ export default {
         key: 'data'
       }, {
         title: '违规等级',
-        slot: 'degree'
+        key: 'degree'
       }, {
         title: '费别',
         key: 'price'
@@ -291,7 +291,7 @@ export default {
         key: 'age'
       }, {
         title: '违规等级',
-        slot: 'degree'
+        key: 'degree'
       }, {
         title: '费别',
         key: 'price'

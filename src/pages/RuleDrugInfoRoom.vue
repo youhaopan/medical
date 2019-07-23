@@ -323,7 +323,7 @@ export default {
                     priceCode: this.yyPrice.value,
                     edit: '编辑'
                 }
-                // console.log(yyData)
+                console.log(yyData)
                 this.$emit('setYyData', yyData, this.roconstypeId);
                 this.$Message.success('添加成功');
                 this.$refs.yyChild.reset();
