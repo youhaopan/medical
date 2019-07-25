@@ -189,10 +189,10 @@ created() {
  },
   methods:{
 ChangData(){
-     let sex=this.sex; //获取性别
-     let Id=localStorage.getItem('UID');
-     let  rc= localStorage.getItem('RANDOMCODE')
-      let user={'ID':Id,'RANDOMCODE':rc,"ACCOUNTS":this.uName,"PASSWORD":this.pwd,"NAME":this.name,'SEX':sex ,"MAIL":this.email,"REMARKS":this.JianJie,'DUTY':this.zw,
+    let sex=this.sex; //获取性别
+    let Id=localStorage.getItem('UID');
+    let rc= localStorage.getItem('RANDOMCODE')
+    let user={'ID':Id,'RANDOMCODE':rc,"ACCOUNTS":this.uName,"PASSWORD":this.pwd,"NAME":this.name,'SEX':sex ,"MAIL":this.email,"REMARKS":this.JianJie,'DUTY':this.zw,
      "DEPARTMENT":this.Desk ,"TITLE":this.zc,"START":"START",'NUMBER':this.number,'AIDENTITY':this.aid,'ROLEID':this.role, 'USERID':'' }
       if (this.uName=="" || this.pwd=="" ||  this.Desk=="" || this.aid=="" || this.number=="") {
        this.$Message.info('请填写完整信息');

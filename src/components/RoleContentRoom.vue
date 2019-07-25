@@ -19,8 +19,7 @@
 </template>
 
 <script>
-import {  dataTree,  dataTreeRole
-} from '../data/data-tree.js';
+// import { dataTreeRole } from '../data/data-tree.js';
 import TreeComponent from '../components/RoomTree';
 import urlPath from '../actions/api.js';
 export default {
@@ -31,8 +30,8 @@ export default {
   },
   data() {
     return {
-      dataTree,
-      dataTreeRole,
+      dataTree:[],
+    //   dataTreeRole,
       form: {
         FeiBie: '',
         WEIGUI: '',
@@ -70,27 +69,19 @@ export default {
     },
     getDeskList(){ //查询树的 数据
         let that=this;
-        // $.ajax({ // 加载科室 树
-        //   type:'post',
-        //   url:urlPath.getIndexTable+'/api/UserManager/QueryDeskZTreeList',
-        //   data:{'':this.dname},
-        //     success:function(dataRet){
-        //   that.dataTree=dataRet.D.childrens;
-        //         }
-        //     })
         // 已改数据结构
         let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
-         $.ajax({ // 加载科室 树
-           type:'post',
-           url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
-           data:desk,
-             success:function(dataRets){
+        $.ajax({ // 加载科室 树
+            type:'post',
+            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+            data:desk,
+            success:function(dataRets) {
                 //  console.log(dataRets.D.listDesk);
-                 let arr = [];
-                 let children = [];
-                 let ksArr = [];
-                 dataRets.D.listDesk.forEach(function(item, index) {
-                     if(item.UP === '' || item.UP === '0'){
+                let arr = [];
+                let children = [];
+                let ksArr = [];
+                dataRets.D.listDesk.forEach(function(item, index) {
+                    if (item.UP === '' || item.UP === '0'){
                         let obj = {
                             UP: item.UP,
                             children: [],
@@ -99,16 +90,16 @@ export default {
                             id: item.DESKID,
                             nodeKey: 0,
                             title: item.NAME
-                         }
-                         arr.push(obj)
-                     }else{
-                         children.push(item)
-                     }
-                 });
-                 for(let i = 0; i<children.length; i++){
-                     for(let j = 0; j<arr.length; j++){
-                         if(children[i].UP === arr[j].id){
-                             let objData = {
+                        }
+                        arr.push(obj)
+                    } else {
+                        children.push(item)
+                    }
+                });
+                for(let i = 0; i<children.length; i++){
+                    for(let j = 0; j<arr.length; j++){
+                        if(children[i].UP === arr[j].id){
+                            let objData = {
                                 UP: children[i].UP,
                                 children: null,
                                 disable: false,
@@ -116,22 +107,22 @@ export default {
                                 id: children[i].DESKID,
                                 nodeKey: 1,
                                 title: children[i].NAME
-                             }
+                            }
                             ksArr.push(objData)
                             arr[j].children.push(objData)
-                         }
+                        }
                     }
-                 }
-                    that.dataTree=arr;
-                    localStorage.setItem('ks', JSON.stringify(ksArr));
-                 }
-             })
-        },
-        getTreeData(data){
-            this.checkedList=data;
-            // console.log(this.checkedList)
-            this.$emit('checkedList', this.checkedList);
-        },
+                }
+                that.dataTree = arr;
+                localStorage.setItem('ks', JSON.stringify(dataRets.D.listDesk));
+            }
+        })
+    },
+    getTreeData(data){
+        this.checkedList=data;
+        // console.log(this.checkedList)
+        this.$emit('checkedList', this.checkedList);
+    },
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-<Modal class="pop-mod" :value="true" width="95%" title="编辑药品规则" :closable="false" :mask-closable="false" :footer-hide="true">
+<Modal id="modal" class="pop-mod" :value="true" width="95%" title="编辑药品规则" :closable="false" :mask-closable="false" :footer-hide="true">
   <div>
     <Icon type="md-close" slot="close" class="modal-close" @click="$emit('cancel')" />
     <Row>

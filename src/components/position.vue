@@ -43,13 +43,13 @@ export default {
 
 <style lang="less" scoped>
 .header-position {
-    height: 140px;
-    line-height: 140px;
+    height: 70px;
+    line-height: 70px;
     color: #9DB1BC;
     text-align: left;
-    @media (max-width: 1500px) {
-        height: 100px;
-        line-height: 100px;
-    }
+    // @media (max-width: 1500px) {
+    //     height: 100px;
+    //     line-height: 100px;
+    // }
 }
 </style>

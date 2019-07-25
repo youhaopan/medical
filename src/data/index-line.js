@@ -90,17 +90,16 @@ return {
             data : xData
         }
     ],
-    yAxis : [
-        {
-            type : 'value'
-        }
-    ],
+    yAxis: [{
+        type : 'value',
+        minInterval: 1 
+    }],
     series : [
         {
             name:'已处理',
             type:'line',
             stack: '总量',
-            // smooth: true,
+            smooth: true,
             // areaStyle: {
             //     color: '#bd77e3'
             // },
@@ -114,7 +113,7 @@ return {
             name:'未处理',
             type:'line',
             stack: '总量',
-            // smooth: true,
+            smooth: true,
             // areaStyle: {
             //     color: '#45bef4'
             // },

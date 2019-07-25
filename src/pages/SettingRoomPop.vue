@@ -123,7 +123,7 @@ export default {
            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
            data:desk,
              success:function(dataRets){
-                 console.log(dataRets.D.listDesk);
+                //  console.log(dataRets.D.listDesk);
                  let arr = [];
                  let children = [];
                  dataRets.D.listDesk.forEach(function(item, index) {
@@ -234,7 +234,7 @@ export default {
            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
            data:desk,
              success:function(dataRets){
-                 console.log(dataRets.D.listDesk);
+                //  console.log(dataRets.D.listDesk);
                  let arr = [];
                  let children = [];
                  dataRets.D.listDesk.forEach(function(item, index) {

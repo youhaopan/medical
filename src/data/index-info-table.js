@@ -9,32 +9,33 @@ const infoTableColumns = [{
   title: '规格',
   key:'DSPEC'
 },{
-  title: '单位',
-  key:'DSPEC'
-},{
   title: '数量',
-  key:'DSPEC'
+  key:'NUM',
+  align: 'center'
 },{
   title: '给药方式',
-  key:'DSPEC'
+  key:'DRUG_WAY'
 },{
   title: '频率',
-  key:'DSPEC'
+  key:'FREQUENCY'
 },{
   title: '单次计量',
-  key:'DSPEC'
+  key:'DC_MEASURE',
+  align: 'center'
 },{
   title: '单次计量单位',
-  key:'DSPEC'
+  key:'DC_MEASUREMENT',
+  align: 'center'
 },{
   title: '用药天数',
-  key:'DSPEC'
+  key:'DAY',
+  align: 'center'
 },{
   title: '违规内容',
-  key:'DSPEC'
+  key:'CONTENT'
 },{
   title: '正确规则',
-  key:'DSPEC'
+  key:'CORRECT_RULES'
 },{
   title: '违规状态',
   key:'CLASS'

@@ -65,13 +65,17 @@ export default {
                         that.$Message.info(dataRet.M);
                         localStorage.setItem('UID',dataRet.D.ID)//用户编码
                         localStorage.setItem('RANDOMCODE',dataRet.D.RANDOMCODE) //随机码
+                        localStorage.setItem('MEUNONE',JSON.stringify(dataRet.D.Data)) // 一级菜单
+                        localStorage.setItem('MEUNTWO',JSON.stringify(dataRet.D.Role)) //二级菜单
                         that.$router.push('home');//跳转页面
+                    } else {
+                        this.$Message.error(dataRet.M)
                     }
                 }
             })
       } else {
         this.$Message.error('请输入用户名和密码！')
-        this.$router.push('home');
+        // this.$router.push('home');
 
 //当前为测试非正式
       }

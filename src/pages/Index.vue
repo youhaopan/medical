@@ -13,7 +13,7 @@
         </div>
         <div class="box">
           <Card :bordered="false">
-              <p slot="title">就诊信息<span id="count">共{{indexData.length}}条记录，筛选条件：全部</span></p>
+              <p slot="title">就诊信息<span id="count">共{{total}}条记录，筛选条件：全部</span></p>
               <p slot="extra" class="index-box-head">
                 <Input prefix="ios-search"  v-model="yname" @on-blur="seldata"  placeholder="查询医生名..."  @keyup.enter.native="seldata" />
                 <FilterPop @dataForm='dataForm' />

@@ -27,7 +27,7 @@
                 </i-col>
                 <i-col span="15">
                   <div class="info-line">
-                    <span>就诊卡号</span>
+                    <span>就诊ID</span>
                     <em>{{information.CARD}}</em>
                   </div>
                   <Row class="">

@@ -2,7 +2,7 @@
   <Row>
     <i-col span="12">
       <label>选择<slot></slot></label>
-      <Input prefix="ios-search" placeholder="查询规则..." style="width:160px" />
+      <Input prefix="ios-search" placeholder="查询科室..." v-model="dname" @on-blur="seldesk" style="width:160px" />
       <Tree :data="treeData" @on-select-change="select"></Tree>
     </i-col>
     <i-col span="12">
@@ -26,15 +26,69 @@ export default {
   },
   data() {
     return {
+      dname: '',
       checkedTreeID:'',
       checkedTree: '',
       checkTreeList: []
     }
   },
   created:function(){
-    this.$emit('getTreeCheckedList', this.checkTreeList)
+    //   this.getDeskList();
+        this.$emit('getTreeCheckedList', this.checkTreeList)
   },
   methods: {
+    getDeskList(){ //查询树的 数据
+        let that=this;
+        // 已改数据结构
+        let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
+        $.ajax({ // 加载科室 树
+            type:'post',
+            url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+            data:desk,
+            success:function(dataRets) {
+                //  console.log(dataRets.D.listDesk);
+                let arr = [];
+                let children = [];
+                let ksArr = [];
+                dataRets.D.listDesk.forEach(function(item, index) {
+                    if (item.UP === '' || item.UP === '0'){
+                        let obj = {
+                            UP: item.UP,
+                            children: [],
+                            disable: false,
+                            expand: true,
+                            id: item.DESKID,
+                            nodeKey: 0,
+                            title: item.NAME
+                        }
+                        arr.push(obj)
+                    } else {
+                        children.push(item)
+                    }
+                });
+                for(let i = 0; i<children.length; i++){
+                    for(let j = 0; j<arr.length; j++){
+                        if(children[i].UP === arr[j].id){
+                            let objData = {
+                                UP: children[i].UP,
+                                children: null,
+                                disable: false,
+                                expand: true,
+                                id: children[i].DESKID,
+                                nodeKey: 1,
+                                title: children[i].NAME
+                            }
+                            ksArr.push(objData)
+                            arr[j].children.push(objData)
+                        }
+                    }
+                }
+                that.dataTree = arr;
+                localStorage.setItem('ks', JSON.stringify(dataRets.D.listDesk));
+            }
+        })
+    },
+    seldesk(){},
     edit(){
       this.checkTreeList = JSON.parse(localStorage.getItem('ksList'));
     },

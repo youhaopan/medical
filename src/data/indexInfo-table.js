@@ -20,10 +20,12 @@ const indexColumns = [
     }, {
         title: '类型',
         key: 'TYPENAME'
-    }, {
-        title: '急慢性病',
-        key: 'BILLSTYPENAME'
-    }, {
+    }, 
+    // {
+    //     title: '急慢性病',
+    //     key: 'BILLSTYPENAME'
+    // }, 
+    {
         title: '就诊日期',
         key: 'CREATEDATE',
         sortable: true,

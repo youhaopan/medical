@@ -15,10 +15,12 @@ const indexColumns = [
         title: '处方/单据号',
         key: 'CODE',
         tooltip: true
-    },  {
-        title: '急慢性病',
-        key: 'BILLSTYPENAME'
-    }, {
+    },  
+    // {
+    //     title: '急慢性病',
+    //     key: 'BILLSTYPENAME'
+    // }, 
+    {
         title: '就诊日期',
         key: 'CREATEDATE',
         sortable: true,

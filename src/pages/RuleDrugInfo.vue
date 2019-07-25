@@ -31,13 +31,11 @@
                     <Input  v-model="formData.NAME" disabled />
                     </li>
                     <li>
-                    <label >药品商品名</label>
-                    <Input  v-model="formData.NAME" disabled />
-                    </li>
-                    <li>
+                    
+                    <!-- <li>
                     <label >国药准字</label>
                     <Input v-model="formData.SPELLCODE" disabled />
-                    </li>
+                    </li> -->
                     <li>
                     <label >药品厂家</label>
                     <Input  v-model="formData.MANUFACTURES" disabled />
@@ -59,16 +57,20 @@
                 </ul>
             </i-form>
         </i-col>
-        <i-col span="12">
+        <!-- <i-col span="12">
           <div class="modal-img-box">
             <img src="../images/pic_drug.png" class="modal-pic-box" />
             <p><span>更换药品照片</span></p>
           </div>
         </i-col>
       </Row>
-      <Row>
-        <i-col>
+      <Row> -->
+        <i-col span="12">
           <ul class="pop-list">
+              <li>
+              <label >药品商品名</label>
+                <Input  v-model="formData.NAME" disabled />
+                </li>
             <li>
               <label >规格</label>
               <Input v-model="formData.PACKAGING" disabled />
@@ -81,20 +83,20 @@
                 <label >单价</label>
                 <Input v-model="formData.PRICE" disabled />
               </li>
-            <li>
+            <!-- <li>
               <label>最小剂量</label>
               <Input />
             </li>
             <li>
               <label>最小剂量单位</label>
               <Input />
-            </li>
+            </li> -->
           </ul>
         </i-col>
       </Row>
     </div>
   </Card>
-  <Card :bordered="false">
+  <Card :bordered="false" v-if="zsKs.length > 0">
     <p slot="title">
       科室规则
     </p>
@@ -110,7 +112,7 @@
       </template>
     </Table>
   </Card>
-  <Card :bordered="false">
+  <Card :bordered="false" v-if="zsYy.length > 0">
     <p slot="title">
       医院等级规则
     </p>
@@ -126,7 +128,7 @@
       </template>
     </Table>
   </Card>
-  <Card :bordered="false">
+  <Card :bordered="false" v-if="zsSex.length > 0">
     <p slot="title">
       适用性别
     </p>
@@ -142,7 +144,7 @@
       </template>
     </Table>
   </Card>
-  <Card :bordered="false">
+  <Card :bordered="false" v-if="zsAge.length > 0">
     <p slot="title">
       适用年龄
     </p>
@@ -410,9 +412,11 @@ export default {
             url: urlPath.getIndexTable+'/api/DrugRuleDeploy/QueryDrugRule',
             data: desk,
             success:function(dataRets){
-                _this.formData = dataRets.D.DRUG[0];
-                _this.rulenature = dataRets.D.RULENATURE[3];
-                _this.zhangshi(dataRets.D.RULECATALOG, dataRets.D.NATURECONTENT)
+                if (dataRets.Y === 100){
+                    _this.formData = dataRets.D.DRUG[0];
+                    _this.rulenature = dataRets.D.RULENATURE[3];
+                    _this.zhangshi(dataRets.D.RULECATALOG, dataRets.D.NATURECONTENT)
+                }
             }
         })
     },
@@ -423,9 +427,6 @@ export default {
         this.wg = JSON.parse(localStorage.getItem('wg'));
         this.yy = JSON.parse(localStorage.getItem('yy'));
 
-
-
-        console.log(this.ks);
         let ksDataList = []
         let ks = []
         let yyDataList = []
@@ -437,14 +438,8 @@ export default {
         let data = []
         let name = []
 
-
-        
-            // data = dataList[j].DATA.split(',')
-            // name = dataList[j].NAME.split(',')
-
         for(let i = 0; i < ksList.length;i++){
             for(let j = 0; j < dataList.length;j++){
-                // console.log(data, name)
                 if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '科室规则'){
                     ksDataList.push(dataList[j])
                 } else if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '医院等级规则'){
@@ -497,15 +492,16 @@ export default {
                 }
             }
             // obj.name = obj.name.join(',')
-            console.log(obj)
+            // console.log(obj)
             ks.push(obj)
         }
         for(let i = 0; i < ks.length; i++){
             // 循环获取科室名字
+            // console.log(ks[i].nameId)
             for(let j = 0; j < ks[i].nameId.length; j++){
                 for(let k = 0; k < this.ks.length; k++){
-                    if(ks[i].nameId[j] === this.ks[k].id){
-                        ks[i].name[j] = this.ks[k].title
+                    if(ks[i].nameId[j] === this.ks[k].DESKID){
+                        ks[i].name[j] = this.ks[k].NAME
                     }
                 }
             }
@@ -513,7 +509,7 @@ export default {
             for(let f = 0; f < this.fb.length; f++){
                 if(ks[i].FeiBie === this.fb[f].CODE){
                     ks[i].price = this.fb[f].Type
-                }e
+                }
             }
             // 循环获取违规等级名字
             for(let w = 0; w < this.wg.length; w++){
