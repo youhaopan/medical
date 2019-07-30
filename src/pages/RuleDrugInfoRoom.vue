@@ -23,8 +23,8 @@
           <RoleContentAge  ref="ageChild" :price-list='priceList' :degree-list='degreeList' @selectPriceId='agePrice = arguments[0]' @selectDegreeId='ageDegree = arguments[0]' @dataStart='dataStart = arguments[0]' @dataEnd='dataEnd = arguments[0]' v-show="roconstypeData===4" />
           <div class="ivu-modal-footer">
             <Button size="large" class="btn-cancel" @click="$emit('cancel')">返回</Button>
-            <Button size="large" v-if="show" type="default" class="btn-submit" @click="save">新增保存编辑</Button>
-            <Button size="large" v-if="!show" type="default" class="btn-submit" @click="editSave">编辑保存编辑</Button>
+            <Button size="large" v-if="show" type="default" class="btn-submit" @click="save">新增保存</Button>
+            <Button size="large" v-if="!show" type="default" class="btn-submit" @click="editSave">编辑保存</Button>
           </div>
         </Card>
       </i-col>
@@ -287,7 +287,7 @@ export default {
                 }
                 // console.log(roomData)
                 this.$emit('ksSave', roomData, this.roconstypeId);
-                this.$Message.success('添加成功');
+                // this.$Message.success('添加成功');
                 this.$refs.ksChild.reset();
                 // for (var key in roomData) { 
                 //     if (this.formData[key] !== roomData[key]) { 
@@ -325,7 +325,7 @@ export default {
                 }
                 console.log(yyData)
                 this.$emit('setYyData', yyData, this.roconstypeId);
-                this.$Message.success('添加成功');
+                // this.$Message.success('添加成功');
                 this.$refs.yyChild.reset();
             }else{
                 this.$Message.warning('请选择要添加的医院等级规则');
@@ -351,7 +351,7 @@ export default {
                 }
                 // console.log(sexData)
                 this.$emit('setSexData', sexData, this.roconstypeId);
-                this.$Message.success('添加成功');
+                // this.$Message.success('添加成功');
                 this.$refs.sexChild.reset();
             }else{
                 this.$Message.warning('请选择要添加的医院等级规则');
@@ -383,7 +383,7 @@ export default {
                 }
                 // console.log(ageData)
                 this.$emit('setAgeData', ageData, this.roconstypeId);
-                this.$Message.success('添加成功');
+                // this.$Message.success('添加成功');
                 this.$refs.ageChild.reset();
             }else{
                 this.$Message.warning('请选择要添加的年龄规则');

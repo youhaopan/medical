@@ -37,6 +37,10 @@ export default {
     this.$emit('getTreeCheckedList', this.checkTreeList)
   },
   methods: {
+    addList(list){
+        this.checkTreeList = list
+        // console.log(this.checkTreeList,'列表')
+    },
     delAllChecked() {
       this.checkTreeList = []
     },

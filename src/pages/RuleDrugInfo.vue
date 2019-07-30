@@ -28,7 +28,7 @@
                 <ul class="pop-list">
                     <li>
                     <label>药品通用名</label>
-                    <Input  v-model="formData.NAME" disabled />
+                    <Input id="input" v-model="formData.NAME" disabled />
                     </li>
                     <li>
                     
@@ -107,8 +107,8 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(1,'科室规则', 'edit', row)">编辑
-          <Icon custom="icon-edit" /></span>
+        <!-- <span @click="openEditRoom(1,'科室规则', 'edit', row)">编辑
+          <Icon custom="icon-edit" /></span> -->
       </template>
     </Table>
   </Card>
@@ -123,8 +123,8 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(2,'医院等级规则', 'edit', row)">编辑
-          <Icon custom="icon-edit" /></span>
+        <!-- <span @click="openEditRoom(2,'医院等级规则', 'edit', row)">编辑
+          <Icon custom="icon-edit" /></span> -->
       </template>
     </Table>
   </Card>
@@ -139,8 +139,8 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(3,'性别规则', 'edit', row)">编辑
-          <Icon custom="icon-edit" /></span>
+        <!-- <span @click="openEditRoom(3,'性别规则', 'edit', row)">编辑
+          <Icon custom="icon-edit" /></span> -->
       </template>
     </Table>
   </Card>
@@ -155,14 +155,14 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <span @click="openEditRoom(4,'年龄规则', 'edit', row)">编辑
-          <Icon custom="icon-edit" /></span>
+        <!-- <span @click="openEditRoom(4,'年龄规则', 'edit', row)">编辑
+          <Icon custom="icon-edit" /></span> -->
       </template>
     </Table>
   </Card>
   <div slot="footer">
-    <Button size="large" class="btn-cancel" @click="$emit('cancel')">放弃</Button>
-    <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button>
+    <Button size="large" class="btn-cancel" @click="$emit('cancel')">返回</Button>
+    <!-- <Button size="large" type="default" class="btn-submit" @click="save">保存修改</Button> -->
   </div>
   <RuleDrugInfoRoom ref="myAdd" :role-type='roleType' :role-title="roleTitle" v-show="openEditData" @cancel="cancelNest" 
   @ksSave="saveNest1" @setYyData="setYyData" @setSexData="setSexData" @setAgeData="setAgeData"
@@ -205,6 +205,7 @@ export default {
       zsYy: [],
       zsSex: [],
       zsAge: [],
+      rowData: {},
       // 科室//////////////////////////////
       roomColumns: [{
         title: '来源',
@@ -218,10 +219,12 @@ export default {
       }, {
         title: '费别',
         key: 'price'
-      }, {
-        title: '操作',
-        slot: 'edit'
-      }],
+      },
+    //    {
+    //     title: '操作',
+    //     slot: 'edit'
+    //   }
+      ],
       roomData: [],
       // 医院等级规则//////////////////////////////
       degreeColumns: [{
@@ -236,10 +239,12 @@ export default {
       }, {
         title: '费别',
         key: 'price'
-      },{
-        title: '操作',
-        slot: 'edit'
-      }],
+      },
+    //   {
+    //     title: '操作',
+    //     slot: 'edit'
+    //   }
+      ],
       degreeData: [],
       // 性别规则///////////////////////
       sexColumns: [{
@@ -262,10 +267,12 @@ export default {
       }, {
         title: '费别',
         key: 'price'
-      },{
-        title: '操作',
-        slot: 'edit'
-      }],
+      },
+    //   {
+    //     title: '操作',
+    //     slot: 'edit'
+    //   }
+      ],
       sexData: [],
       // sexData: [{
       //   number: '系统',
@@ -297,10 +304,12 @@ export default {
       }, {
         title: '费别',
         key: 'price'
-      },{
-        title: '操作',
-        slot: 'edit'
-      }],
+      },
+    //   {
+    //     title: '操作',
+    //     slot: 'edit'
+    //   }
+      ],
       ageData: []
     //   ageData: [{
     //     number: '系统',
@@ -359,7 +368,8 @@ export default {
     // 保存科室信息
     saveNest1(obj,rocoId) {
         this.roomData.push(obj);
-        this.zsKs.push(obj);
+        // this.zsKs.push(obj);
+        this.save();
         console.log(this.roomData)
     },
     editKs(row){
@@ -369,7 +379,8 @@ export default {
     // 保存医院等级规则
     setYyData(obj,rocoId){
         this.degreeData.push(obj)
-        this.zsYy.push(obj)
+        // this.zsYy.push(obj)
+        this.save();
         console.log(this.degreeData)
     },
     editYy(row){
@@ -379,7 +390,8 @@ export default {
     // 保存性别规则
     setSexData(obj,rocoId){
         this.sexData.push(obj)
-        this.zsSex.push(obj)
+        // this.zsSex.push(obj)
+        this.save();
         console.log(this.sexData)
     },
     editSex(row){
@@ -388,14 +400,16 @@ export default {
     // 保存年龄规则
     setAgeData(obj,rocoId){
         this.ageData.push(obj)
-        this.zsAge.push(obj)
+        // this.zsAge.push(obj)
+        this.save();
         console.log(this.ageData)
     },
     editAge(row){
         this.ageData.push(row)
     },
     parentHandleclick(row){
-      console.log(row)
+        console.log(row)
+        this.rowData = row
         this.ypId = row.ID
         console.log(this.ypId)
         let _this = this;
@@ -415,7 +429,9 @@ export default {
                 if (dataRets.Y === 100){
                     _this.formData = dataRets.D.DRUG[0];
                     _this.rulenature = dataRets.D.RULENATURE[3];
+                    // console.log(dataRets.D)
                     _this.zhangshi(dataRets.D.RULECATALOG, dataRets.D.NATURECONTENT)
+                    
                 }
             }
         })
@@ -437,9 +453,11 @@ export default {
         let age = []
         let data = []
         let name = []
+        console.log(dataList)
+        console.log(ksList)
 
-        for(let i = 0; i < ksList.length;i++){
-            for(let j = 0; j < dataList.length;j++){
+        for(let i = 0; i < ksList.length; i++){
+            for(let j = 0; j < dataList.length; j++){
                 if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '科室规则'){
                     ksDataList.push(dataList[j])
                 } else if(ksList[i].ID === dataList[j].RULE && ksList[i].NAME === '医院等级规则'){
@@ -451,6 +469,10 @@ export default {
                 }
             }
         }
+        console.log(ksDataList)
+        console.log(yyDataList)
+        console.log(sexDataList)
+        console.log(ageDataList)
         ////  /////////////////////////////      科室列表处理
         for(let i = 0; i < ksDataList.length; i++){
             ksDataList[i].DATA = ksDataList[i].DATA.split(',')
@@ -522,7 +544,7 @@ export default {
             ks[i].name = ks[i].name.join(',')
         }
         this.zsKs = ks;
-        // console.log(ks)
+        console.log(ks)
 
         /////////////////////////////////////////// 医院等级列表处理
         for(let i = 0; i < yyDataList.length; i++){
@@ -758,7 +780,8 @@ export default {
                     _this.sexData = []
                     _this.ageData = []
                     _this.$Message.success(dataRets.M);
-                    _this.$emit('save')
+                    _this.parentHandleclick(_this.rowData);
+                    // _this.$emit('save')
                 }
             }
         })

@@ -11,7 +11,8 @@ const infoTableColumns = [{
 },{
   title: '数量',
   key:'NUM',
-  align: 'center'
+  width: 60
+  // align: 'center'
 },{
   title: '给药方式',
   key:'DRUG_WAY'
@@ -21,21 +22,25 @@ const infoTableColumns = [{
 },{
   title: '单次计量',
   key:'DC_MEASURE',
-  align: 'center'
+  // align: 'center'
 },{
   title: '单次计量单位',
   key:'DC_MEASUREMENT',
-  align: 'center'
+  // align: 'center'
 },{
   title: '用药天数',
   key:'DAY',
-  align: 'center'
+  // align: 'center'
 },{
   title: '违规内容',
-  key:'CONTENT'
+  key:'CONTENT',
+  sortable: true,
+  tooltip: true,
 },{
   title: '正确规则',
-  key:'CORRECT_RULES'
+  key:'CORRECT_RULES',
+  sortable: true,
+  tooltip: true,
 },{
   title: '违规状态',
   key:'CLASS'

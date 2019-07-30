@@ -6,18 +6,22 @@ const userColumns = [
     },  {
         title: '角色名',
         key: 'NAME',
-        width: 90
+        tooltip: true,
+        width: 100
     }, {
         title: '角色描述',
         key: 'DESC'
     }, {
         title: '创建日期',
         key: 'CREATEDATE',
-        width: 130
+        sortable: true,
+        tooltip: true,
+        width: 150
     }, {
         title: '最后更新日期',
         key: 'UPDATEDATE',
-        width: 130
+        tooltip: true,
+        width: 150
     }, {
         title: '操作',
         slot: 'edit',

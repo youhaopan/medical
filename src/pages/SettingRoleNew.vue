@@ -4,48 +4,50 @@
     <span>新建角色</span>
     <Icon custom="icon-add-user" />
   </Button> -->
-  <Modal  class="pop-mod" :value="true" width="90%" title="角色设置"  :closable="false" :mask-closable="false" >
+  <Modal  class="pop-mod" :value="true" width="60%" title="角色设置"  :closable="false" :mask-closable="false" >
     <div class="">
         <Icon type="md-close" slot="close" class="modal-close" @click="$emit('cancel')" />
-      <Row class="list-line" v-if="!pois">
+      <!-- <Row class="list-line" v-if="!pois">
         <i-col span="6">
           <label for="">角色名称</label>
         </i-col>
         <i-col span="6">
           <label for="">角色描述</label>
         </i-col>
-      </Row>
+      </Row> -->
       <Row class="list-line" v-if="!pois">
-        <i-col span="6">
+        <i-col span="12">
+            <label for="">角色名称：</label>
           <i-input v-model="rname" />
         </i-col>
-        <i-col span="6">
+        <i-col span="12">
+             <label for="">角色描述：</label>
           <i-input v-model="Remark" />
         </i-col>
-        <i-col span="6">
-         </i-col>
+        <!-- <i-col span="6">
+         </i-col> -->
         <!-- <i-col span="6">
           <label>跨科室查看权限</label>
           <i-switch class="ml-form" :value="true" />
         </i-col> -->
       </Row>
       <Row class="wrapper-row">
-        <i-col span="24" v-if="!pois">
+        <i-col span="24" v-show="!pois">
           <Card class="card-tree-date" :bordered="false">
             <p slot="title">
               <Icon type="icon-tree"></Icon>角色信息
             </p>
-            <Input slot="extra" prefix="ios-search" v-model="uname"  @on-blur="sel" placeholder="查询角色" />
-            <Tree :treeData="dataDesk" @getTreeCheckedList="getTreeCheckedList">角色</Tree>
+            <Input slot="extra" prefix="ios-search" v-model="uname"  @on-blur="sel" @keyup.enter.native="sel" placeholder="查询角色" />
+            <Tree ref="bbb" :treeData="dataDesk" @getTreeCheckedList="getTreeCheckedList">角色</Tree>
           </Card>
         </i-col>
-        <i-col span="24" v-if="pois">
+        <i-col span="24" v-show="pois">
           <Card class="card-tree-date" :bordered="false">
             <p slot="title">
               <Icon type="icon-settings"></Icon>界面操作权限
             </p>
-            <Input slot="extra" prefix="ios-search" v-model="cname" @on-blur="selCzuo" placeholder="查询操作" />
-            <Tree :treeData="formdata" @getTreeCheckedList="getTreeCheckedList1">操作</Tree>
+            <Input slot="extra" prefix="ios-search" v-model="cname" @on-blur="selCzuo" @keyup.enter.native="selCzuo" placeholder="查询操作" />
+            <Tree ref="sss" :treeData="formdata" @getTreeCheckedList="getTreeCheckedList1">操作</Tree>
           </Card>
         </i-col>
       </Row>
@@ -90,7 +92,8 @@ export default {
     }, 
     props: {
         pois: { type: Object },
-        ifupd: { type: String }
+        ifupd: { type: String },
+        list: {type: Array}
     },
     watch:{
         pois(val){
@@ -102,7 +105,16 @@ export default {
                 this.rname='';
                 this.Remark='';  
             }
-        }
+            this.$refs.sss.delAllChecked();
+            this.$refs.bbb.delAllChecked();
+            this.$refs.sss.addList(this.list);
+        },
+        // list(){
+        //     console.log(this.list.length)
+        //     // if(this.list.length > 0){
+        //         this.$refs.sss.addList(this.list);
+        //     // }
+        // }
     },
     components: {
       Tree
@@ -119,7 +131,11 @@ export default {
                 this.getDeskList() ;
             } else {
                 let that=this;
-                let user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM': -1};
+                let user = {
+                    UID: localStorage.getItem('UID'),
+                    RANDOMCODE: localStorage.getItem('RANDOMCODE'),
+                    NAME: this.uname
+                };
                 $.ajax({ //加载 角色 树
                     type: 'post',
                     url: urlPath.getIndexTable+'/api/RoleManager/QueryRole',
@@ -191,6 +207,10 @@ export default {
                     if (ret.Y === 100) {
                         that.$Message.info('新增成功');
                         that.getDeskList();
+                        that.$refs.bbb.delAllChecked();
+                        that.$emit('closa')
+                        that.rname = ''
+                        that.Remark = ''
                     }else {
                         that.$Message.info('新增失败');
                     }
@@ -200,7 +220,7 @@ export default {
         },
         // 保存权限
         add(){
-            console.log(this.pois.ID)
+            // console.log(this.pois.ID)
             let formlist = [];
             for (let j = 0; j <this. treecheckedList1.length; j++) {
                 let  obj = { 
@@ -209,7 +229,7 @@ export default {
                 formlist.push(obj);
             }
             let that = this;
-            console.log(formlist)
+            // console.log(formlist)
             let data = {
                 ID: localStorage.getItem("UID"),
                 RANDOMCODE: localStorage.getItem("RANDOMCODE"),
@@ -227,6 +247,8 @@ export default {
                 success:function(ret){
                     if (ret.Y === 100) {
                         that.$Message.info('授权成功');
+                        that.$refs.sss.delAllChecked();
+                        that.$emit('closa')
                     } else {
                         that.$Message.info('授权失败');
                     }
@@ -268,7 +290,7 @@ export default {
                 url: urlPath.getIndexTable+'/api/RoleManager/QueryRole',
                 data: user,
                 success: function(ret){
-                    console.log(ret)
+                    // console.log(ret)
                     let arr = []
                     if(ret.Y === 100){
                             ret.D.listRole.forEach(function(item){
@@ -283,7 +305,7 @@ export default {
                                 arr.push(obj)
                             })
                         that.dataDesk[0].children = arr;
-                        console.log(that.dataDesk)
+                        // console.log(that.dataDesk)
                     }
                 }
             })
@@ -296,3 +318,4 @@ export default {
 </script>
 <style lang="less">
 </style>
+0

@@ -4,13 +4,13 @@
     <span>筛选设置</span>
     <Icon type="icon-pop" />
   </Button>
-  <Modal v-model="filterShow" title="筛选设置" width="90%">
+  <Modal v-model="filterShow" id="modal" title="筛选设置" width="70%">
     <div class="">
       <Card :bordered="false">
         <p slot="title">
           <Icon custom="icon-basic"></Icon>查询基本信息
         </p>
-        <Row class="list-line">
+        <!-- <Row class="list-line">
           <i-col span="6">
             <label for="">姓名</label>
           </i-col>
@@ -20,15 +20,18 @@
           <i-col span="6">
             <label for="">性别</label>
           </i-col>
-        </Row>
+        </Row> -->
         <Row class="list-line">
-          <i-col span="6">
+          <i-col span="8">
+            <label for="">姓名：</label>
             <i-input />
           </i-col>
-          <i-col span="6">
+          <i-col span="8">
+              <label for="">电话：</label>
             <i-input />
           </i-col>
-          <i-col span="6">
+          <i-col span="8">
+              <label for="">性别：</label>
             <RadioGroup type="button" v-model="sexChoose" class="state-choose">
               <Radio class="error" label="男" />
               <Radio label="女" />
@@ -42,7 +45,7 @@
             <p slot="title">
               <Icon type="icon-tree"></Icon>筛选科室
             </p>
-            <Input slot="extra" prefix="ios-search" v-model="dname" @on-blur="seldesk" placeholder="查询科室" />
+            <Input slot="extra" prefix="ios-search" v-model="dname" @on-blur="seldesk" @keyup.enter.native="seldesk" placeholder="查询科室" />
             <Tree :treeData="dataTree1" tree-color="tree-blue" @getTreeCheckedList="getRoomCheckedList">科室</Tree>
           </Card>
         </i-col>
@@ -51,7 +54,7 @@
             <p slot="title">
               <Icon type="icon-date"></Icon>筛选职称
             </p>
-            <Input slot="extra" prefix="ios-search" v-model="zname" @on-blur="seltitle" placeholder="查询职称" />
+            <Input slot="extra" prefix="ios-search" v-model="zname" @on-blur="seltitle" @keyup.enter.native="seltitle" placeholder="查询职称" />
             <Tree :treeData="dataTree" tree-color="tree-purple" @getTreeCheckedList="getTreeCheckedList">职称</Tree>
           </Card>
         </i-col>
@@ -169,35 +172,33 @@ export default {
              })
     },
     ok() {
-      // this.$Message.info('Clicked ok');
-      this.filterShow = false;
+        // this.$Message.info('Clicked ok');
+        this.filterShow = false;
 
-      let rarray=this.roomCheckedList;
-      let desk="'"+rarray[0].id+"'";
-       let rarray1=this.treeCheckedList;
+        let rarray=this.roomCheckedList;
+        let desk="'"+rarray[0].id+"'";
+        let rarray1=this.treeCheckedList;
         let title="'"+rarray1[0].id+"'";
-      for (let i = 1; i < rarray.length; i++) {
-desk+=",'"+rarray[i].id+"'";
-      }
-      for (let i = 1; i < rarray1.length; i++) {
-  title+=",'"+rarray1[i].id+"'";
+        for (let i = 1; i < rarray.length; i++) {
+            desk+=",'"+rarray[i].id+"'";
         }
-       let user={Name:this.Name, Phone:this.Phone,'SEXCODE':this.sexChoose,'DEPARTMENT':desk,'TITLE': title};
-       let that =this;
+        for (let i = 1; i < rarray1.length; i++) {
+             title+=",'"+rarray1[i].id+"'";
+        }
+        let user={Name:this.Name, Phone:this.Phone,'SEXCODE':this.sexChoose,'DEPARTMENT':desk,'TITLE': title};
+        let that =this;
         $.ajax({  //按条件查询用户
-         type:'post',
-         url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
-         data:user,
-         success:function(dataRet){
-          if (dataRet.M=="您的该项操作已经成功执行！")
-          {
-           that.$emit('func',dataRet.D.listUser)
-          }
-         else {
-           alert("查询失败")
-         }
-       }
-     })
+            type:'post',
+            url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+            data:user,
+            success:function(dataRet){
+                if (dataRet.M=="您的该项操作已经成功执行！"){
+                    that.$emit('func',dataRet.D.listUser, dataRet.D.Count)
+                } else {
+                alert("查询失败")
+                }
+            }
+        })
     },
     cancel() {
       // this.$Message.info('Clicked cancel');

@@ -4,22 +4,28 @@ const userColumns = [{
   width: '60px'
 }, {
   title: '药品通用名',
-  key: 'NAME'
+  key: 'NAME',
+  tooltip: true,
 }, {
   title: '药品商品名',
-  key: 'NAME'
+  key: 'NAME',
+  tooltip: true,
 }, {
   title: '规格',
-  key: 'SPEC'
+  key: 'SPEC',
+  tooltip: true,
 }, {
   title: '包装',
-  key: 'PACKAGING'
+  key: 'PACKAGING',
+  tooltip: true,
 }, {
   title: '厂家',
-  key: 'MANUFACTURES'
+  key: 'MANUFACTURES',
+  tooltip: true,
 }, {
   title: '规则',
-  slot: 'edit'
+  slot: 'edit',
+  tooltip: true,
 }];
 const userData = [{
   number: 1,

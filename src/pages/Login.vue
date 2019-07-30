@@ -66,7 +66,7 @@ export default {
                         localStorage.setItem('UID',dataRet.D.ID)//用户编码
                         localStorage.setItem('RANDOMCODE',dataRet.D.RANDOMCODE) //随机码
                         localStorage.setItem('MEUNONE',JSON.stringify(dataRet.D.Data)) // 一级菜单
-                        localStorage.setItem('MEUNTWO',JSON.stringify(dataRet.D.Role)) //二级菜单
+                        localStorage.setItem('MEUNTWO',JSON.stringify(dataRet.D.Roles)) //二级菜单
                         that.$router.push('home');//跳转页面
                     } else {
                         this.$Message.error(dataRet.M)

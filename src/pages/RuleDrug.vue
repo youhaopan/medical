@@ -93,9 +93,9 @@ export default {
         } else {
             // let  drug={'NAME':this.pname};
             let  data = {
-                'ID':localStorage.getItem("UID"),
+                'UID':localStorage.getItem("UID"),
                 'RANDOMCODE':localStorage.getItem("RANDOMCODE"),
-                CurrentPage: this.current,
+                CurrentPage: 1,
                 PageSize: this.pageSize,
                 drug: {'NAME':this.pname}
             };
@@ -174,7 +174,7 @@ export default {
     getData(){
         let that=this;
         let data = {
-                "ID":localStorage.getItem("UID"),
+                "UID":localStorage.getItem("UID"),
                 "RANDOMCODE":localStorage.getItem("RANDOMCODE"),
                 "drug": {'NAME':this.pname},
                 CurrentPage: this.current,

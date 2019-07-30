@@ -24,7 +24,8 @@ const indexColumns = [
         title: '就诊日期',
         key: 'CREATEDATE',
         sortable: true,
-        width:200
+        tooltip: true
+        // width:200
     }, {
         title: '就诊科室',
         key: 'CUREDESKNAME'

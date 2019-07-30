@@ -4,7 +4,7 @@
     <span>筛选设置</span>
     <Icon type="icon-pop" />
   </Button>
-  <Modal v-model="filterShow" title="筛选设置" width="90%" id="modal">
+  <Modal v-model="filterShow" title="筛选设置" width="70%" id="modal">
     <div class="">
       <Row>
         <i-col span="12">
@@ -43,7 +43,7 @@
       </Row>
       <Card :bordered="false">
         <p slot="title">
-          <Icon type="ios-alert"></Icon>筛选状态
+          <Icon type="icon-alert"></Icon>筛选状态
         </p>
         <RadioGroup type="button" @on-change="selectSex" class="state-choose">
           <Radio label="正常" value='NORMAL'></Radio>

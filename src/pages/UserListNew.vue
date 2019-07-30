@@ -30,17 +30,11 @@
                     <Input  v-model="aid"/>
               </li>
             <li>
-              <label>账号</label>
+              <label>登录账号</label>
               <Input   v-model="uName"   />
             </li>
-            <li>
-              <label>密码</label>
-              <Input v-model="pwd" type="password" />
-            </li>
-            <li>
-              <label>邮箱</label>
-              <Input v-model="email" />
-            </li>
+            
+            
           </ul>
         </i-col>
         <i-col span="12">
@@ -51,21 +45,25 @@
         </i-col>
       </Row>
       <Row>
-        <i-col>
+        <i-col span='12'>
           <ul class="pop-list">
-            <li>
+            <!-- <li>
               <label>用户编号</label>
               <Input  v-model="number"/>
-          </li>
-            <li>
-              <label>个人简介</label>
-              <Input  v-model="JianJie" />
-          </li>
+          </li> -->
+          <li>
+              <label>登录密码</label>
+              <Input v-model="pwd" type="password" />
+            </li>
+           <li>
+              <label>邮箱</label>
+              <Input v-model="email" />
+            </li>
             <li>
               <p>科室 </p>
             </li>
             <li>
-              <Select v-model="Desk" style="width:200px">
+              <Select v-model="Desk" style="width:200px" filterable>
               <Option v-for="item in DeskList" :value="item.DESKID" :key="item.DESKID">{{ item.NAME }}</Option>
             </Select>
             </li>
@@ -82,6 +80,14 @@
     </Select>
             </li>
           </ul>
+        </i-col>
+        <i-col span='12' style="text-align: center;">
+            <ul class="pop-list">
+                 <li>
+                    <label>个人简介</label>
+                    <Input type="textarea" v-model="JianJie" :rows='9' />
+                </li>
+            </ul>
         </i-col>
       </Row>
     </div>
@@ -194,7 +200,7 @@ ChangData(){
     let rc= localStorage.getItem('RANDOMCODE')
     let user={'ID':Id,'RANDOMCODE':rc,"ACCOUNTS":this.uName,"PASSWORD":this.pwd,"NAME":this.name,'SEX':sex ,"MAIL":this.email,"REMARKS":this.JianJie,'DUTY':this.zw,
      "DEPARTMENT":this.Desk ,"TITLE":this.zc,"START":"START",'NUMBER':this.number,'AIDENTITY':this.aid,'ROLEID':this.role, 'USERID':'' }
-      if (this.uName=="" || this.pwd=="" ||  this.Desk=="" || this.aid=="" || this.number=="") {
+      if (this.uName=="" || this.pwd=="" ||  this.Desk=="" || this.aid=="") { // this.number==""
        this.$Message.info('请填写完整信息');
      return ;
      }
@@ -210,6 +216,7 @@ ChangData(){
                  if (dataRet.Y==100)
                   {
                    that.$emit("save",dataRet.Y);
+                   that.$emit( "修改成功");
                  }
                  else {
                    that.$emit( "修改失败");
@@ -225,7 +232,8 @@ ChangData(){
            success:function(dataRet){
             if (dataRet.Y==100)
              {
-               alert("添加成功")
+            //    alert("添加成功")
+               that.$emit( "添加成功");
               that.$emit("save",dataRet.M);
             }else {
               that.$emit("添加失败");
@@ -234,8 +242,12 @@ ChangData(){
              })
 }} ,
   getRoleList(){
-          let that=this;
-          let role={"UID":localStorage.getItem("UID")};
+        let that=this;
+        let role={
+            "UID":localStorage.getItem("UID"),
+            CurrentPage: -1,
+            PageSize: -1
+        };
           $.ajax({ //加载角色信息
             type:'post',
             url:urlPath.getIndexTable+'/api/RoleManager/QueryRole',

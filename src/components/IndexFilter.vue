@@ -4,7 +4,7 @@
     <span>筛选设置</span>
     <Icon type="icon-pop" />
   </Button>
-  <Modal v-model="filterShow" title="筛选设置" width="90%" id="modal">
+  <Modal v-model="filterShow" title="筛选设置" width="70%" id="modal">
     <div class="">
       <Row>
         <i-col span="12">

@@ -3,14 +3,14 @@
       <position :bread="[{name:'用户管理', path: '/user'}, {name:'用户列表', now: true, path: ''}]" />
       <Row class="box">
         <Card :bordered="false">
-            <p slot="title">用户列表<span id='count'>共400条记录</span></p>
+            <p slot="title">用户列表<span id='count'>共{{total}}条记录</span></p>
             <p slot="extra">
-              <Input prefix="ios-search" v-model="sName"  @on-blur="seldata"  placeholder="查询用户名..."   style="width: auto" />
+              <Input prefix="ios-search" v-model="sName"  @on-blur="seldata" @keyup.enter.native="seldata"  placeholder="查询用户名..."   style="width: auto" />
               <FilterPop @func="getSelData" />
               <BtnColor btn-title="新建人员" btn-icon="icon-add-user" @open="openPop"  />
             </p>
             <div>
-         <Scroll :on-reach-bottom="handleReachBottom">
+         <!-- <Scroll :on-reach-bottom="handleReachBottom"> -->
               <Table id="user"   :columns="userColumns"   :data="userData">
                 <template slot-scope="{ row, index }" slot="ID">
                   <strong :id="index + 1">{{ index+1 }} </strong>
@@ -26,17 +26,20 @@
                     <span  @click="editUser(row)">编辑<Icon custom="icon-edit"/></span>
                 </template>
               </Table>
-        </Scroll>
+        <!-- </Scroll> -->
             </div>
             <div class="table-bottom">
               <div class="">
-                自动加载<i-switch v-model="auto" size="large" />
+                <!-- 自动加载<i-switch v-model="auto" size="large" /> -->
               </div>
               <div class="">
-                <Button  type="default" class="btn-table-bot" @click='load'>加载更多</Button>
+                    <template>
+                        <Page :total="total" show-elevator :page-size='pageSize' :current='current' @on-change='onPageSize' />
+                    </template>
+                <!-- <Button  type="default" class="btn-table-bot" @click='load'>加载更多</Button> -->
               </div>
               <div class="search-box">
-                转到第 <Input search v-model='value' @on-blur='positioning' enter-button="GO" /> 条
+                <!-- 转到第 <Input search v-model='value' @on-blur='positioning' enter-button="GO" /> 条 -->
               </div>
             </div>
         </Card>
@@ -53,198 +56,154 @@ import NewUser from './UserListNew';
   userColumns,userData
 } from '../data/user-table'
 import urlPath from '../actions/api.js';
- export default {
-   name: 'user',
-  components: {
-    position: Position,
-    FilterPop,
-    NewUser,
-    BtnColor
+export default {
+    name: 'user',
+    components: {
+        position: Position,
+        FilterPop,
+        NewUser,
+        BtnColor
     },
-   data() {
-    return {
-      showPop: false,
-      userColumns,
-      userData,
-      value: '',
-      sName:'',myval:0,
-       auto:false,num:1,
-      pois:{id: 1,title: 'My'},  ifupd:'true'  }
-  },
-  created(){
-   },
-   mounted() {
-     this.getData();
+    data() {
+        return {
+            total: 0,
+            pageSize: 10,
+            current: 1,
+            showPop: false,
+            userColumns,
+            userData,
+            value: '',
+            sName:'',myval:0,
+            auto:false,num:1,
+            pois:{id: 1,title: 'My'},  ifupd:'true'  
+        }
     },
-  watch:{
-    auto:function(val){
-
-      let that=this;
-      if (val==true) {
-    that.myval= setInterval(function(){
-      that.getData();
-      },2000);
-       }
-       else {
-    clearInterval(that.myval );
-    // that.myWorker=null;
-   }
-  }
-},
-  methods: {
-    positioning(){
+    created(){
+        this.getData();
+    },
+    mounted(){},
+    watch:{
+        auto:function(val){
+            let that=this;
+            if (val==true) {
+                that.myval= setInterval(function(){
+                that.getData();
+                },2000);
+            } else {
+                clearInterval(that.myval );
+                // that.myWorker=null;
+            }
+        }
+    },
+    methods: {
+        onPageSize(current){
+            this.current = current;
+            this.getData();
+            console.log(current)
+        },
+        positioning(){
             window.location.hash = "#" + this.value;
         },
-    handleReachBottom () {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                      this.getData();
-                         resolve();
-                    },500);
-                });
-            },
-     editUser(row){  //修改页面
-     this.showPop= true;
-           let user={'ID': localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'),'USERID':row.USERID}
-            let that=this;
-          $.ajax({ //
-               type:'post',
-               url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
-               data:user,
-               success:function(dataRet) {
-                 if (dataRet.Y==100) {
-                   that.pois= dataRet.D.listUser[0];
-                      that.ifupd='true';
-                 }
+        handleReachBottom () {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    this.getData();
+                        resolve();
+                },500);
+            });
+        },
+        editUser(row){  //修改页面
+            this.showPop= true;
+            let user = {
+                'ID': localStorage.getItem('UID'),
+                RANDOMCODE: localStorage.getItem('RANDOMCODE'),
+                'USERID':row.USERID,
+                CurrentPage: 1,
+                PageSize: 1
+            }
+            let that = this;
+            $.ajax({ //
+                type:'post',
+                url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+                data:user,
+                success:function(dataRet) {
+                    if (dataRet.Y==100) {
+                        that.pois= dataRet.D.listUser[0];
+                        that.ifupd='true';
+                    }
                 }
-             })
-    },
-     seldata(){//查询
-    let user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), NAME:this.sName}
-         let that=this;
-       $.ajax({
-            type:'post',
-            url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
-            data:user,
-            success:function(dataRet){
-              if (dataRet.Y==100) {
-                that.userData=dataRet.D.listUser;
-              document.getElementById("count").innerHTML ="共"+dataRet.D.listUser.length+"条数据";
-              }
-      }})
-   },
-    getSelData(data){ //加载页面数据
-      this.userData=data;
-        document.getElementById("count").innerHTML = "共"+data.length+"条数据";
-     } ,
+            })
+        },
+        seldata(){//查询
+            let user = {
+                ID: localStorage.getItem('UID'),
+                RANDOMCODE: localStorage.getItem('RANDOMCODE'),
+                'NAME':this.sName,
+                CurrentPage: 1,
+                PageSize: this.pageSize
+            }
+            let that = this;
+            $.ajax({
+                type: 'post',
+                url: urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+                data: user,
+                success:function(dataRet){
+                    if (dataRet.Y==100) {
+                        that.userData = dataRet.D.listUser;
+                        that.total = dataRet.D.Count;
+                    }
+                }
+            })
+        },
+        getSelData(data, Count){ //加载页面数据
+            this.userData = data;
+            this.total = Count
+            // document.getElementById("count").innerHTML = "共"+data.length+"条数据";
+        },
         change($event,row){  //启用禁用 改变
-           this.$Message.info('开关状态：' + $event);
-               let state= $event;
-               var user={"STARTTYPE":state,"USERID":row.USERID };
-          $.ajax({ // 修改启用 禁用
-              type:'post',
-              url:urlPath.getIndexTable+'/api/UserManager/UpdateSystemUser',
-              data:user,
-              success:function(){
+            this.$Message.info('开关状态：' + $event);
+            let state= $event;
+            var user={"STARTTYPE":state,"USERID":row.USERID };
+            $.ajax({ // 修改启用 禁用
+                type:'post',
+                url:urlPath.getIndexTable+'/api/UserManager/UpdateSystemUser',
+                data:user,
+                success:function(){}
+            })
+        },
+        openPop() {
+            this.showPop = true
+            this.pois=null;
+            this.ifupd='false';
+        },
+        cancel() {
+            this.showPop = false
+        },
+        save(data) {
+            this.showPop = false;
+        },
+        getData(){
+            let user = {
+                ID: localStorage.getItem('UID'),
+                RANDOMCODE: localStorage.getItem('RANDOMCODE'),
+                CurrentPage: this.current,
+                PageSize: this.pageSize,
+                'NAME':this.sName,
+            };
+            let that=this;
+            $.ajax({ //
+                type:'post',
+                url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
+                data:user,
+                success:function(dataRet){
+                    if (dataRet.Y==100) {
+                        that.userData = dataRet.D.listUser;
+                        that.total = dataRet.D.Count;
+                    }   
                 }
-         })
-    },
-    openPop() {
-      this.showPop = true
-      this.pois=null;
-      this.ifupd='false';
-    },
-    cancel() {
-      this.showPop = false
-    },
-    save(data) {
-     this.showPop = false;
-     // console.log(data);
-    },
-      load(){
-        this.num = this.num + 2;
-         var user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM':this.num};
-       if (this.sName!=null || this.sName!="") {
-        user={NUM:this.num,NAME:this.sName}
-       }
-         let that=this;
-          $.ajax({ //
-               type:'post',
-               url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
-               data:user,
-               success:function(dataRet){
-                 if (dataRet.Y==100) {
-              if (dataRet.D.listUser==null) {
-                  return ;
-              }
-               let ls=[];
-               ls=that.userData;
-             if(ls!=undefined)
-              {
-                if (  dataRet.D.listUser.length>0) {
-                      for( let i = 0; i < dataRet.D.listUser.length; i++ ){
-                          let flag = true;
-                          for( let j = 0; j <  ls.length;j++){
-                          if(ls[j].USERID== dataRet.D.listUser[i].USERID)
-                          {
-                          flag =false;
-                          }
-                      }
-                        if(flag){
-                          that.userData.push(dataRet.D.listUser[i]);
-                        }
-                      }}
-              }
-              else {
-                that.userData=dataRet.D.listUser;
-                }
-                        //  that.num++;
-                document.getElementById("count").innerHTML ="共"+that.userData.length+"条数据";
-              }   }
-             })
-      },
-    getData(){
-        var user={ID: localStorage.getItem('UID'),RANDOMCODE: localStorage.getItem('RANDOMCODE'), 'NUM':this.num};
-       if (this.sName!=null || this.sName!="") {
-        user={NUM:this.num,NAME:this.sName}
-       }
-         let that=this;
-          $.ajax({ //
-               type:'post',
-               url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',
-               data:user,
-               success:function(dataRet){
-                 if (dataRet.Y==100) {
-              if (dataRet.D.listUser==null) {
-                  return ;
-              }
-               let ls=[];
-               ls=that.userData;
-             if(ls!=undefined)
-              {
-                if (  dataRet.D.listUser.length>0) {
-                      for( let i = 0; i < dataRet.D.listUser.length; i++ ){
-                          let flag = true;
-                          for( let j = 0; j <  ls.length;j++){
-                          if(ls[j].USERID== dataRet.D.listUser[i].USERID)
-                          {
-                          flag =false;
-                          }
-                      }
-                        if(flag){
-                          that.userData.push(dataRet.D.listUser[i]);
-                        }
-                      }}
-              }
-              else {
-                that.userData=dataRet.D.listUser;
-                }
-                         that.num++;
-                document.getElementById("count").innerHTML ="共"+that.userData.length+"条数据";
-              }   }
-             })
-         }
-  },
+            })
+        }
+    }
 }
 </script>
 

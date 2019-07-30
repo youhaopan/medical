@@ -152,7 +152,7 @@ export default {
     },
     onPageSize(current){
         this.current = current;
-        this.getData();
+        this.seldata();
         console.log(current)
     },
     seldata(){

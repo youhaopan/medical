@@ -10,7 +10,7 @@ const indexColumns = [
         key: 'CODE',
         sortable: true,
         tooltip: true,
-        width:170
+        // width:170
     },{
         title: '医生',
         key: 'DOCTORNAME'
@@ -19,7 +19,9 @@ const indexColumns = [
         key: 'PATIENTNAME'
     }, {
         title: '类型',
-        key: 'TYPENAME'
+        key: 'TYPENAME',
+        sortable: true,
+        tooltip: true,
     }, 
     // {
     //     title: '急慢性病',
@@ -30,7 +32,7 @@ const indexColumns = [
         key: 'CREATEDATE',
         sortable: true,
         tooltip: true,
-        width:170
+        // width:170
     }, {
         title: '就诊科室',
         key: 'CUREDESKNAME'
@@ -75,7 +77,9 @@ const indexColumns2 = [
         tooltip: true,
     }, {
         title: '诊断',
-        key: 'TYPENAME'
+        key: 'TYPENAME',
+        sortable: true,
+        tooltip: true
     }, {
         title: '就诊科室',
         key: 'CUREDESKNAME'
