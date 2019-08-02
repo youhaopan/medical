@@ -22,15 +22,15 @@
           </i-col>
         </Row> -->
         <Row class="list-line">
-          <i-col span="8">
+          <i-col span="10">
             <label for="">姓名：</label>
-            <i-input />
+            <i-input v-model="Name" />
           </i-col>
-          <i-col span="8">
+          <!-- <i-col span="8">
               <label for="">电话：</label>
             <i-input />
-          </i-col>
-          <i-col span="8">
+          </i-col> -->
+          <i-col span="10">
               <label for="">性别：</label>
             <RadioGroup type="button" v-model="sexChoose" class="state-choose">
               <Radio class="error" label="男" />
@@ -82,6 +82,7 @@ export default {
   data() {
     return {
       filterShow: false,
+      Name: '',
       dataTree,
       sexChoose: '',
       roomCheckedList: [],
@@ -174,19 +175,34 @@ export default {
     ok() {
         // this.$Message.info('Clicked ok');
         this.filterShow = false;
+        
+        let rarray = this.roomCheckedList;  // 科室
+        let desk = null;
+        let rarray1 = this.treeCheckedList; // 职称
+        let title = null;
 
-        let rarray=this.roomCheckedList;
-        let desk="'"+rarray[0].id+"'";
-        let rarray1=this.treeCheckedList;
-        let title="'"+rarray1[0].id+"'";
-        for (let i = 1; i < rarray.length; i++) {
-            desk+=",'"+rarray[i].id+"'";
+        if(rarray.length !== 0){
+            desk = "'" + rarray[0].id + "'";
+            for (let i = 1; i < rarray.length; i++) {
+                desk += ",'" + rarray[i].id + "'";
+            }
         }
-        for (let i = 1; i < rarray1.length; i++) {
-             title+=",'"+rarray1[i].id+"'";
+        if(rarray1.length !== 0){
+            title = "'" + rarray1[0].id + "'";
+            for (let i = 1; i < rarray1.length; i++) {
+                title += ",'" + rarray1[i].id + "'";
+            }
         }
-        let user={Name:this.Name, Phone:this.Phone,'SEXCODE':this.sexChoose,'DEPARTMENT':desk,'TITLE': title};
-        let that =this;
+        let user = {
+            Name:this.Name,
+            // Phone:this.Phone,
+            'SEXCODE':this.sexChoose,
+            'DEPARTMENT': '"' + desk + '"',
+            'TITLE': title,
+            CurrentPage: 1,
+            PageSize: 10
+        };
+        let that = this;
         $.ajax({  //按条件查询用户
             type:'post',
             url:urlPath.getIndexTable+'/api/UserManager/QuerySystemUser',

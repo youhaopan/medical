@@ -12,7 +12,7 @@
               <Input prefix="icon-user" type="text" v-model="username" placeholder="用户名" />
             </li>
             <li>
-              <Input prefix="icon-pass" type="password" v-model="password" placeholder="密码" />
+              <Input prefix="icon-pass" type="password" v-model="password" placeholder="密码" @keyup.enter.native='loginClick' />
             </li>
             <li>
               <i-input prefix="icon-vcode" class="code-box" v-model="vCode" placeholder="验证码">
@@ -50,7 +50,7 @@ export default {
     }
   },
   methods: {
-    loginClick: function() {
+    loginClick() {
       if (this.username !== "" && this.password !== "") {
              var lk={ACCOUNTS:this.username,PASSWORD:this.password};
                 localStorage.setItem('UNAME',this.username)//用户名

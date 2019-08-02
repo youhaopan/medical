@@ -12,7 +12,7 @@
             <p slot="title">
               <Icon type="icon-tree"></Icon>统计图表
             </p>
-            <Input slot="extra" v-model="dName" prefix="ios-search" @on-blur="selData" placeholder="查询科室" />
+            <Input slot="extra" v-model="dName" prefix="ios-search" @on-blur="selData" @keyup.enter.native='selData' placeholder="查询科室" />
             <Tree :treeData="dataTree" tree-color="tree-blue" @getTreeCheckedList="getTreeData">科室</Tree>
           </Card>
         </i-col>
@@ -43,7 +43,7 @@
       </Row>
       <Card :bordered="false">
         <p slot="title">
-          <Icon type="icon-alert"></Icon>筛选状态
+          <!-- <Icon type="ios-alert" /> -->筛选状态
         </p>
         <RadioGroup type="button" @on-change="selectSex" class="state-choose">
           <Radio label="正常" value='NORMAL'></Radio>
