@@ -30,6 +30,7 @@ export default {
     return {
       checkedTreeID:'',
       checkedTree: '',
+      checkedTreeCode: '',
       checkTreeList: []
     }
   },
@@ -48,9 +49,11 @@ export default {
       this.checkTreeList.splice(index, 1);
     },
     select(el) {
+      console.log(el)
       if (el.length > 0) {
         this.checkedTreeID=el[0].id;
         this.checkedTree = el[0].title
+        this.checkedTreeCode = el[0].code
       } else {
         // el[0].selected = !el[0].selected
         if (this.checkedTree !== '') {
@@ -63,7 +66,8 @@ export default {
            if (flag) {
                this.checkTreeList.push({
             title: this.checkedTree,
-            id: this.checkedTreeID
+            id: this.checkedTreeID,
+            code: this.checkedTreeCode
           })  }  }
         }
       }

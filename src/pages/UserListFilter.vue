@@ -145,7 +145,8 @@ export default {
                             expand: true,
                             id: item.DESKID,
                             nodeKey: 0,
-                            title: item.NAME
+                            title: item.NAME,
+                            code: item.CODE
                          }
                          arr.push(obj)
                      }else{
@@ -162,7 +163,8 @@ export default {
                                 expand: true,
                                 id: children[i].DESKID,
                                 nodeKey: 1,
-                                title: children[i].NAME
+                                title: children[i].NAME,
+                                code: children[i].CODE
                              }
                              arr[j].children.push(objData)
                          }
@@ -182,9 +184,9 @@ export default {
         let title = null;
 
         if(rarray.length !== 0){
-            desk = "'" + rarray[0].id + "'";
+            desk = "'" + rarray[0].code + "'";
             for (let i = 1; i < rarray.length; i++) {
-                desk += ",'" + rarray[i].id + "'";
+                desk += ",'" + rarray[i].code + "'";
             }
         }
         if(rarray1.length !== 0){
@@ -281,7 +283,8 @@ export default {
                             expand: true,
                             id: item.DESKID,
                             nodeKey: 0,
-                            title: item.NAME
+                            title: item.NAME,
+                            code: item.CODE
                          }
                          arr.push(obj)
                      }else{
@@ -298,7 +301,8 @@ export default {
                                 expand: true,
                                 id: children[i].DESKID,
                                 nodeKey: 1,
-                                title: children[i].NAME
+                                title: children[i].NAME,
+                                code: children[i].CODE
                              }
                              arr[j].children.push(objData)
                          }
