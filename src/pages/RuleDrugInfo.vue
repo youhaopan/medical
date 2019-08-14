@@ -689,6 +689,7 @@ export default {
             // obj.name = obj.name.join(',')
             // console.log(obj)
             sex.push(obj)
+            console.log(sex)
         }
         for(let i = 0; i < sex.length; i++){
             // 循环获取费别名字

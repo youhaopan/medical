@@ -163,7 +163,8 @@ export default {
             console.log(this.editRow)
             console.log(this.roconstypeId)
           if(this.roconstypeData ===1){
-                if(this.Price.value !== '' && this.degree.value !== '' && this.checkedList.length > 0){
+                if(this.checkedList.length > 0){
+                    console.log(this.checkedList.length)
                     let arrName = [];
                     let arrId = [];
                     this.checkedList.forEach(function(item){
@@ -183,10 +184,10 @@ export default {
                     console.log(this.editRow)
                     this.$refs.ksChild.reset();
                 }else{
-                    this.$Message.warning('请选择要添加的医院等级规则');
+                    this.$Message.warning('请选择要添加的科室规则');
                 }
           } else if(this.roconstypeData ===2){
-                if(this.yyPrice.value !== '' && this.yyDegree.value !== '' && this.yyLevel.value !== ''){
+                if(this.yyLevel.value !== ''){
                     this.editRow.RULE = this.roconstypeId;
                     this.editRow.nameId = this.yyLevel.value;
                     this.editRow.name = this.yyLevel.label;
@@ -204,7 +205,7 @@ export default {
                 this.$Message.warning('请选择要添加的医院等级规则');
             }
           } else if(this.roconstypeData ===3){
-                if(this.sexPrice.value !== '' && this.sexDegree.value !== '' && this.sex !== ''){
+                if(this.sex !== ''){
                     this.editRow.RULE = this.roconstypeId;
                     this.editRow.data = '仅限' + this.sex;
                     this.editRow.sex = this.sex;
@@ -218,10 +219,10 @@ export default {
                     this.$Message.success('编辑成功');
                     this.$refs.sexChild.reset();
                 }else{
-                    this.$Message.warning('请选择要添加的医院等级规则');
+                    this.$Message.warning('请选择要添加的性别规则');
                 }
           } else if(this.roconstypeData ===4){
-                if(this.agePrice.value !== '' && this.ageDegree.value !== '' && this.dataStart !== '' && this.dataEnd !== ''){
+                if(this.dataStart !== '' && this.dataEnd !== ''){
                     this.editRow.RULE = this.roconstypeId;
                     this.editRow.age = this.dataStart + ' - ' + this.dataEnd + ' 岁';
                     this.editRow.DATASTART = this.dataStart;
@@ -235,8 +236,8 @@ export default {
                     this.$emit('editAge', this.editRow);
                     this.$Message.success('编辑成功');
                     this.$refs.ageChild.reset();
+                }
             }
-          }
       },
       getRoomList(ks,yy,sex,age){
           let arr = []
@@ -263,7 +264,19 @@ export default {
     save(){
         if(this.roconstypeData ===1){
             // 科室规则的保存
-            if(this.Price.value !== '' && this.degree.value !== '' && this.checkedList.length > 0){
+            if(this.Price === undefined){
+                this.Price = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.degree === undefined){
+                this.degree = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.checkedList.length > 0){
                 let arrName = [];
                 let arrId = [];
                 this.checkedList.forEach(function(item){
@@ -276,7 +289,7 @@ export default {
                     name: arrName.join(','),
                     nameId: arrId.join(','),
                     DESKS: arrId,
-                    attr: ['3', '1', '11'],
+                    attr: ['3'],
                     FeiBie: this.Price.value,
                     WEIGUI: this.degree.value,
                     degree: this.degree.label,
@@ -285,34 +298,37 @@ export default {
                     priceCode: this.Price.value,
                     edit: '编辑'
                 }
+                if(this.Price.value !== '') roomData.attr.push('1')
+                if(this.degree.value !== '') roomData.attr.push('11')
                 // console.log(roomData)
                 this.$emit('ksSave', roomData, this.roconstypeId);
                 // this.$Message.success('添加成功');
                 this.$refs.ksChild.reset();
-                // for (var key in roomData) { 
-                //     if (this.formData[key] !== roomData[key]) { 
-                //         console.log(this.formData[key], roomData[key])
-                //         this.formData = roomData;
-                //         this.$emit('ksSave', this.formData);
-                //         console.log('赋值',this.formData);
-                //         return
-                //     }
-                //     console.log(this.formData[key], roomData[key]);
-                //     this.$Message.warning('这是一条普通的提醒');
-                // }
             }else{
                 this.$Message.warning('请选择要添加的科室规则');
             }
         }else if(this.roconstypeData ===2){
             // 医院等级规则的保存
-            if(this.yyPrice.value !== '' && this.yyDegree.value !== '' && this.yyLevel.value !== ''){
+            if(this.yyPrice === undefined){
+                this.yyPrice = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.yyDegree === undefined){
+                this.yyDegree = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.yyLevel.value !== ''){
                 let yyData = {
                     number: '系统',
                     RULE: this.roconstypeId,
                     name: this.yyLevel.label,
                     nameId: this.yyLevel.value,
                     data: this.yyLevel.value,
-                    attr: ['1', '11', '7'],
+                    attr: ['7'],
                     apply : this.yyLevel.value,
                     applyName: this.yyLevel.label,
                     FeiBie: this.yyPrice.value, 
@@ -323,7 +339,9 @@ export default {
                     priceCode: this.yyPrice.value,
                     edit: '编辑'
                 }
-                console.log(yyData)
+                // console.log(yyData)
+                if(this.yyPrice.value !== '') yyData.attr.push('1')
+                if(this.yyDegree.value !== '') yyData.attr.push('11')
                 this.$emit('setYyData', yyData, this.roconstypeId);
                 // this.$Message.success('添加成功');
                 this.$refs.yyChild.reset();
@@ -332,14 +350,27 @@ export default {
             }
         }else if(this.roconstypeData ===3){
             // 性别规则的保存
-            if(this.sexPrice.value !== '' && this.sexDegree.value !== '' && this.sex !== ''){
+            console.log(this.sexPrice)
+            if(this.sexPrice === undefined){
+                this.sexPrice = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.sexDegree === undefined){
+                this.sexDegree = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.sex !== ''){
                 let sexData = {
                     number: '系统',
                     RULE: this.roconstypeId,
                     // name: this.yyLevel.label,
                     // nameId: this.yyLevel.value,
                     data: '仅限' + this.sex,
-                    attr: ['1', '11', '4'],
+                    attr: ['4'],
                     FeiBie: this.sexPrice.value,
                     WEIGUI: this.sexDegree.value,
                     sex: this.sex,
@@ -349,18 +380,33 @@ export default {
                     priceCode: this.sexPrice.value,
                     edit: '编辑'
                 }
+                if(this.sexPrice.value !== '') sexData.attr.push('1')
+                if(this.sexDegree.value !== '') sexData.attr.push('11')
                 // console.log(sexData)
                 this.$emit('setSexData', sexData, this.roconstypeId);
                 // this.$Message.success('添加成功');
                 this.$refs.sexChild.reset();
+                
             }else{
                 this.$Message.warning('请选择要添加的医院等级规则');
             }
         }else if(this.roconstypeData ===4){
             // 年龄规则的保存
-            console.log(this.dataStart)
-            console.log(this.dataEnd)
-            if(this.agePrice.value !== '' && this.ageDegree.value !== '' && this.dataStart !== '' && this.dataEnd !== ''){
+            // console.log(this.dataStart)
+            // console.log(this.dataEnd)
+            if(this.agePrice === undefined){
+                this.agePrice = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.ageDegree === undefined){
+                this.ageDegree = {
+                    label: '',
+                    value: ''
+                }
+            }
+            if(this.dataStart !== '' && this.dataEnd !== ''){
                 let ageData = {
                     number: '系统',
                     RULE: this.roconstypeId,
@@ -370,7 +416,7 @@ export default {
                     dataStart: this.dataStart,
                     dataEnd: this.dataEnd,
                     data: '',
-                    attr: ['1', '11', '5'],
+                    attr: ['5'],
                     DATASTART: this.dataStart,
                     DATAEND: this.dataEnd,
                     FeiBie: this.agePrice.value,
@@ -381,6 +427,8 @@ export default {
                     priceCode: this.agePrice.value,
                     edit: '编辑'
                 }
+                if(this.agePrice.value !== '') ageData.attr.push('1')
+                if(this.ageDegree.value !== '') ageData.attr.push('11')
                 // console.log(ageData)
                 this.$emit('setAgeData', ageData, this.roconstypeId);
                 // this.$Message.success('添加成功');
