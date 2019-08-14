@@ -199,7 +199,7 @@ export default {
             Name:this.Name,
             // Phone:this.Phone,
             'SEXCODE':this.sexChoose,
-            'DEPARTMENT': '"' + desk + '"',
+            'DEPARTMENT': desk,
             'TITLE': title,
             CurrentPage: 1,
             PageSize: 10
@@ -211,9 +211,9 @@ export default {
             data:user,
             success:function(dataRet){
                 if (dataRet.M=="您的该项操作已经成功执行！"){
-                    that.$emit('func',dataRet.D.listUser, dataRet.D.Count)
+                    that.$emit('func',dataRet.D.listUser, dataRet.D.Count, desk, title, that.sexChoose )
                 } else {
-                alert("查询失败")
+                    that.$Message.warning('查询失败');
                 }
             }
         })
@@ -272,24 +272,24 @@ export default {
            data:desk,
              success:function(dataRets){
                 //  console.log(dataRets.D.listDesk);
-                 let arr = [];
-                 let children = [];
-                 dataRets.D.listDesk.forEach(function(item) {
-                     if(item.UP === '' || item.UP === '0'){
-                        let obj = {
-                            UP: item.UP,
-                            children: [],
-                            disable: false,
-                            expand: true,
-                            id: item.DESKID,
-                            nodeKey: 0,
-                            title: item.NAME,
-                            code: item.CODE
-                         }
-                         arr.push(obj)
-                     }else{
-                         children.push(item)
-                     }
+				let arr = [];
+				let children = [];
+				dataRets.D.listDesk.forEach(function(item) {
+					if(item.UP === '' || item.UP === '0'){
+						let obj = {
+							UP: item.UP,
+							children: [],
+							disable: false,
+							expand: true,
+							id: item.DESKID,
+							nodeKey: 0,
+							title: item.NAME,
+							code: item.CODE
+						}
+						arr.push(obj)
+					}else{
+						children.push(item)
+					}
                  });
                  for(let i = 0; i<children.length; i++){
                      for(let j = 0; j<arr.length; j++){

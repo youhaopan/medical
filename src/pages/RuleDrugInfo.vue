@@ -107,8 +107,9 @@
         <span v-else>正常</span>
       </template> -->
       <template slot="edit" slot-scope="{ row }">
-        <!-- <span @click="openEditRoom(1,'科室规则', 'edit', row)">编辑
-          <Icon custom="icon-edit" /></span> -->
+        <!-- <span @click="openEditRoom(1,'科室规则', 'edit', row)">编辑 -->
+        <span @click="deleteRid(row)">删除
+          <Icon custom="icon-delete" /></span>
       </template>
     </Table>
   </Card>
@@ -125,6 +126,8 @@
       <template slot="edit" slot-scope="{ row }">
         <!-- <span @click="openEditRoom(2,'医院等级规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span> -->
+          <span @click="deleteRid(row)">删除
+          <Icon custom="icon-delete" /></span>
       </template>
     </Table>
   </Card>
@@ -141,6 +144,8 @@
       <template slot="edit" slot-scope="{ row }">
         <!-- <span @click="openEditRoom(3,'性别规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span> -->
+          <span @click="deleteRid(row)">删除
+          <Icon custom="icon-delete" /></span>
       </template>
     </Table>
   </Card>
@@ -157,6 +162,8 @@
       <template slot="edit" slot-scope="{ row }">
         <!-- <span @click="openEditRoom(4,'年龄规则', 'edit', row)">编辑
           <Icon custom="icon-edit" /></span> -->
+          <span @click="deleteRid(row)">删除
+          <Icon custom="icon-delete" /></span>
       </template>
     </Table>
   </Card>
@@ -220,10 +227,10 @@ export default {
         title: '费别',
         key: 'price'
       },
-    //    {
-    //     title: '操作',
-    //     slot: 'edit'
-    //   }
+       {
+        title: '操作',
+        slot: 'edit'
+      }
       ],
       roomData: [],
       // 医院等级规则//////////////////////////////
@@ -240,10 +247,10 @@ export default {
         title: '费别',
         key: 'price'
       },
-    //   {
-    //     title: '操作',
-    //     slot: 'edit'
-    //   }
+      {
+        title: '操作',
+        slot: 'edit'
+      }
       ],
       degreeData: [],
       // 性别规则///////////////////////
@@ -268,10 +275,10 @@ export default {
         title: '费别',
         key: 'price'
       },
-    //   {
-    //     title: '操作',
-    //     slot: 'edit'
-    //   }
+      {
+        title: '操作',
+        slot: 'edit'
+      }
       ],
       sexData: [],
       // sexData: [{
@@ -305,10 +312,10 @@ export default {
         title: '费别',
         key: 'price'
       },
-    //   {
-    //     title: '操作',
-    //     slot: 'edit'
-    //   }
+      {
+        title: '操作',
+        slot: 'edit'
+      }
       ],
       ageData: []
     //   ageData: [{
@@ -339,6 +346,27 @@ export default {
     }
   },
   methods: {
+    deleteRid(row){
+        console.log(row.rid)
+        let _this = this;
+        let data = {
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            DrugRule: row.rid
+        }
+        $.ajax({ // 查询药品
+            type:'post',
+            url: urlPath.getIndexTable+'/api/DrugRuleDeploy/DeleteDrugRule',
+            data: data,
+            success:function(dataRets){
+                if (dataRets.Y === 100){
+                    console.log(dataRets);
+                    _this.$Message.success(dataRets.M);
+                    _this.parentHandleclick(_this.rowData);
+                }
+            }
+        })
+    },
     openEditRoom(type, title, lei, row) {
         this.openEditData = true
         this.roleType = type;
@@ -410,14 +438,14 @@ export default {
     parentHandleclick(row){
         console.log(row)
         this.rowData = row
-        this.ypId = row.ID
+        this.ypId = row.HISCODE
         console.log(this.ypId)
         let _this = this;
         let desk = {
             'ID':localStorage.getItem('UID'),
             'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
             DRUGRULE: [{
-                DRUG: row.ID
+                DRUG: row.HISCODE
             }]
         };
         console.log(desk)
@@ -482,25 +510,26 @@ export default {
         }
         for(let i = 0; i < ksDataList.length; i++) {
             let obj = {
-                    number: '系统',
-                    RULE: '',
-                    name: [],
-                    nameId: [],
-                    DESKS: '',  // 科室
-                    apply : '', // 医院等级
-                    sex: '', // 性别
-                    DATASTART: '', // 开始年龄
-                    DATAEND: '', // 结束年龄
-                    FeiBie: '',
-                    WEIGUI: '',
-                    degree: '',
-                    degreeCode: '',
-                    price: '',
-                    priceCode: '',
-                    edit: '编辑',
-                    CREATEUSERNAME: ksDataList[i].CREATEUSERNAME[0],
-                    CREATEDATE: ksDataList[i].CREATEDATE[0]
-                }
+                number: '系统',
+                RULE: '',
+                name: [],
+                nameId: [],
+                DESKS: '',  // 科室
+                apply : '', // 医院等级
+                sex: '', // 性别
+                DATASTART: '', // 开始年龄
+                DATAEND: '', // 结束年龄
+                FeiBie: '',
+                WEIGUI: '',
+                degree: '',
+                degreeCode: '',
+                price: '',
+                priceCode: '',
+                edit: '编辑',
+                CREATEUSERNAME: ksDataList[i].CREATEUSERNAME[0],
+                CREATEDATE: ksDataList[i].CREATEDATE[0],
+                rid: ksDataList[i].RID
+            }
             for(let j = 0; j < ksDataList[i].NAME.length; j++) {
                 if(ksDataList[i].NAME[j] === "限制的科室" ){
                     obj.name.push(ksDataList[i].NAME[j])
@@ -555,26 +584,27 @@ export default {
         }
         for(let i = 0; i < yyDataList.length; i++) {
             let obj = {
-                    number: '系统',
-                    RULE: '',
-                    name: [],
-                    nameId: [],
-                    DESKS: '',  // 科室
-                    apply : '', // 医院等级
-                    applyName : '', // 医院等级
-                    sex: '', // 性别
-                    DATASTART: '', // 开始年龄
-                    DATAEND: '', // 结束年龄
-                    FeiBie: '',
-                    WEIGUI: '',
-                    degree: '',
-                    degreeCode: '',
-                    price: '',
-                    priceCode: '',
-                    edit: '编辑',
-                    CREATEUSERNAME: yyDataList[i].CREATEUSERNAME[0],
-                    CREATEDATE: yyDataList[i].CREATEDATE[0]
-                }
+                number: '系统',
+                RULE: '',
+                name: [],
+                nameId: [],
+                DESKS: '',  // 科室
+                apply : '', // 医院等级
+                applyName : '', // 医院等级
+                sex: '', // 性别
+                DATASTART: '', // 开始年龄
+                DATAEND: '', // 结束年龄
+                FeiBie: '',
+                WEIGUI: '',
+                degree: '',
+                degreeCode: '',
+                price: '',
+                priceCode: '',
+                edit: '编辑',
+                CREATEUSERNAME: yyDataList[i].CREATEUSERNAME[0],
+                CREATEDATE: yyDataList[i].CREATEDATE[0],
+                rid: yyDataList[i].RID
+            }
             for(let j = 0; j < yyDataList[i].NAME.length; j++) {
                 if(yyDataList[i].NAME[j] === "允许的医院等级" ){
                     obj.apply = yyDataList[i].DATA[j]
@@ -622,27 +652,28 @@ export default {
         }
         for(let i = 0; i < sexDataList.length; i++) {
             let obj = {
-                    number: '系统',
-                    RULE: '',
-                    name: [],
-                    nameId: [],
-                    DESKS: '',  // 科室
-                    apply : '', // 医院等级
-                    applyName : '', // 医院等级
-                    sex: '', // 性别
-                    data: '',
-                    DATASTART: '', // 开始年龄
-                    DATAEND: '', // 结束年龄
-                    FeiBie: '',
-                    WEIGUI: '',
-                    degree: '',
-                    degreeCode: '',
-                    price: '',
-                    priceCode: '',
-                    edit: '编辑',
-                    CREATEUSERNAME: sexDataList[i].CREATEUSERNAME[0],
-                    CREATEDATE: sexDataList[i].CREATEDATE[0]
-                }
+                number: '系统',
+                RULE: '',
+                name: [],
+                nameId: [],
+                DESKS: '',  // 科室
+                apply : '', // 医院等级
+                applyName : '', // 医院等级
+                sex: '', // 性别
+                data: '',
+                DATASTART: '', // 开始年龄
+                DATAEND: '', // 结束年龄
+                FeiBie: '',
+                WEIGUI: '',
+                degree: '',
+                degreeCode: '',
+                price: '',
+                priceCode: '',
+                edit: '编辑',
+                CREATEUSERNAME: sexDataList[i].CREATEUSERNAME[0],
+                CREATEDATE: sexDataList[i].CREATEDATE[0],
+                rid: sexDataList[i].RID
+            }
             for(let j = 0; j < sexDataList[i].NAME.length; j++) {
                 if(sexDataList[i].NAME[j] === "允许性别" ){
                     obj.sex = sexDataList[i].DATA[j]
@@ -687,27 +718,28 @@ export default {
         }
         for(let i = 0; i < ageDataList.length; i++) {
             let obj = {
-                    number: '系统',
-                    RULE: '',
-                    name: [],
-                    nameId: [],
-                    DESKS: '',  // 科室
-                    apply : '', // 医院等级
-                    applyName : '', // 医院等级
-                    sex: '', // 性别
-                    DATASTART: ageDataList[i].DATASTART, // 开始年龄
-                    DATAEND: ageDataList[i].DATAEND, // 结束年龄
-                    age: ageDataList[i].DATASTART + ' > ' + ageDataList[i].DATAEND + '岁',
-                    FeiBie: '',
-                    WEIGUI: '',
-                    degree: '',
-                    degreeCode: '',
-                    price: '',
-                    priceCode: '',
-                    edit: '编辑',
-                    CREATEUSERNAME: ageDataList[i].CREATEUSERNAME,
-                    CREATEDATE: ageDataList[i].CREATEDATE
-                }
+                number: '系统',
+                RULE: '',
+                name: [],
+                nameId: [],
+                DESKS: '',  // 科室
+                apply : '', // 医院等级
+                applyName : '', // 医院等级
+                sex: '', // 性别
+                DATASTART: ageDataList[i].DATASTART, // 开始年龄
+                DATAEND: ageDataList[i].DATAEND, // 结束年龄
+                age: ageDataList[i].DATASTART + ' > ' + ageDataList[i].DATAEND + '岁',
+                FeiBie: '',
+                WEIGUI: '',
+                degree: '',
+                degreeCode: '',
+                price: '',
+                priceCode: '',
+                edit: '编辑',
+                CREATEUSERNAME: ageDataList[i].CREATEUSERNAME,
+                CREATEDATE: ageDataList[i].CREATEDATE,
+                rid: ageDataList[i].RID
+            }
             for(let j = 0; j < ageDataList[i].NAME.length; j++) {
                 if(ageDataList[i].NAME[j] === "费别" ){
                     obj.FeiBie = ageDataList[i].DATA[j]

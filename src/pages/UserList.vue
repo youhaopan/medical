@@ -69,6 +69,9 @@ export default {
             total: 0,
             pageSize: 10,
             current: 1,
+            zwId: null,
+            ksCode: null,
+            sexChoose: '',
             showPop: false,
             userColumns,
             userData,
@@ -135,6 +138,10 @@ export default {
             })
         },
         seldata(){//查询
+
+            this.sexChoose = '';
+            this.ksCode = null
+            this.zwId = null
             let user = {
                 ID: localStorage.getItem('UID'),
                 RANDOMCODE: localStorage.getItem('RANDOMCODE'),
@@ -155,9 +162,14 @@ export default {
                 }
             })
         },
-        getSelData(data, Count){ //加载页面数据
+        getSelData(data, Count, ks, zw, sex){ //加载页面数据
             this.userData = data;
-            this.total = Count
+            this.total = Count;
+
+            this.sexChoose = sex;
+            this.ksCode = ks
+            this.zwId = zw
+            
             // document.getElementById("count").innerHTML = "共"+data.length+"条数据";
         },
         change($event,row){  //启用禁用 改变
@@ -189,6 +201,9 @@ export default {
                 CurrentPage: this.current,
                 PageSize: this.pageSize,
                 'NAME':this.sName,
+                'SEXCODE':this.sexChoose,
+                'DEPARTMENT': this.ksCode,
+                'TITLE': this.zwId,
             };
             let that=this;
             $.ajax({ //
