@@ -729,7 +729,7 @@ export default {
                 sex: '', // 性别
                 DATASTART: ageDataList[i].DATASTART, // 开始年龄
                 DATAEND: ageDataList[i].DATAEND, // 结束年龄
-                age: ageDataList[i].DATASTART + ' > ' + ageDataList[i].DATAEND + '岁',
+                age: ageDataList[i].DATASTART + ' - ' + ageDataList[i].DATAEND + '岁',
                 FeiBie: '',
                 WEIGUI: '',
                 degree: '',

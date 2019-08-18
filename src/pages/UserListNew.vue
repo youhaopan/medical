@@ -64,7 +64,7 @@
             </li>
             <li>
               <Select v-model="Desk" style="width:200px" filterable>
-              <Option v-for="item in DeskList" :value="item.DESKID" :key="item.DESKID">{{ item.NAME }}</Option>
+              <Option v-for="item in DeskList" :value="item.CODE" :key="item.DEPARTMENT">{{ item.NAME }}</Option>
             </Select>
             </li>
             <li>
@@ -138,8 +138,8 @@ export default {
         label: '女'
       }],roleList:[{ID:'1','NAME':'角色'}],
       DeskList : [
-         {   DESKID: '0', NAME: '保密'}
-        ,{   DESKID: '1', NAME: '呵呵' }
+        //  {   DESKID: '0', NAME: '保密'}
+        // ,{   DESKID: '1', NAME: '呵呵' }
       ] ,
         zhicList: [{
           value: '0',
@@ -261,10 +261,11 @@ ChangData(){
               })},
     getList(){// 加载科室
       let that=this;
+      let desk={'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'),NUM: -1,};
       $.ajax({
         type:'post',
-        url:urlPath.getIndexTable+'/api/DeskManager/QueryDeskList',
-        data:{},
+        url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+        data:desk,
           success:function(dataRet){
              that.DeskList=dataRet.D.listDesk;
             }

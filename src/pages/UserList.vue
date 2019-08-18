@@ -138,7 +138,6 @@ export default {
             })
         },
         seldata(){//查询
-
             this.sexChoose = '';
             this.ksCode = null
             this.zwId = null
