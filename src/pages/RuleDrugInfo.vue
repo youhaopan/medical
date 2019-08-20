@@ -73,7 +73,7 @@
                 </li>
             <li>
               <label >规格</label>
-              <Input v-model="formData.PACKAGING" disabled />
+              <Input v-model="formData.SPEC" disabled />
             </li>
             <li>
               <label >单位</label>
@@ -551,7 +551,7 @@ export default {
             // console.log(ks[i].nameId)
             for(let j = 0; j < ks[i].nameId.length; j++){
                 for(let k = 0; k < this.ks.length; k++){
-                    if(ks[i].nameId[j] === this.ks[k].DESKID){
+                    if(ks[i].nameId[j] === this.ks[k].CODE){
                         ks[i].name[j] = this.ks[k].NAME
                     }
                 }

@@ -27,8 +27,10 @@
                 </i-col>
                 <i-col span="15">
                   <div class="info-line">
-                    <span>就诊ID</span>
-                    <em>{{information.CARD}}</em>
+                    <!-- <span>就诊ID</span>
+                    <em>{{information.CARD}}</em> -->
+                    <span>患者编号</span>
+                    <em>{{information.PID}}</em>
                   </div>
                   <Row class="">
                     <i-col span="12">

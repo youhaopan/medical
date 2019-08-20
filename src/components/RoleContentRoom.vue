@@ -40,7 +40,7 @@ export default {
     }
   },
   created(){
-    this.getDeskList();
+    // this.getDeskList();
   },
   components: {
     TreeComponent,

@@ -8,7 +8,8 @@
           <p slot="title">
             <Icon type="icon-tree"></Icon>可添加的规则
           </p>
-          <Input prefix="ios-search" placeholder="查询规则..." style="margin-bottom:10px;" />
+          <!-- @keyup.enter.native='getDataTreeRole' -->
+          <!-- <Input prefix="ios-search" v-model="gname" placeholder="查询规则..." style="margin-bottom:10px;" /> -->
           <Tree :data="dataTreeRole" @on-select-change="selectdata" ref="dataTreeRole"></Tree>
         </Card>
       </i-col>
@@ -64,6 +65,7 @@ export default {
       tipId: '',
       tipEdit: '',
       tipTitle: '',
+      gname:'',
       // 科室
       Price: {
           label: '',
@@ -487,9 +489,16 @@ export default {
             }
         })
     },
+    seldesk(){
+
+    },
     getDataTreeRole(){
         let _this = this;
-        let desk = {'ID':localStorage.getItem('UID'),'RANDOMCODE':localStorage.getItem('RANDOMCODE'), 'RULECATALOG': [{ID: '-1'}]};
+        let desk = {
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            'RULECATALOG': [{ID: '-1',NAME: this.gname}]
+        };
         $.ajax({ // 加载违规等级
             type: 'post',
             url: urlPath.getIndexTable+'/api/RuleCatalogManager/QueryRuleCatalog',

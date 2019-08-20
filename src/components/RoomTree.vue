@@ -2,8 +2,8 @@
   <Row>
     <i-col span="12">
       <label>选择<slot></slot></label>
-      <Input prefix="ios-search" placeholder="查询科室..." v-model="dname" @on-blur="seldesk" style="width:160px" />
-      <Tree :data="treeData" @on-select-change="select"></Tree>
+      <Input prefix="ios-search" placeholder="查询科室..." v-model="dname" @on-blur="seldesk" @keyup.enter.native='seldesk' style="width:160px" />
+      <Tree :data="treeData1" @on-select-change="select"></Tree>
     </i-col>
     <i-col span="12">
       <label><slot></slot><Icon class="right-icon" type="ios-trash" @click="delAllChecked" /></label>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import urlPath from '../actions/api.js';
 export default {
   name: 'tree',
   props: {
@@ -29,11 +30,12 @@ export default {
       dname: '',
       checkedTreeID:'',
       checkedTree: '',
-      checkTreeList: []
+      checkTreeList: [],
+      treeData1:[]
     }
   },
   created:function(){
-    //   this.getDeskList();
+      this.getDeskList();
         this.$emit('getTreeCheckedList', this.checkTreeList)
   },
   methods: {
@@ -57,7 +59,7 @@ export default {
                             children: [],
                             disable: false,
                             expand: true,
-                            id: item.DESKID,
+                            id: item.CODE,
                             nodeKey: 0,
                             title: item.NAME
                         }
@@ -74,7 +76,7 @@ export default {
                                 children: null,
                                 disable: false,
                                 expand: true,
-                                id: children[i].DESKID,
+                                id: children[i].CODE,
                                 nodeKey: 1,
                                 title: children[i].NAME
                             }
@@ -83,12 +85,66 @@ export default {
                         }
                     }
                 }
-                that.dataTree = arr;
+                that.treeData1 = arr;
                 localStorage.setItem('ks', JSON.stringify(dataRets.D.listDesk));
             }
         })
     },
-    seldesk(){},
+    seldesk(){
+      let that=this;
+      
+      let desk={
+            'ID':localStorage.getItem('UID'),
+            'RANDOMCODE':localStorage.getItem('RANDOMCODE'),
+            NUM: -1,
+            NAME: this.dname
+        };
+        console.log(desk)
+         $.ajax({ // 加载科室 树
+           type:'post',
+           url:urlPath.getIndexTable+'/api/DeskManager/QueryDesk',
+           data:desk,
+             success:function(dataRets){
+                let arr = [];
+                let children = [];
+                let ksArr = [];
+                dataRets.D.listDesk.forEach(function(item, index) {
+                    if (item.UP === '' || item.UP === '0'){
+                        let obj = {
+                            UP: item.UP,
+                            children: [],
+                            disable: false,
+                            expand: true,
+                            id: item.CODE,
+                            nodeKey: 0,
+                            title: item.NAME
+                        }
+                        arr.push(obj)
+                    } else {
+                        children.push(item)
+                    }
+                });
+                for(let i = 0; i<children.length; i++){
+                    for(let j = 0; j<arr.length; j++){
+                        if(children[i].UP === arr[j].id){
+                            let objData = {
+                                UP: children[i].UP,
+                                children: null,
+                                disable: false,
+                                expand: true,
+                                id: children[i].CODE,
+                                nodeKey: 1,
+                                title: children[i].NAME
+                            }
+                            ksArr.push(objData)
+                            arr[j].children.push(objData)
+                        }
+                    }
+                }
+                that.treeData1 = arr;
+                 }
+             })
+    },
     edit(){
       this.checkTreeList = JSON.parse(localStorage.getItem('ksList'));
     },

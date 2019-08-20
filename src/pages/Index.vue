@@ -107,7 +107,7 @@ export default {
   },
   created() {
       console.log(navigator.userAgent)
-      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|OperaMini/i.test(navigator.userAgent)) {
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|OperaMini/i.test(navigator.userAgent)) {
             //当前设备为移动端（H5）
             //do something
             console.log(1)
@@ -116,8 +116,14 @@ export default {
             //当前设备为桌面显示器（PC）
             //do something
             console.log(2)
-            this.show = true;
+            // this.show = true;
+            if(localStorage.getItem('MEUNTWO') === '[]'){
+                this.show = false;
+            } else {
+                this.show = true;
+            }
         }
+        
     this.getData(); //加载页面 数据
    },
     watch:{

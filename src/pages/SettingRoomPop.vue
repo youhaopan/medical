@@ -8,7 +8,7 @@
           <p slot="title">
             <Icon type="icon-tree"></Icon>科室
           </p>
-          <Input slot="extra" prefix="ios-search" v-model="dName" @on-blur="selData" placeholder="查询科室" />
+          <Input slot="extra" prefix="ios-search" v-model="dName" @on-blur="selData" @keyup.enter.native='selData' placeholder="查询科室" />
           <Tree :treeData="dataDesk1" @getTreeCheckedList="getTreeData">科室</Tree>
         </Card>
       </i-col>
