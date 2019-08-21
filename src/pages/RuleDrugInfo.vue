@@ -218,7 +218,7 @@ export default {
         title: '来源',
         key: 'number'
       }, {
-        title: '适应科室',
+        title: '不适用科室',
         key: 'name'
       }, {
         title: '违规等级',

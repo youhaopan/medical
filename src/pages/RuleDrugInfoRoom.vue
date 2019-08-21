@@ -244,7 +244,7 @@ export default {
       getRoomList(ks,yy,sex,age){
           let arr = []
           ks.forEach(function(item){
-              item.info = '适用' + item.name + '，' + item.number + '，' + item.degree + '。'    
+              item.info = '不适用' + item.name + '，' + item.number + '，' + item.degree + '。'    
               arr.push(item)
           })
           yy.forEach(function(item){
